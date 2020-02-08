@@ -1,0 +1,251 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <complex>
+#include "meep.hpp"
+#include "ctl-math.h"
+#include "ctlgeom.h"
+#include "meepgeom.hpp"
+
+#ifndef DATADIR
+#define DATADIR "./"
+#endif
+
+using namespace meep;
+using namespace std;
+
+typedef std::complex<double> cdouble;
+
+double xcen=0.0, ycen=0.0, zcen=0.0;
+double dxmin=0.0, dxmax=0.5,dymin=1.5, dymax=2.5,dzmin=1.5, dzmax=2.5;
+double wcore=dymax - dymin;
+double winding_thickness_p=0.1, insulation_thickness_p=0.2,pml_thickness=1.0;  
+double sigma_Cu=100000000;
+double mu_core=100;
+int Np=3;//must be odd
+int Ns=3;//must be odd   
+
+double annulus(const vec & v, double xcen, double ycen, double zcen, double dxmin, double dxmax, double dymin, double dymax, double dzmin, double dzmax, double control, double special, double std = 10)
+{
+	double mu=control;
+
+	double dx=v.x() - xcen;
+	double dy=v.y() - ycen;
+	double dz=v.z() - zcen;
+
+	if ( (abs(dx)<=dxmax) && (abs(dy)<=dymax) && (abs(dz)<=dzmax) )
+	{
+		{mu= gaussian_random(special,std);}
+	}
+
+	if ( (abs(dx)<=dxmin) && (abs(dy)<=dymin) && (abs(dz)<=dzmin) )
+	{
+		mu= control;
+	}
+
+    return mu;	
+}
+
+bool inside_box(const vec & v, double xcen, double ycen, double zcen, double dxmax, double dymax, double dzmax)
+{
+	bool ans=false;
+
+	double dx=v.x() - xcen;
+	double dy=v.y() - ycen;
+	double dz=v.z() - zcen;
+
+
+	if ( (abs(dx)<=dxmax) && (abs(dy)<=dymax) && (abs(dz)<=dzmax) )
+	{
+		{ans=true;}
+	}
+
+	return ans;
+}
+
+double eps(const vec &v) {return 1.0;}
+
+
+double mu(const vec &v) 
+{
+	return annulus(v,xcen,ycen,zcen,dxmin,dxmax,dymin,dymax,dzmin,dzmax,1.0,mu_core,10);
+}
+
+double conductivity(const vec &v) 
+{	
+	double sig=0.0;
+	double xcenp=xcen; 
+    double ycenp=ycen-dymin-(0.5*wcore); 
+    double zcenp=zcen;
+
+    double dxminp=dxmax+insulation_thickness_p;
+    double dxmaxp=dxminp+winding_thickness_p;
+    double dyminp=(0.5*wcore)+insulation_thickness_p; 
+    double dymaxp=dyminp+winding_thickness_p;
+    double dzminp=0; 
+    double dzmaxp=0.5*winding_thickness_p;    
+	
+	zcenp=zcen-(0.5*double(Np-1)*insulation_thickness_p)-(0.5*double(Np-1)*winding_thickness_p);
+
+    for (int i=0;i<Np;i++)
+    {
+
+    	if (inside_box(v,xcenp,ycenp,zcenp,dxmaxp,dymaxp,dzmaxp))
+		{
+			return annulus(v,xcenp,ycenp,zcenp,dxminp,dxmaxp,dyminp,dymaxp,dzminp,dzmaxp,sig,sigma_Cu,10);
+		}
+
+		zcenp=zcenp+insulation_thickness_p+winding_thickness_p;    	
+    }
+
+
+	ycenp=ycen+dymin+(0.5*wcore); 
+    zcenp=zcen-(0.5*double(Ns-1)*insulation_thickness_p)-(0.5*double(Ns-1)*winding_thickness_p);
+
+    for (int i=0;i<Ns;i++)
+    {
+
+	    if (inside_box(v,xcenp,ycenp,zcenp,dxmaxp,dymaxp,dzmaxp))
+		{
+			return annulus(v,xcenp,ycenp,zcenp,dxminp,dxmaxp,dyminp,dymaxp,dzminp,dzmaxp,sig,sigma_Cu,10);
+		}
+
+		zcenp=zcenp+insulation_thickness_p+winding_thickness_p;    	
+    }
+
+    return sig;
+}
+  
+cdouble line_integral_x(fields & f, component C, double dx, double xmin, double xmax, double y, double z)
+{
+	cdouble sum(0.0,0.0);
+	cdouble deltax(dx,0.0);
+	for (double x=xmin; x<=xmax; x=x+dx)
+	{
+		monitor_point p;
+		f.get_point(&p, vec(x,y,z));
+		cdouble dF = p.get_component(C);
+		sum += dF*deltax;
+	}
+	return sum;
+}
+
+cdouble line_integral_y(fields & f, component C, double dy, double ymin, double ymax, double x, double z)
+{
+	cdouble sum(0.0,0.0);
+	cdouble deltay(dy,0.0);
+	for (double y=ymin; y<=ymax; y=y+dy)
+	{
+		monitor_point p;
+		f.get_point(&p, vec(x,y,z));
+		cdouble dF = p.get_component(C);
+		sum += dF*deltay;
+	}
+	return sum;
+}
+
+cdouble line_integral_z(fields & f, component C, double dz, double zmin, double zmax, double x, double y)
+{
+	cdouble sum(0.0,0.0);
+	cdouble deltaz(dz,0.0);
+	for (double z=zmin; z<=zmax; z=z+dz)
+	{
+		monitor_point p;
+		f.get_point(&p, vec(x,y,z));
+		cdouble dF = p.get_component(C);
+		//cout<<dF.real()<<" , "<<dF.imag()<<endl;
+		sum += dF*deltaz;
+		//cout<<dF.real()<<" , "<<dF.imag()<<endl;
+	}
+	return sum;
+}
+
+int main(int argc, char *argv[]) {
+	initialize mpi(argc, argv);
+
+	const char *mydirname = "MMTL-out";
+	//trash_output_directory(mydirname);
+	double resolution=3.0;
+	double xsize=10.0,ysize=10.0,zsize=10.0;
+	grid_volume gv = vol3d(xsize, ysize, zsize, resolution);
+	//grid_volume vol3d(double xsize, double ysize, double zsize, double a);
+  	gv.center_origin();
+  	//void center_origin(void) { shift_origin(-icenter()); }
+  
+ 
+  	structure *transformer = new structure(gv, eps, pml(pml_thickness));
+  	//transformer->set_output_directory(mydirname);
+  	transformer->set_mu(mu);
+  	transformer->set_conductivity(Ex,conductivity);
+  	transformer->set_conductivity(Ey,conductivity);
+  	transformer->set_conductivity(Ez,conductivity);
+  	//transformer->set_chi2(mu);
+  	//transformer->set_chi3(mu);
+  	//transformer->add_susceptibility(transformer_material, E_stuff, lorentzian_susceptibility(1.1, 1e-5));
+	//lorentzian_susceptibility(double omega_0, double gamma, bool no_omega_0_denominator = false): omega_0(omega_0), gamma(gamma), no_omega_0_denominator(no_omega_0_denominator)
+      
+
+
+  	fields f(transformer);
+  	//fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
+  
+
+
+
+  	double fcen = 15; // ; pulse center frequency
+  	double df = 0.01;    // ; df
+  	gaussian_src_time src(fcen, df);
+  	for (int Np=1;Np<2;Np++)
+  	{
+    	//ycenp=ycen+Np*2*winding_thickness_p+2*Np*insulation_thickness_p; 
+    	//const volume vsrc1 =volume(vec(xcenp+dxmaxp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp+dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    	//const volume vsrc2 =volume(vec(xcenp-dxmaxp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    	//const volume vsrc3 =volume(vec(xcenp+dxminp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp-dzminp));
+    	//const volume vsrc4 =volume(vec(xcenp+dxminp,ycenp+dymaxp,zcenp+dzminp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    	//f.add_volume_source(Ey, src,  vsrc1);
+		//void add_volume_source(component c, const src_time &src, const volume &, std::complex<double> amp = 1.0);
+    	//f.add_volume_source(Ey, src, vsrc2);
+    	//f.add_volume_source(Ex, src, vsrc3);
+    	//f.add_volume_source(Ex, src, vsrc4);
+    	//f.add_point_source(Ex,src,vec(0,-2.505,0));
+  	}
+
+	f.add_point_source(Ex, 0.0001, 0.000001, 0.0, 100.0, vec(0.0,-2.505,0.0), cdouble(0.001,0),1);
+  	//void add_point_source(component c, double freq, double width, double peaktime, double cutoff, const vec &, std::complex<double> amp = 1.0, int is_continuous = 0);
+
+    for(int i=1;i<1000;i++)
+    {
+    	f.step();
+    }
+	
+	double y=ycen;
+	for (double y=ycen-(dymin+insulation_thickness_p);y<=(ycen+dymin-insulation_thickness_p);y=y+0.1)
+	{
+		
+		cdouble Izf=line_integral_z(f,Ez,0.0001,zcen+dzmin-insulation_thickness_p,zcen+dzmax+insulation_thickness_p,xcen+dxmax+insulation_thickness_p,y);
+    	cdouble Izb=line_integral_z(f,Ez,0.0001,zcen+dzmin-insulation_thickness_p,zcen+dzmax+insulation_thickness_p,xcen-dxmax-insulation_thickness_p,y);
+    	cdouble Ixt=line_integral_x(f,Ex,0.0001,xcen-dxmax-insulation_thickness_p,xcen+dxmax+insulation_thickness_p,y,zcen+dzmax+insulation_thickness_p);
+    	cdouble Ixb=line_integral_x(f,Ex,0.0001,xcen-dxmax-insulation_thickness_p,xcen+dxmax+insulation_thickness_p,y,zcen+dzmin-insulation_thickness_p);
+    	cdouble Im=Ixt-Izf-Ixb+Izb;
+    	
+
+    	cout<<"Im(re) , Im(im)"<<endl;
+    	cout<<Im.real()<<" , "<<Im.imag()<<endl;
+	}
+    
+
+	volume vxy=volume(vec(-5,-5,0),vec(5,5,0));
+	volume vxz=volume(vec(-5,-2,-5),vec(5,-2,5));
+	volume vyz=volume(vec(0,-5,-5),vec(0,5,5));
+    
+    h5file * fileEz1=f.open_h5file("MMTLEz1",h5file::WRITE,0,false);    
+    h5file * fileEz2=f.open_h5file("MMTLEz2",h5file::WRITE,0,false);
+    h5file * fileEz3=f.open_h5file("MMTLEz3",h5file::WRITE,0,false);
+    
+    f.output_hdf5(Hx,vyz,fileEz1);
+    f.output_hdf5(Hy,vyz,fileEz2);
+    f.output_hdf5(Hz,vyz,fileEz3);
+
+  return 0;
+}

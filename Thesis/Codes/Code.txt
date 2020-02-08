@@ -1,0 +1,400 @@
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+
+#include <meep.hpp>
+using namespace meep;
+using std::complex;
+
+double eps(const vec & c) { if(c.r()>=5 && c.r()<=6){return 1.0;}else return 1.0; }
+double mu(const vec & c) { if(c.r()<=5 || c.r()>=6){return 1000.0;}else return 1.0; }
+double conductivity(const vec & c) { if(c.r()>=4 && c.r()<=7){return 1;}else return 0.0; }
+
+int main(int argc, char **argv) {
+  initialize mpi(argc, argv);
+//  quiet = true;
+  const char *mydirname = "MMTL-out";
+  trash_output_directory(mydirname);
+  master_printf("Testing cylindrical coords under different splittings...\n");
+
+
+  double a = 10.0;
+  double ttot = 30.0;
+  int splitting=1;
+  grid_volume gv = volcyl(8, 8, a);
+  gv.center_origin();
+  structure s(gv, eps, pml(1.0), identity(), splitting, 0.4);
+/*  s.set_conductivity(Hr,conductivity);
+  s.set_conductivity(Hz,conductivity);
+  s.set_conductivity(Hp,conductivity);
+  s.set_conductivity(Br,conductivity);
+  s.set_conductivity(Bz,conductivity);
+  s.set_conductivity(Bp,conductivity);
+  s.set_conductivity(Er,conductivity);
+  s.set_conductivity(Ez,conductivity);
+  s.set_conductivity(Ep,conductivity);
+  s.set_conductivity(Dr,conductivity);
+  s.set_conductivity(Dz,conductivity);
+  s.set_conductivity(Dp,conductivity);
+  s.set_mu(mu);
+  s.set_output_directory(mydirname);
+  for (int m = 0; m < 1; m++) {
+    char m_str[10];
+    snprintf(m_str, 10, "%d", m);
+    master_printf("Trying with m = %d and a splitting into %d chunks...\n", m, splitting);
+    fields f(&s, m);
+//    f.use_bloch(0.0);
+
+//    f.add_point_source(Ep, 0.7, 2.5, 0.0, 4.0, veccyl(4, 4), 1.0);
+    //f.add_point_source(Hr, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Hz, 1, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Hp, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Br, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Bz, 1, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Bp, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Er, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    f.add_point_source(Hz, 1, 0.6, 0.0, 1.0, veccyl(5.5, 1), 1.0,1);
+    //f.add_point_source(Ez, 1, 0.6, 0.0, 1.0, veccyl(1, 0), 1.0,1);
+    //f.add_point_source(Dr, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Dz, 1, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+    //f.add_point_source(Dp, 0.08, 0.6, 0.0, 1.0, veccyl(6, 1), 1.0,1);
+/*    f.add_point_source(Ez, 0.8, 0.6, 0.0, 4.0, veccyl(4, 0.1), 1.0,1);
+    f.add_point_source(Ez, 0.8, 0.6, 0.0, 4.0, veccyl(4, 0.2), 1.0,1);
+    f.add_point_source(Ez, 0.8, 0.6, 0.0, 4.0, veccyl(4, 0.3), 1.0,1);
+    f.add_point_source(Ez, 0.8, 0.6, 0.0, 4.0, veccyl(4, 0.4), 1.0,1);
+    f.add_point_source(Ez, 0.8, 0.6, 0.0, 4.0, veccyl(4, 0.5), 1.0,1);
+//    f.add_point_source(Er, 0.8, 0.6, 0.0, 4.0, veccyl(4, 4), 1.0);
+    
+//while (f.time() < ttot) {
+//Dielectric,
+//  Permeability
+    f.step();
+    h5file * fileEz1=f.open_h5file("MMTLEz1",h5file::WRITE,0,false);
+    f.output_hdf5(Dielectric,f.v,fileEz1);
+    for (int i=0;i<300;i++){f.step();}
+    h5file * fileEz2=f.open_h5file("MMTLEz2",h5file::WRITE,0,false);
+    f.output_hdf5(Permeability,f.v,fileEz2);
+    for (int i=0;i<300;i++){f.step();}
+    h5file * fileEz3=f.open_h5file("MMTLEz3",h5file::WRITE,0,false);
+    f.output_hdf5(Hr,f.v,fileEz3);
+    for (int i=0;i<300;i++){f.step();}
+    h5file * fileEz4=f.open_h5file("MMTLEz4",h5file::WRITE,0,false);
+    f.output_hdf5(Hr,f.v,fileEz4);
+    for (int i=0;i<300;i++){f.step();}
+    h5file * fileEz5=f.open_h5file("MMTLEz5",h5file::WRITE,0,false);
+    h5file * fileEz6=f.open_h5file("MMTLEz6",h5file::WRITE,0,false);
+    h5file * fileEz7=f.open_h5file("MMTLEz7",h5file::WRITE,0,false);    
+    f.output_hdf5(Hr,f.v,fileEz5);
+    for (int i=0;i<3000;i++){f.step();}    
+    h5file * fileEz8=f.open_h5file("MMTLEz8",h5file::WRITE,0,false);
+    f.output_hdf5(Hr,f.v,fileEz6);
+    f.output_hdf5(Er,f.v,fileEz4);
+    f.output_hdf5(Ep,f.v,fileEz5); 
+    f.output_hdf5(Dz,f.v,fileEz6);
+    f.output_hdf5(Dr,f.v,fileEz7);
+    f.output_hdf5(Dp,f.v,fileEz8);
+//    }
+    h5file * fileEz=f.open_h5file("MMTLEz",h5file::WRITE,0,false);
+    f.output_hdf5(Ez,f.v,fileEz);
+    h5file * fileEp=f.open_h5file("MMTLEp",h5file::WRITE,0,false);
+    f.output_hdf5(Ep,f.v,fileEp);
+    h5file * fileEr=f.open_h5file("MMTLEr",h5file::WRITE,0,false);
+    f.output_hdf5(Er,f.v,fileEr);
+  }
+
+  return 0;
+}
+*/
+
+
+
+
+
+/*
+#include <vector>
+#include <meep.hpp>
+#include "config.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <complex>
+#include "meep.hpp"
+#include "ctl-math.h"
+#include "ctlgeom.h"
+#include "meepgeom.hpp"
+using std::complex;
+using namespace meep;
+using namespace std;
+typedef std::complex<double> cdouble;
+
+double xcen=0;
+double xmin=0;
+double xmax=2;
+double ycen=0;
+double ymin=2;
+double ymax=3;
+double zcen=0;
+double zmin=2;
+double zmax=3;
+double core_radius=2;
+
+double eps(const vec & c) { return 1.0; }
+
+double mu(const vec & c) { 
+//double dx=abs(c.x()-xcen);
+//double dy=abs(c.y()-ycen);
+//double dz=abs(c.z()-zcen);
+//if( (dy>ymin && dy<ymax && dz<zmax && dx<xmax) || (dz>zmin && dz<zmax && dx<xmax && dy<ymax) ){return 1000.0;}
+
+xcen=xcen;
+ycen=(ycen+ymin+ycen+ymax)/2;
+zcen=(zcen+zmin+zcen+zmax)/2;
+double dx=(c.x()-xcen);
+double dy=(c.y()-ycen);
+double dz=(c.z()-zcen);
+double drx=abs(dy*dy+dz*dz);
+double dry=abs(dx*dx+dz*dz);
+double drz=abs(dx*dx+dy*dy);
+
+if(drz<=(core_radius*core_radius)){return 1000;}
+
+else return 1.0; 
+}
+
+double conductivity(const vec & c) { if(c.r()>=4 && c.r()<=7){return 1;}else return 0.0; }
+
+
+int main(int argc, char** argv)
+{
+initialize mpi(argc,argv);
+//quiet=false;
+const char* mydirname="MGTL_out";
+trash_output_directory(mydirname);
+bool ok=true;
+bool verbose=true;
+const double resolution= 10.0, ttot=10.0;
+grid_volume gv=vol3d(10.0,10.0,10.0, resolution);
+gv.center_origin();
+structure s(gv, eps, pml(0.5), identity(),1);
+s.set_output_directory(mydirname);
+s.set_epsilon(eps);
+s.set_mu(mu);
+fields f(&s,0);
+
+    f.add_point_source(Ex, 0.8, 0.6, 0.0, 4.0, vec(0.0, 0.0, 2.5), 1.0);
+    for(int i=1;i<10;i++)
+    {f.step();}
+    h5file * fileEz1=f.open_h5file("MMTLEz1",h5file::WRITE,0,false);
+    f.output_hdf5(Permeability,f.v,fileEz1);
+    h5file * fileEz2=f.open_h5file("MMTLEz2",h5file::WRITE,0,false);
+    f.output_hdf5(Ex,f.v,fileEz2);
+
+volume v2d=volume(vec(0,-5,-5),vec(0,5,5));
+h5file * fileEz3=f.open_h5file("MMTLEz3",h5file::WRITE,0,false);
+    f.output_hdf5(Ex,v2d,fileEz3);
+
+/*
+s.set_conductivity(Dp,conductivity);
+s.set_chi3();
+s.add_susceptibility();
+s.use_pml();
+fields f(&s,0);
+f.use_bloch(vec(0.0,0.0));
+f.use_real_fields();
+vec lb(), rb(), lt(), rt();
+volume_box(lb,rt);
+flux_vol * left=f.add_flux_plane(lb,lt), right=f.add_flux_plane(rb,rt), bottom=f.add_flux_plane(lb,rb), top=f.add_flux_plane(lt,rt);
+volume box();
+dft_flux flux=f.add_dft_flux_box(box,fmin,fmax,Nfreq);
+monitor_point p;
+f.get_point(&p, vec());
+cdouble v = m.get_component(Ez);
+
+
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <complex>
+#include "meep.hpp"
+#include "ctl-math.h"
+#include "ctlgeom.h"
+#include "meepgeom.hpp"
+
+#ifndef DATADIR
+#define DATADIR "./"
+#endif
+
+using namespace meep;
+using namespace std;
+
+typedef std::complex<double> cdouble;
+
+  double xcen=0.0, ycen=0.0, zcen=0.0;
+  double dxmin=0.0, dxmax=1.0,dymin=3.0, dymax=4.0,dzmin=3.0, dzmax=4.0;
+  double rcore=1.0;
+	double winding_thickness_p=0.5, insulation_thickness_p=0.1,pml_thickness=1.0;  
+    	double xcenp=xcen; 
+      double ycenp=ycen; 
+      double zcenp=zcen-0.5*dzmax-0.5*dzmin;
+      double dxminp=0.5*dxmax-0.5*dxmin+insulation_thickness_p;
+      double dxmaxp=dxminp+2*winding_thickness_p;
+      double dyminp=0.0; 
+      double dymaxp=2.0*winding_thickness_p;
+      double dzminp=0.5*dzmax-0.5*dzmin+insulation_thickness_p; 
+      double dzmaxp=dzminp+2*winding_thickness_p;
+    
+
+
+	double eps(const vec &c) {return 1.0;}
+
+
+  double mu(const vec &c) 
+  { double eps=1.0;
+
+	if ( (c.z()>=(zcen-dzmax)) && (c.z()<=(zcen+dzmax)) )
+	{
+		if ( ( (c.x()-xcen)*(c.x()-xcen)+(c.y()-(ycen+0.5*dymax+0.5*dymin))*(c.y()-(ycen+0.5*dymax+0.5*dymin)) ) <= (rcore*rcore) )
+		{eps= gaussian_random(1000,10);}	
+	}
+
+
+	if ( (c.z()>=(zcen-dzmax)) && (c.z()<=(zcen+dzmax)) )
+	{
+	      if ( ( (c.x()-xcen)*(c.x()-xcen)+(c.y()-(ycen-0.5*dymax-0.5*dymin))*(c.y()-(ycen-0.5*dymax-0.5*dymin)) ) <= (rcore*rcore) )
+		{eps= gaussian_random(1000,10);}
+	}
+
+	
+	if ( (c.y()>=(ycen-dymax)) && (c.y()<=(ycen+dymax)) )
+	{
+	      if ( ( (c.x()-xcen)*(c.x()-xcen)+(c.z()-(zcen+0.5*dzmax+0.5*dzmin))*(c.z()-(zcen+0.5*dzmax+0.5*dzmin)) ) <= (rcore*rcore) )
+		{eps= gaussian_random(1000,10);}
+	}
+	
+
+	if ( (c.y()>=(ycen-dymax)) && (c.y()<=(ycen+dymax)) )
+	{
+	      if ( ( (c.x()-xcen)*(c.x()-xcen)+(c.z()-(zcen-0.5*dzmax-0.5*dzmin))*(c.z()-(zcen-0.5*dzmax-0.5*dzmin)) ) <= (rcore*rcore) )
+		{eps= gaussian_random(1000,10);}
+	}
+
+    return eps;
+  }
+
+  double conductivity(const vec &c) 
+  {
+    double eps=1.0;
+    double Np=1.0;
+  	ycenp=ycen+Np*2*winding_thickness_p+2*Np*insulation_thickness_p;
+      
+	double dy=c.y()+3.5;
+	double dz=c.z()+3.5;
+	double r2=c.x()*c.x()+dz*dz;
+	if ((r2<9)&&(r2>4)&&(abs(dy)<0.1)){eps= 1000;}
+
+      return eps;
+  }
+  
+
+
+
+
+
+int main(int argc, char *argv[]) {
+  initialize mpi(argc, argv);
+
+   
+  double resolution=1.0;
+  double xsize=20.0,ysize=20.0,zsize=20.0;
+  grid_volume gv = vol3d(xsize, ysize, zsize, resolution);//grid_volume vol3d(double xsize, double ysize, double zsize, double a);
+  gv.center_origin();//void center_origin(void) { shift_origin(-icenter()); }
+  
+ 
+  //for materials
+  structure *transformer = new structure(gv, eps, pml(pml_thickness));
+  transformer->set_mu(mu);
+  //transformer->set_conductivity(Ex,conductivity);
+transformer->set_conductivity(Ez,conductivity);
+transformer->set_chi2(mu);
+transformer->set_chi3(mu);
+//transformer->add_susceptibility(transformer_material, E_stuff, lorentzian_susceptibility(1.1, 1e-5));
+	//lorentzian_susceptibility(double omega_0, double gamma, bool no_omega_0_denominator = false): omega_0(omega_0), gamma(gamma), no_omega_0_denominator(no_omega_0_denominator)
+      
+
+
+  fields f(transformer);
+	//fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
+  
+
+
+
+  //for sources
+  double fcen = 0.015; // ; pulse center frequency
+  double df = 0.01;    // ; df
+  gaussian_src_time src(fcen, df);
+  for (int Np=1;Np<2;Np++){
+    ycenp=ycen+Np*2*winding_thickness_p+2*Np*insulation_thickness_p; 
+    const volume vsrc1 =volume(vec(xcenp+dxmaxp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp+dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    const volume vsrc2 =volume(vec(xcenp-dxmaxp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    const volume vsrc3 =volume(vec(xcenp+dxminp,ycenp+dymaxp,zcenp-dzmaxp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp-dzminp));
+    const volume vsrc4 =volume(vec(xcenp+dxminp,ycenp+dymaxp,zcenp+dzminp), vec(xcenp-dxminp,ycenp-dymaxp,zcenp+dzmaxp));
+    //f.add_volume_source(Ey, src,  vsrc1);
+	//void add_volume_source(component c, const src_time &src, const volume &, std::complex<double> amp = 1.0);
+    //f.add_volume_source(Ey, src, vsrc2);
+    //f.add_volume_source(Ex, src, vsrc3);
+    //f.add_volume_source(Ex, src, vsrc4);
+    f.add_point_source(Hy,src,vec(0,-3.5,0));
+  }
+
+     for(int i=1;i<1000;i++)
+    {f.step();}
+
+volume v2d=volume(vec(0,-10,-10),vec(0,10,10));
+    h5file * fileEz1=f.open_h5file("MMTLEz1",h5file::WRITE,0,false);    
+    h5file * fileEz2=f.open_h5file("MMTLEz2",h5file::WRITE,0,false);
+    h5file * fileEz3=f.open_h5file("MMTLEz3",h5file::WRITE,0,false);
+    
+    f.output_hdf5(Permeability,v2d,fileEz1);
+    f.output_hdf5(By,v2d,fileEz2);
+    f.output_hdf5(Bz,v2d,fileEz3);
+
+
+
+  return 0;
+}
