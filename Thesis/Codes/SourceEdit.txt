@@ -1,0 +1,4 @@
+mu was not recognised. It was not changed from 1 in material_function set mu().
+change meepgeom.cpp
+mu_not_1{return true;}
+then run autogen.sh, make, make install for meep
