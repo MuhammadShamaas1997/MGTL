@@ -1,5 +1,5 @@
 clc;clear all;
-f=fopen('SpaceEvolution.txt');
+f=fopen('TimeEvolution.txt');
 l=fgetl(f);
 i=1;
 while ischar(l)
@@ -21,8 +21,7 @@ end
 hold on;
 
 subplot(2,2,1)
-hold on;plot(A1);plot(A2);
-%plot(ph(A1,A2)*(180/pi));%Im
+hold on;plot(mag(A1,A2));%Im
 subplot(2,2,2)
 hold on;plot(mag(A3,A4));%Vm
 subplot(2,2,3)

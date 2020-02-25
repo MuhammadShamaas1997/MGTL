@@ -21,7 +21,7 @@ end
 hold on;
 
 subplot(2,2,1)
-hold on;plot(A1);plot(A2);
+hold on;plot(mag(A1,A2));
 %plot(ph(A1,A2)*(180/pi));%Im
 subplot(2,2,2)
 hold on;plot(mag(A3,A4));%Vm

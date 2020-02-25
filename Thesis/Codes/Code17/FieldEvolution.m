@@ -43,20 +43,20 @@ hold on;plot(mag(A3,A4));%Hy
 subplot(4,3,3)
 hold on;plot(mag(A5,A6));%Hz
 subplot(4,3,4)
-hold on;plot(mag(A7,A8));%Bx
+hold on;plot(mag(A7,A8)./mag(A1,A2));%Bx
 subplot(4,3,5)
-hold on;plot(mag(A9,A10));%By
+hold on;plot(mag(A9,A10)./mag(A3,A4));%By
 subplot(4,3,6)
-hold on;plot(mag(A11,A12));%Bz
+hold on;plot(mag(A11,A12)./mag(A5,A6));%Bz
 subplot(4,3,7)
-hold on;plot(mag(A13,A14));%Hx
+hold on;plot(mag(A13,A14));%Ex
 subplot(4,3,8)
-hold on;plot(mag(A15,A16));%Hy
+hold on;plot(mag(A15,A16));%Ey
 subplot(4,3,9)
-hold on;plot(mag(A17,A18));%Hz
+hold on;plot(mag(A17,A18));%Ez
 subplot(4,3,10)
-hold on;plot(mag(A19,A20));%Bx
+hold on;plot(mag(A19,A20)./mag(A13,A14));%Dx
 subplot(4,3,11)
-hold on;plot(mag(A9,A10));%By
+hold on;plot(mag(A21,A22)./mag(A15,A16));%Dy
 subplot(4,3,12)
-hold on;plot(mag(A11,A12));%Bz
+hold on;plot(mag(A23,A24)./mag(A17,A18));%Dz
