@@ -1,0 +1,2 @@
+Electric Energy: 13.9825 : 0.0888164
+Magnetic Energy: 64.0114 : 0.315496
