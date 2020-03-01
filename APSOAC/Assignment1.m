@@ -5,7 +5,7 @@ Ngen=3;
 Pmax=[600 400 200];
 Pmin=[150 100 050];
 Pload=850;
-divisions=500;
+divisions=50;
 
 %%
 for i=1:Ngen
@@ -46,7 +46,7 @@ for n=1:maxiter
     plot([50,600],[lamda,lamda])
     %plot(Pgen,lamda,'o')
     
-    for rep=1:1
+    for rep=1:2
         for i=1:Ngen
             for k=1:divisions
                 
