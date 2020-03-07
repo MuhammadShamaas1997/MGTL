@@ -1,0 +1,129 @@
+sudo apt-get -y install build-essential gfortran libblas-dev liblapack-dev libgmp-dev swig libgsl-dev autoconf pkg-config libpng16-dev git guile-2.0-dev libfftw3-dev libhdf5-openmpi-dev hdf5-tools libpython3.5-dev python3-numpy python3-scipy python3-pip ffmpeg
+
+ ./configure --prefix=$HOME/install
+export PATH="$HOME/install/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/install/bin:$LD_LIBRARY_PATH"
+
+#!/bin/bash
+
+set -e
+
+RPATH_FLAGS="-Wl,-rpath,/usr/local/lib:/usr/lib/x86_64-linux-gnu/hdf5/openmpi"
+MY_LDFLAGS="-L/usr/local/lib -L/usr/lib/x86_64-linux-gnu/hdf5/openmpi ${RPATH_FLAGS}"
+MY_CPPFLAGS="-I/usr/local/include -I/usr/include/hdf5/openmpi"
+
+sudo apt-get update
+
+# If building on Ubuntu 18.04LTS, replace libpng16-dev with libpng-dev,
+# and libpython3.5-dev with libpython3-dev.
+sudo apt-get -y install     \
+    build-essential         \
+    gfortran                \
+    libblas-dev             \
+    liblapack-dev           \
+    libgmp-dev              \
+    swig                    \
+    libgsl-dev              \
+    autoconf                \
+    pkg-config              \
+    libpng16-dev            \
+    git                     \
+    guile-2.0-dev           \
+    libfftw3-dev            \
+    libhdf5-openmpi-dev     \
+    hdf5-tools              \
+    libpython3.5-dev        \
+    python3-numpy           \
+    python3-scipy           \
+    python3-pip             \
+    ffmpeg                  \
+
+mkdir -p ~/install
+
+cd ~/install
+git clone https://github.com/NanoComp/harminv.git
+cd harminv/
+sh autogen.sh --enable-shared --prefix=$HOME/install/harminv
+make && sudo make install
+
+cd ~/install
+git clone https://github.com/NanoComp/libctl.git
+cd libctl/
+sh autogen.sh --enable-shared --prefix=$HOME/install/libctl
+make && sudo make install
+
+cd ~/install
+git clone https://github.com/NanoComp/h5utils.git
+cd h5utils/
+sh autogen.sh CC=mpicc LDFLAGS="${MY_LDFLAGS}" CPPFLAGS="${MY_CPPFLAGS}" --prefix=$HOME/install/h5utils
+make && sudo make install
+
+cd ~/install
+git clone https://github.com/NanoComp/mpb.git
+cd mpb/
+sh autogen.sh --enable-shared CC=mpicc LDFLAGS="${MY_LDFLAGS}" CPPFLAGS="${MY_CPPFLAGS}" --with-hermitian-eps --prefix=$HOME/install/mpb
+make && sudo make install
+
+cd ~/install
+git clone https://github.com/HomerReid/libGDSII.git
+cd libGDSII/
+sh autogen.sh --prefix=$HOME/install/libGDSII
+make && sudo make install
+
+# The next line is only required on Ubuntu  16.04
+sudo pip3 install --upgrade pip
+
+pip3 install --user --no-cache-dir mpi4py
+export HDF5_MPI="ON"
+pip3 install --user --no-binary=h5py h5py
+pip3 install --user matplotlib>3.0.0
+
+cd ~/install
+git clone https://github.com/NanoComp/meep.git
+cd meep/
+sh autogen.sh --enable-shared --with-mpi --with-openmp PYTHON=python3 LDFLAGS="${MY_LDFLAGS}" CPPFLAGS="${MY_CPPFLAGS}"
+make && sudo make install
+
+You may want to add the following line to your .profile so Python can always find the meep package:
+
+# Ubuntu 16.04
+export PYTHONPATH=/usr/local/lib/python3.5/site-packages
+# Ubuntu 18.04
+export PYTHONPATH=/usr/local/lib/python3.6/site-packages
+
+
+
+
+
+
+
+
+
+
+
+
+make foo.dac
+
+Run the resulting executable via:
+
+./foo.dac
+
+(2) Use the pkg-config program which is installed by default on most Linux systems:
+
+g++ `pkg-config --cflags meep` foo.cpp -o foo `pkg-config --libs meep`
+
+Naturally, replace g++ with the name of your C++ compiler if you are not using the GNU compilers.
+
+(3) Compile with g++, this time invoking each library separately:
+
+g++ -malign-double foo.cpp -o foo -lmeep -lhdf5 -lz -lgsl -lharminv -llapack -lcblas -latlas -lfftw3 -lm
+
+
+h5topng -S3 -Zc dkbluered -a yarg -A eps-000000.00.h5 ez-000200.00.h5
+convert ez.t*.png ez.gif
+h5topng -Zc dkbluered *.h5
+g++ `pkg-config --cflags meep` MTL.cpp -o MTL `pkg-config --libs meep` && mpirun -np 2 ./MTL && h5topng -Zc dkbluered *.h5
+h5tovtk -o epsilon.vtk a.h5;
+
+
+convert bx-*.png bx.gif && convert by-*.png by.gif && convert bz-*.png bz.gif && convert hx-*.png hx.gif && convert hy-*.png hy.gif && convert hz-*.png hz.gif && convert dx-*.png dx.gif && convert dy-*.png dy.gif && convert dz-*.png dz.gif && convert ex-*.png ex.gif && convert ey-*.png ey.gif && convert ez-*.png ez.gif
