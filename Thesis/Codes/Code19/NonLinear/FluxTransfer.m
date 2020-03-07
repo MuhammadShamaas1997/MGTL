@@ -25,7 +25,7 @@ plot(A1(mn:mx),B(mn:mx));
 subplot(3,1,3)
 C=B./A;
 for i=1:length(C)
-    if (C(i)>1)
+    if (C(i)>10)
         C(i)=0;
     end
 end
