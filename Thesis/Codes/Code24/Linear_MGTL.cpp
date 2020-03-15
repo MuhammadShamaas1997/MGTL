@@ -19,7 +19,6 @@ using namespace std;
 
 
 
-
 typedef std::complex<double> cdouble;
 
 //SI Conversion Factors
@@ -165,20 +164,20 @@ cdouble line_integral_z(fields & f, component C, double dz, double zmin, double 
 
 cdouble compute_Im(fields & f, double y)
 {
-  cdouble Izf=line_integral_z(f,Ez,0.0001,zcen+dzmin,zcen+dzmax,xcen+dxmax,y);
-    cdouble Izb=line_integral_z(f,Ez,0.0001,zcen+dzmin,zcen+dzmax,xcen-dxmax,y);
+  cdouble Izf=line_integral_z(f,Ez,0.0001,zcen-dzmax,zcen+dzmax,xcen+dxmax,y);
+    cdouble Izb=line_integral_z(f,Ez,0.0001,zcen-dzmax,zcen+dzmax,xcen-dxmax,y);
     cdouble Ixt=line_integral_x(f,Ex,0.0001,xcen-dxmax,xcen+dxmax,y,zcen+dzmax);
-    cdouble Ixb=line_integral_x(f,Ex,0.0001,xcen-dxmax,xcen+dxmax,y,zcen+dzmin);
+    cdouble Ixb=line_integral_x(f,Ex,0.0001,xcen-dxmax,xcen+dxmax,y,zcen-dzmax);
     cdouble Im=Ixt-Izf-Ixb+Izb;
     return Im;
 }
 
 cdouble compute_Ie(fields & f, double y)
 {
-  cdouble Izf=line_integral_z(f,Hz,0.0001,zcen+dzmin,zcen+dzmax,xcen+dxmax,y);
-  cdouble Izb=line_integral_z(f,Hz,0.0001,zcen+dzmin,zcen+dzmax,xcen-dxmax,y);
+  cdouble Izf=line_integral_z(f,Hz,0.0001,zcen-dzmax,zcen+dzmax,xcen+dxmax,y);
+  cdouble Izb=line_integral_z(f,Hz,0.0001,zcen-dzmax,zcen+dzmax,xcen-dxmax,y);
   cdouble Ixt=line_integral_x(f,Hx,0.0001,xcen-dxmax,xcen+dxmax,y,zcen+dzmax);
-  cdouble Ixb=line_integral_x(f,Hx,0.0001,xcen-dxmax,xcen+dxmax,y,zcen+dzmin);
+  cdouble Ixb=line_integral_x(f,Hx,0.0001,xcen-dxmax,xcen+dxmax,y,zcen-dzmax);
   cdouble Ie=Ixt-Izf-Ixb+Izb;
   return Ie;
 }
@@ -529,10 +528,11 @@ int main(int argc, char *argv[]) {
   
  
     //f_range;1e-5,1e-2
-    double fcen = 100; // ; pulse center frequency
-    double df = 49.99;    // ; df
-    continuous_src_time src(cdouble(fcen,0));
-    //gaussian_src_time src(fcen,df);
+    double fcen = 0.005; // ; pulse center frequency
+    double df = 0.00499;    // ; df
+    //continuous_src_time src(cdouble(fcen,0));
+    gaussian_src_time src(fcen,df);
+
 
     double xcenp=xcen; 
     double ycenp=ycen-dymax; 
@@ -547,11 +547,11 @@ int main(int argc, char *argv[]) {
 
     for (int i=0;i<Np;i++)
     {
-/*      const volume vsrc1 =volume(vec(xcenp+dxmaxp,ycenp-dymaxp,zcenp+dzmaxp), vec(xcenp+dxminp,ycenp+dymaxp,zcenp-dzmaxp));
+    /*      const volume vsrc1 =volume(vec(xcenp+dxmaxp,ycenp-dymaxp,zcenp+dzmaxp), vec(xcenp+dxminp,ycenp+dymaxp,zcenp-dzmaxp));
       const volume vsrc2 =volume(vec(xcenp+dxmaxp,ycenp-dymaxp,zcenp-dzminp), vec(xcenp-dxmaxp,ycenp+dymaxp,zcenp-dzmaxp));
       const volume vsrc3 =volume(vec(xcenp-dxmaxp,ycenp-dymaxp,zcenp+dzmaxp), vec(xcenp-dxminp,ycenp+dymaxp,zcenp-dzmaxp));
       const volume vsrc4 =volume(vec(xcenp+dxmaxp,ycenp-dymaxp,zcenp+dzmaxp), vec(xcenp-dxmaxp,ycenp+dymaxp,zcenp+dzminp));
-*/
+    */
       const volume vsrc1 =volume(vec(1.1,-7,1.1), vec(1.1,-6,-1.1));
       const volume vsrc2 =volume(vec(-1.1,-7,1.1), vec(-1.1,-6,-1.1));
       f.add_volume_source(Ez, src, vsrc1, cdouble(-amplitude,0));
@@ -573,14 +573,14 @@ int main(int argc, char *argv[]) {
     xcenp=xcen; 
     ycenp=ycen-dymax; 
     zcenp=zcen;
-    volume box1( vec(1.1,-7,1.1), vec(-1.1,-6,-1.1) );
+    volume box1( vec(0.1,-7,0.1), vec(-0.1,-6.9,-0.1) );
     ycenp=ycen+dymax; 
-    volume box2( vec(1.1,6,1.1), vec(-1.1,7,-1.1) );
+    volume box2( vec(0.1,6.9,0.1), vec(-0.1,7,-0.1) );
       
-    double fmin = fcen-df, fmax = fcen+df;
-    int Nfreq = 1000000;
-    //dft_flux flux1 = f.add_dft_flux_box(box1,  fmin, fmax, Nfreq);
-    //dft_flux flux2 = f.add_dft_flux_box(box2, fmin, fmax, Nfreq);
+    double fmin = 0, fmax = fcen+5*df;
+    int Nfreq = 10000;
+    dft_flux flux1 = f.add_dft_flux_box(box1,  fmin, fmax, Nfreq);
+    dft_flux flux2 = f.add_dft_flux_box(box2, fmin, fmax, Nfreq);
     double init_energy = f.field_energy_in_box(box1);
    
 
@@ -598,6 +598,7 @@ int main(int argc, char *argv[]) {
     volume vxz=volume(vec(-xsize,0,-zsize),vec(xsize,0,zsize));
     volume vyz=volume(vec(0,-ysize,-zsize),vec(0,ysize,zsize));
     
+    
     h5file * fEx=f.open_h5file("fEx",h5file::WRITE,0,false);    
     h5file * fEy=f.open_h5file("fEy",h5file::WRITE,0,false);
     h5file * fEz=f.open_h5file("fEz",h5file::WRITE,0,false);
@@ -610,7 +611,7 @@ int main(int argc, char *argv[]) {
     h5file * fBx=f.open_h5file("fBx",h5file::WRITE,0,false);    
     h5file * fBy=f.open_h5file("fBy",h5file::WRITE,0,false);
     h5file * fBz=f.open_h5file("fBz",h5file::WRITE,0,false);
-    
+    /*
     f.output_hdf5(Dielectric,vyz,fEx);
     f.output_hdf5(Permeability,vyz,fEy);
     f.output_hdf5(Ez,vyz,fEz);
@@ -623,19 +624,20 @@ int main(int argc, char *argv[]) {
     f.output_hdf5(Bx,vyz,fBx);
     f.output_hdf5(By,vyz,fBy);
     f.output_hdf5(Bz,vyz,fBz);
+  */
 
 
-
-    for(int i=1;i<=10000;i++)
+    for(int i=1;i<=5000;i++)
     {
       f.step();
           //fluxL += f.dt * (left->flux() - right->flux() + bottom->flux() - top->flux());
 
-       if ((i%10)==0)
+       //if (((i%10)==0)||(i<=10))
+      if ((i%100)==0)
       {
 
 
-    f.output_hdf5(Hx,vyz);
+    /*f.output_hdf5(Hx,vyz);
     f.output_hdf5(Hy,vyz);
     f.output_hdf5(Hz,vyz);
     f.output_hdf5(Bx,vyz);
@@ -650,7 +652,7 @@ int main(int argc, char *argv[]) {
     f.output_hdf5(Sx,vyz);
     f.output_hdf5(Sy,vyz);
     f.output_hdf5(Sz,vyz);
-
+    */
         cdouble Vm=compute_Im(f,ycen);
         cdouble Im=compute_Im(f,ycen);
         cdouble Ve=compute_Im(f,ycen);
@@ -712,13 +714,13 @@ int main(int argc, char *argv[]) {
 
 
  	
-    /*double *fl1 = flux1.flux();
+    double *fl1 = flux1.flux();
     double *fl2 = flux2.flux();
     cout<<"Flux Harmonics"<<endl;
     for (int i = 0; i < Nfreq; ++i) {
       Fluxes<<(fmin + i * flux1.dfreq)<<" , "<<fl1[i]<<" , "<<fl2[i]<<endl;
       //freq , fluxin , fluxout
-    }*/ 
+    }
 	
 
     cout<<"SpaceEvolution"<<endl;
