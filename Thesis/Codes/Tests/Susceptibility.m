@@ -1,11 +1,6 @@
 clc;
 clear all;
 
-um_scale=1000;
-NiFe_frq = 1/(0.0838297450980392*um_scale);
-NiFe_gam = 1/(0.259381156903766*um_scale);
-NiFe_sig = 1;
-
 eV_um_scale = 1.0/1.23984193;
 Cu_plasma_frq = 10.83*eV_um_scale;
 Cu_f0 = 0.575;
@@ -30,18 +25,21 @@ Cu_gam4 = 4.305*eV_um_scale;
 Cu_sig4 = Cu_f4*(Cu_plasma_frq*Cu_plasma_frq)/(Cu_frq4*Cu_frq4);
 sigma_Cu=Cu_sig0;
 
-
+um_scale=1000;
+NiFe_frq = 1/(0.0838297450980392*um_scale);
+NiFe_gam = 1/(0.259381156903766*um_scale);
+NiFe_sig = 1;
 mu0=1000;
-sigmad=0;
+sigmab=0;
 sigma0=NiFe_sig;
 omega0=2*pi*NiFe_frq;
 gamma0=NiFe_gam;
 n=1;
 for omega=0:0.0001:0.1
-    eps(n)=(1+(i*sigmad/omega))*(mu0+(sigma0*omega0)/(omega0*omega0-omega*omega-i*omega*gamma0));
+    mu(n)=(1+(i*sigmab/omega))*(mu0+(sigma0*omega0)/(omega0*omega0-omega*omega-i*omega*gamma0));
     n=n+1;
 end
-plot(0:0.0001:0.1,eps)
+plot(0:0.0001:0.1,mu)
 
 
 % eps0=1;

@@ -629,13 +629,13 @@ int main(int argc, char *argv[]) {
   */
 
 
-    for(int i=1;i<=1000;i++)
+    for(int i=1;i<=10000;i++)
     {
       f.step();
           //fluxL += f.dt * (left->flux() - right->flux() + bottom->flux() - top->flux());
 
        //if (((i%10)==0)||(i<=10))
-      /*if ((i%10)==0)
+      if ((i%10)==0)
       {
 
 
@@ -676,6 +676,9 @@ int main(int argc, char *argv[]) {
         cdouble B1i = pin.get_component(Bx);
         cdouble B2i = pin.get_component(By);
         cdouble B3i = pin.get_component(Bz);
+        cdouble S1i = pin.get_component(Sx);
+        cdouble S2i = pin.get_component(Sy);
+        cdouble S3i = pin.get_component(Sz);
 
         monitor_point po;
         f.get_point(&po, vec(0,6,0));
@@ -690,14 +693,17 @@ int main(int argc, char *argv[]) {
         cdouble H3o = po.get_component(Hz);
         cdouble B1o = po.get_component(Bx);
         cdouble B2o = po.get_component(By);
-        cdouble B3o = po.get_component(Bz);        
-        
-        FieldsIn<<H1i.real() <<" , "<<H1i.imag()<<" , "<<H2i.real()<<" , "<<H2i.imag()<<" , "<<H3i.real()<<" , "<<H3i.imag()<<" , "<<B1i.real()<<" , "<<B1i.imag()<<" , "<<B2i.real()<<" , "<<B2i.imag()<<" , "<<B3i.real()<<" , "<<B3i.imag()<<" , "<<E1i.real()<<" , "<<E1i.imag()<<" , "<<E2i.real()<<" , "<<E2i.imag()<<" , "<<E3i.real()<<" , "<<E3i.imag()<<" , "<<D1i.real()<<" , "<<D1i.imag()<<" , "<<D2i.real()<<" , "<<D2i.imag()<<" , "<<D3i.real()<<" , "<<D3i.imag()<<endl;
-        FieldsOut<<H1o.real()<<" , "<<H1o.imag()<<" , "<<H2o.real()<<" , "<<H2o.imag()<<" , "<<H3o.real()<<" , "<<H3o.imag()<<" , "<<B1o.real()<<" , "<<B1o.imag()<<" , "<<B2o.real()<<" , "<<B2o.imag()<<" , "<<B3o.real()<<" , "<<B3o.imag()<<" , "<<E1o.real()<<" , "<<E1o.imag()<<" , "<<E2o.real()<<" , "<<E2o.imag()<<" , "<<E3o.real()<<" , "<<E3o.imag()<<" , "<<D1o.real()<<" , "<<D1o.imag()<<" , "<<D2o.real()<<" , "<<D2o.imag()<<" , "<<D3o.real()<<" , "<<D3o.imag()<<endl;    
+        cdouble B3o = po.get_component(Bz);
+        cdouble S1o = po.get_component(Sx);
+        cdouble S2o = po.get_component(Sy);
+        cdouble S3o = po.get_component(Sz);        
+
+        FieldsIn<<H1i.real() <<" , "<<H1i.imag()<<" , "<<H2i.real()<<" , "<<H2i.imag()<<" , "<<H3i.real()<<" , "<<H3i.imag()<<" , "<<B1i.real()<<" , "<<B1i.imag()<<" , "<<B2i.real()<<" , "<<B2i.imag()<<" , "<<B3i.real()<<" , "<<B3i.imag()<<" , "<<E1i.real()<<" , "<<E1i.imag()<<" , "<<E2i.real()<<" , "<<E2i.imag()<<" , "<<E3i.real()<<" , "<<E3i.imag()<<" , "<<D1i.real()<<" , "<<D1i.imag()<<" , "<<D2i.real()<<" , "<<D2i.imag()<<" , "<<D3i.real()<<" , "<<D3i.imag()<<" , "<<S1i.real() <<" , "<<S1i.imag()<<" , "<<S2i.real()<<" , "<<S2i.imag()<<" , "<<S3i.real()<<" , "<<S3i.imag()<<endl;
+        FieldsOut<<H1o.real()<<" , "<<H1o.imag()<<" , "<<H2o.real()<<" , "<<H2o.imag()<<" , "<<H3o.real()<<" , "<<H3o.imag()<<" , "<<B1o.real()<<" , "<<B1o.imag()<<" , "<<B2o.real()<<" , "<<B2o.imag()<<" , "<<B3o.real()<<" , "<<B3o.imag()<<" , "<<E1o.real()<<" , "<<E1o.imag()<<" , "<<E2o.real()<<" , "<<E2o.imag()<<" , "<<E3o.real()<<" , "<<E3o.imag()<<" , "<<D1o.real()<<" , "<<D1o.imag()<<" , "<<D2o.real()<<" , "<<D2o.imag()<<" , "<<D3o.real()<<" , "<<D3o.imag()<<" , "<<S1o.real() <<" , "<<S1o.imag()<<" , "<<S2o.real()<<" , "<<S2o.imag()<<" , "<<S3o.real()<<" , "<<S3o.imag()<<endl;    
         //Hx , Hy , Hz , Bx , By , Bz , Ex , Ey , Ez , Dx , Dy , Dz 
         Time<<Im.real()<<" , "<<Im.imag()<<" , "<<Vm.real()<<" , "<<Vm.imag()<<" , "<<Ie.real()<<" , "<<Ie.imag()<<" , "<<Ve.real()<<" , "<<Ve.imag()<<endl;
         //Im , Vm , Ie , Ve 
-      }*/
+      }
        
     }
  
