@@ -14,18 +14,19 @@ while ischar(l)
 end
 
 hold on;
-
+minf=1200;
+maxf=2200;
 subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
 B=abs(A3)/max(abs(A2));%Flux_out
-plot(A1,A);
+plot(A1(minf:maxf),A(minf:maxf));
 subplot(3,1,2)
-plot(A1,B);
+plot(A1(minf:maxf),B(minf:maxf));
 subplot(3,1,3)
 C=B./A;
 for i=1:length(C)
     if (C(i)>1)
-        C(i)=0;
+        %C(i)=0;
     end
 end
-plot(A1,C);
+semilogy(A1(minf:maxf),C(minf:maxf));
