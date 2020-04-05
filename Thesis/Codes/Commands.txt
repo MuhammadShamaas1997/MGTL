@@ -125,4 +125,7 @@ h5topng -Zc dkbluered *.h5
 g++ `pkg-config --cflags meep` MTL.cpp -o MTL `pkg-config --libs meep` && mpirun -np 2 ./MTL && h5topng -Zc dkbluered *.h5
 h5tovtk -o epsilon.vtk a.h5;
 
+g++ `pkg-config --cflags meep` Linear_MGTL.cpp -o MTL `pkg-config --libs meep` -lm -lgc -lctlgeom && ./MTL && h5topng -Zc dkbluered *.h5
 
+
+convert bx-*.png bx.gif && convert by-*.png by.gif && convert bz-*.png bz.gif && convert hx-*.png hx.gif && convert hy-*.png hy.gif && convert hz-*.png hz.gif && convert dx-*.png dx.gif && convert dy-*.png dy.gif && convert dz-*.png dz.gif && convert ex-*.png ex.gif && convert ey-*.png ey.gif && convert ez-*.png ez.gif
