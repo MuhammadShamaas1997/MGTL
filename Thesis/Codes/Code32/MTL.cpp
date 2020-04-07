@@ -46,6 +46,8 @@ double amplitude=1000000.0;
 double divisions=10;
 
 int numcoord=0;
+double k=2*pi;
+double theta=0.0;
 double * xpcoord=new double [1000000]
 double * ypcoord=new double [1000000]
 double * zpcoord=new double [1000000]
@@ -357,7 +359,20 @@ int main(int argc, char *argv[]) {
     double ysize=2*(dymax+2*insulation_thickness_p+winding_thickness_p+pml_thickness);
     double zsize=2*(dzmax+2*insulation_thickness_p+winding_thickness_p+pml_thickness);
     //double xsize=6, ysize=6, zsize=6;
-  
+  	
+
+    for (double z = -1.5; z <= 1.5; z=z+0.001)
+    {
+    	theta=k*(z+1.5)
+    	xpcoord[numcoord]=rp*sin(theta);
+    	ypcoord[numcoord]= - rp*cos(theta) - dymin - (wcore/2);
+    	zpcoord[numcoord]=z;
+    	xscoord[numcoord]=rp*sin(theta);
+    	yscoord[numcoord]=rp*cos(theta) + dymin + (wcore/2);
+    	zscoord[numcoord]=z;
+    	numcoord++;
+    }
+
     grid_volume gv = vol3d(xsize, ysize, zsize, divisions);
     //grid_volume vol3d(double xsize, double ysize, double zsize, double a);
     gv.center_origin();
@@ -373,10 +388,6 @@ int main(int argc, char *argv[]) {
     transformer.set_output_directory(mydirname);
     //transformer->set_chi2(mu);
     //transformer->set_chi3(mu);
-
-    my_material_func_data data;
-
-    data.with_susceptibility = true;
     
     meep_geom::medium_struct my_medium_struct;
     my_medium_struct.epsilon_diag.x = 1.0;
@@ -430,16 +441,18 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = true;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
 
+  meep_geom::material_type default_material =meep_geom::make_dielectric(1.0);    
+  //default_material->which_subclass = material_data::MEDIUM;
+  default_material->medium=my_medium_struct;
+  default_material->user_func = my_material_func;
+  default_material->user_data = (void *) &data;
+  default_material->do_averaging = false;  
+
+    my_material_func_data data;
+    data.with_susceptibility = true;
     meep_geom::material_type my_user_material =meep_geom::make_user_material(my_material_func, (void *)&data, false);
-    meep_geom::material_type my_material =meep_geom::make_dielectric(1.0);
     //vector3 center = {0, 0, 0};
     //geometric_object go = ctlgeom::geometric_object(my_material,center);
-    
-  //my_material->which_subclass = material_data::MEDIUM;
-  my_material->medium=my_medium_struct;
-  my_material->user_func = my_material_func;
-  my_material->user_data = (void *) &data;
-  my_material->do_averaging = false;  
     
     geometric_object objects[4];
   vector3 center1 = {0.0, 0.0, zcen+dzmin+(wcore/2)};
@@ -469,18 +482,13 @@ int main(int argc, char *argv[]) {
     meep_geom::absorber_list al= new meep_geom::absorber_list_type;
 
     meep_geom::material_type_list mtl= meep_geom::material_type_list();    
-    //(*mtl)={1,my_material};
     mtl.num_items=1;
     mtl.items=new meep_geom::material_type;
     mtl.items[0]=my_user_material;
-    //mtl={1,my_material};
     cout<<"MAIN "<<mtl.num_items<<endl;
-    //cout<<g.num_items<<endl;
-    //cout<<mtl->num_items<<endl;
-    //cout<<"A1 "<<&my_material<<endl;
     bool use_anisotropic_averaging = false;
     bool ensure_periodicity = true;
-    set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, my_material,al,mtl);
+    set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, default_material,al,mtl);
 
     /*    
     winding_material winding_mat;
@@ -520,20 +528,7 @@ int main(int argc, char *argv[]) {
     double dzmaxp=0.5*winding_thickness_p;    
     zcenp=zcen-(0.5*double(Np-1)*insulation_thickness_p)-(0.5*double(Np-1)*winding_thickness_p);
 
-    numcoord=0;
-    double k=2*pi;
-    double theta=0.0;
-    for (double z = -1.5; z <= 1.5; z=z+0.01)
-    {
-    	theta=k*(z+1.5)
-    	xpcoord[numcoord]=rp*sin(theta);
-    	ypcoord[numcoord]= - rp*cos(theta) - dymin - (wcore/2);
-    	zpcoord[numcoord]=z;
-    	xscoord[numcoord]=rp*sin(theta);
-    	yscoord[numcoord]=rp*cos(theta) + dymin + (wcore/2);
-    	zscoord[numcoord]=z;
-    	numcoord++;
-    }
+    
 
     /*for (int i=0;i<Np;i++)
     {
@@ -584,7 +579,7 @@ int main(int argc, char *argv[]) {
   long double fluxL = 0;
   */
   //integral of flux = change in energy of box
-f.step();
+	f.step();
     volume vxy=volume(vec(-xsize,-ysize,0),vec(xsize,ysize,0));
     volume vxz=volume(vec(-xsize,0,-zsize),vec(xsize,0,zsize));
     volume vyz=volume(vec(0,-ysize,-zsize),vec(0,ysize,zsize));
@@ -691,10 +686,10 @@ f.step();
       //freq , fluxin , fluxout
     } 
     
-    int * bands=new int [1];
-    int * vgrp=new int [1*Nfreq];
     int num_bands=1;
-    cdouble * coeffs=new cdouble [2*1*Nfreq];
+    int * bands=new int [num_bands];
+    int * vgrp=new int [num_bands*Nfreq];
+    cdouble * coeffs=new cdouble [2*num_bands*Nfreq];
     bands[0]=1;
     for (int i = 1; i <= Nfreq; ++i) {
       vgrp[i]=0.0;
@@ -708,12 +703,12 @@ f.step();
       //freq , fluxin , fluxout
     }
 
-/*void get_eigenmode_coefficients(dft_flux flux, const volume &eig_vol, int *bands, int num_bands,
+	/*void get_eigenmode_coefficients(dft_flux flux, const volume &eig_vol, int *bands, int num_bands,
                                   int parity, double eig_resolution, double eigensolver_tol,
                                   std::complex<double> *coeffs, double *vgrp,
                                   kpoint_func user_kpoint_func, void *user_kpoint_data,
                                   vec *kpoints, vec *kdom, direction d);
-*/
+	*/
 
     cout<<"SpaceEvolution"<<endl;
     //for (double y=(ycen-dymin);y<=(ycen+dymin);y=y+0.001)
