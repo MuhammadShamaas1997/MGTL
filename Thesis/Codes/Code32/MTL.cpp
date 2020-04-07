@@ -722,7 +722,25 @@ int main(int argc, char *argv[]) {
       //Im , Vm , Ie , Ve
     }
      
-
+    cout<<"Skin Effect"<<endl;
+    for (double z=(zmax);z>=(-zmax);z=z-0.1)  
+    {
+    	monitor_point pin;
+        f.get_point(&pin, vec(xcen,ycen,z));
+        cdouble E1i = pin.get_component(Ex);
+        cdouble E2i = pin.get_component(Ey);
+        cdouble E3i = pin.get_component(Ez);
+        cdouble D1i = pin.get_component(Dx);
+        cdouble D2i = pin.get_component(Dy);
+        cdouble D3i = pin.get_component(Dz);
+        cdouble H1i = pin.get_component(Hx);
+        cdouble H2i = pin.get_component(Hy);
+        cdouble H3i = pin.get_component(Hz);
+        cdouble B1i = pin.get_component(Bx);
+        cdouble B2i = pin.get_component(By);
+        cdouble B3i = pin.get_component(Bz);
+        cout<<H1i.real() <<" , "<<H1i.imag()<<" , "<<H2i.real()<<" , "<<H2i.imag()<<" , "<<H3i.real()<<" , "<<H3i.imag()<<" , "<<B1i.real()<<" , "<<B1i.imag()<<" , "<<B2i.real()<<" , "<<B2i.imag()<<" , "<<B3i.real()<<" , "<<B3i.imag()<<" , "<<E1i.real()<<" , "<<E1i.imag()<<" , "<<E2i.real()<<" , "<<E2i.imag()<<" , "<<E3i.real()<<" , "<<E3i.imag()<<" , "<<D1i.real()<<" , "<<D1i.imag()<<" , "<<D2i.real()<<" , "<<D2i.imag()<<" , "<<D3i.real()<<" , "<<D3i.imag()<<endl;
+    }
 
 
     Time.close();
