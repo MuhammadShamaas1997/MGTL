@@ -48,12 +48,13 @@ double divisions=10;
 int numcoord=0;
 double k=2*pi;
 double theta=0.0;
-double * xpcoord=new double [1000000]
-double * ypcoord=new double [1000000]
-double * zpcoord=new double [1000000]
-double * xscoord=new double [1000000]
-double * yscoord=new double [1000000]
-double * zscoord=new double [1000000]
+double rp=0.30;
+double * xpcoord=new double [1000000];
+double * ypcoord=new double [1000000];
+double * zpcoord=new double [1000000];
+double * xscoord=new double [1000000];
+double * yscoord=new double [1000000];
+double * zscoord=new double [1000000];
 
 //Copper
 //metal_range = mp.FreqRange(min=um_scale/12.398, max=um_scale/.20664)
@@ -363,7 +364,7 @@ int main(int argc, char *argv[]) {
 
     for (double z = -1.5; z <= 1.5; z=z+0.001)
     {
-    	theta=k*(z+1.5)
+    	theta=k*(z+1.5);
     	xpcoord[numcoord]=rp*sin(theta);
     	ypcoord[numcoord]= - rp*cos(theta) - dymin - (wcore/2);
     	zpcoord[numcoord]=z;
@@ -441,6 +442,10 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = true;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
 
+    my_material_func_data data;
+    data.with_susceptibility = true;
+
+
   meep_geom::material_type default_material =meep_geom::make_dielectric(1.0);    
   //default_material->which_subclass = material_data::MEDIUM;
   default_material->medium=my_medium_struct;
@@ -448,13 +453,12 @@ int main(int argc, char *argv[]) {
   default_material->user_data = (void *) &data;
   default_material->do_averaging = false;  
 
-    my_material_func_data data;
-    data.with_susceptibility = true;
     meep_geom::material_type my_user_material =meep_geom::make_user_material(my_material_func, (void *)&data, false);
     //vector3 center = {0, 0, 0};
     //geometric_object go = ctlgeom::geometric_object(my_material,center);
     
     geometric_object objects[4];
+  vector3 center = {0.0, 0.0, 0.0};  
   vector3 center1 = {0.0, 0.0, zcen+dzmin+(wcore/2)};
   vector3 center2 = {0.0, 0.0, -zcen-dzmin-(wcore/2)};
   vector3 center3 = {0.0, +ycen+dymin+(wcore/2), 0.0};
@@ -688,7 +692,7 @@ int main(int argc, char *argv[]) {
     
     int num_bands=1;
     int * bands=new int [num_bands];
-    int * vgrp=new int [num_bands*Nfreq];
+    double * vgrp=new double [num_bands*Nfreq];
     cdouble * coeffs=new cdouble [2*num_bands*Nfreq];
     bands[0]=1;
     for (int i = 1; i <= Nfreq; ++i) {
@@ -723,7 +727,7 @@ int main(int argc, char *argv[]) {
     }
      
     cout<<"Skin Effect"<<endl;
-    for (double z=(zmax);z>=(-zmax);z=z-0.1)  
+    for (double z=(dzmax);z>=(-dzmax);z=z-0.1)  
     {
     	monitor_point pin;
         f.get_point(&pin, vec(xcen,ycen,z));
