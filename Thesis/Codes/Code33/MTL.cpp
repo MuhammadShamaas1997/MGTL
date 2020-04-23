@@ -23,6 +23,7 @@ using namespace std;
 
 typedef std::complex<double> cdouble;
 
+double epsr=0.9999;
 //SI Conversion Factors
 double a0=1e-3;//1mm
 double c0=2.99792458e8;//Speed of Light (m/s)
@@ -30,7 +31,7 @@ double f0=c0/a0;//300GHz
 double t0=1/f0;//0.33e-11 (s)
 double mu0=4*pi*(1e-7);// (H/m)
 double eps0=8.854187817e-12;// (F/m)
-double I0=1; (A)
+double I0=1; //(A)
 double E0=I0/(a0*eps0*c0);//Electric Field
 double D0=I0/(a0*c0);//Electric Displacement Field
 double B0=I0/(a0*eps0*c0*c0);//Magnetic Field
@@ -47,16 +48,16 @@ double wcore=dymax - dymin;
 double winding_thickness_p=0.2, insulation_thickness_p=0.1,pml_thickness=1.0;  
 //double sigma_Cu=100000000;
 double mu_core=1000;
-int Np=1;//must be odd
-int Ns=1;//must be odd
-double margin=0.1;   
-double amplitude=1000000.0;
-double divisions=10;
+int Np=5;//must be odd
+int Ns=5;//must be odd
+double margin=0.2;   
+double amplitude=1.0;
+double divisions=20;
 
 int numcoord=0;
-double k=2*pi;
+double k=2*pi*Np/(2*dzmin);
 double theta=0.0;
-double rp=0.30;
+double rp=(wcore/2.0)+(winding_thickness_p/2.0)+margin;
 double * xpcoord=new double [1000000];
 double * ypcoord=new double [1000000];
 double * zpcoord=new double [1000000];
@@ -330,11 +331,19 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   //m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = 0.0;
 
   for (int i=0; i<numcoord; i++) {
-  	if((p.x==xpcoord[i])&&(p.y==ypcoord[i])&&(p.z==zpcoord[i])){
-  		m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
+	double dxp=p.x - xpcoord[i];
+    double dyp=p.y - xpcoord[i];
+    double dzp=p.z - xpcoord[i];  	
+  	double drp=sqrt(dxp*dxp+dyp*dyp+dzp*dzp);
+  	if(drp<=1.0){
+  		m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = 5.8e7/sigmaD0;
   	}
-  	if((p.x==xscoord[i])&&(p.y==yscoord[i])&&(p.z==zscoord[i])){
-  		m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
+  	double dxs=p.x - xscoord[i];
+    double dys=p.y - xscoord[i];
+    double dzs=p.z - xscoord[i];
+    double drs=sqrt(dxs*dxs+dys*dys+dzs*dzs);
+  	if(drs<=1.0){
+  		m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = 5.8e7/sigmaD0;
   	}
   }
 
@@ -370,9 +379,9 @@ int main(int argc, char *argv[]) {
     //double xsize=6, ysize=6, zsize=6;
   	
 
-    for (double z = -1.5; z <= 1.5; z=z+0.001)
+    for (double z = -dzmin; z <= dzmin; z=z+0.001)
     {
-    	theta=k*(z+1.5);
+    	theta=k*(z+dzmin);
     	xpcoord[numcoord]=rp*sin(theta);
     	ypcoord[numcoord]= - rp*cos(theta) - dymin - (wcore/2);
     	zpcoord[numcoord]=z;
@@ -439,9 +448,9 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = NiFe_sig;
     my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = NiFe_sig;
     my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = NiFe_sig;
-    my_medium_struct.H_susceptibilities.items[0].bias.x = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].bias.y = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].bias.z = 0.0;
+    my_medium_struct.H_susceptibilities.items[0].bias.x = gaussian_random(1.0,20.0);
+    my_medium_struct.H_susceptibilities.items[0].bias.y = gaussian_random(1.0,20.0);;
+    my_medium_struct.H_susceptibilities.items[0].bias.z = gaussian_random(1.0,20.0);;
     my_medium_struct.H_susceptibilities.items[0].frequency = 0.005;
     my_medium_struct.H_susceptibilities.items[0].gamma = NiFe_gam;
     my_medium_struct.H_susceptibilities.items[0].alpha = NiFe_gam;
@@ -524,8 +533,8 @@ int main(int argc, char *argv[]) {
 
 
     //f_range;1e-5,1e-2
-    double fcen = 0.005; // ; pulse center frequency
-    double df = 0.00499;    // ; df
+    double fcen = (3e9)/f0; // ; pulse center frequency
+    double df = 0.999*((3e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,0));
     gaussian_src_time src(fcen,df);
 
@@ -592,6 +601,10 @@ int main(int argc, char *argv[]) {
   */
   //integral of flux = change in energy of box
 	f.step();
+  f.step();
+  f.step();
+  f.step();
+  f.step();
     volume vxy=volume(vec(-xsize,-ysize,0),vec(xsize,ysize,0));
     volume vxz=volume(vec(-xsize,0,-zsize),vec(xsize,0,zsize));
     volume vyz=volume(vec(0,-ysize,-zsize),vec(0,ysize,zsize));
@@ -622,14 +635,15 @@ int main(int argc, char *argv[]) {
     f.output_hdf5(By,vyz,fBy);
     f.output_hdf5(Bz,vyz,fBz);
     
+int stop=0;
 
-
-    for(int i=1;i<=1000;i++)
+    for(int i=1;i<=(1/t0);i++)
     {
-      f.step();
+    	if(!stop)
+   		   {f.step();}
           //fluxL += f.dt * (left->flux() - right->flux() + bottom->flux() - top->flux());
 
-       if ((i%1000)==0)
+       if ((i%100)==0)
       {
 
     f.output_hdf5(Hx,vyz);
@@ -685,6 +699,9 @@ int main(int argc, char *argv[]) {
         //Hx , Hy , Hz , Bx , By , Bz , Ex , Ey , Ez , Dx , Dy , Dz 
         Time<<Im.real()<<" , "<<Im.imag()<<" , "<<Vm.real()<<" , "<<Vm.imag()<<" , "<<Ie.real()<<" , "<<Ie.imag()<<" , "<<Ve.real()<<" , "<<Ve.imag()<<endl;
         //Im , Vm , Ie , Ve 
+      
+      	cout<<"End? (1/0):";
+      	cin>>stop;
       }
        
     }
@@ -707,11 +724,11 @@ int main(int argc, char *argv[]) {
       vgrp[i]=0.0;
     } 
 
-    f.get_eigenmode_coefficients(flux1,box1,bands,num_bands,1,divisions,DEFAULT_SUBPIXEL_TOL,coeffs,vgrp);
+    //f.get_eigenmode_coefficients(flux1,box1,bands,num_bands,1,divisions,DEFAULT_SUBPIXEL_TOL,coeffs,vgrp);
 
     cout<<"EigenModes"<<endl;
     for (int i = 0; i < Nfreq; ++i) {
-      cout<<(fmin + i * flux1.dfreq)<<" , "<<bands[i]<<" , "<<coeffs[i]<<endl;
+      //cout<<(fmin + i * flux1.dfreq)<<" , "<<bands[i]<<" , "<<coeffs[i]<<endl;
       //freq , fluxin , fluxout
     }
 
@@ -754,6 +771,20 @@ int main(int argc, char *argv[]) {
         cout<<H1i.real() <<" , "<<H1i.imag()<<" , "<<H2i.real()<<" , "<<H2i.imag()<<" , "<<H3i.real()<<" , "<<H3i.imag()<<" , "<<B1i.real()<<" , "<<B1i.imag()<<" , "<<B2i.real()<<" , "<<B2i.imag()<<" , "<<B3i.real()<<" , "<<B3i.imag()<<" , "<<E1i.real()<<" , "<<E1i.imag()<<" , "<<E2i.real()<<" , "<<E2i.imag()<<" , "<<E3i.real()<<" , "<<E3i.imag()<<" , "<<D1i.real()<<" , "<<D1i.imag()<<" , "<<D2i.real()<<" , "<<D2i.imag()<<" , "<<D3i.real()<<" , "<<D3i.imag()<<endl;
     }
 
+/*    f.step();
+    f.output_hdf5(Hx,f.gv);
+    f.output_hdf5(Hy,f.gv);
+    f.output_hdf5(Hz,f.gv);
+    f.output_hdf5(Bx,f.gv);
+    f.output_hdf5(By,f.gv);
+    f.output_hdf5(Bz,f.gv);
+    f.output_hdf5(Ex,f.gv);
+    f.output_hdf5(Ey,f.gv);
+    f.output_hdf5(Ez,f.gv);
+    f.output_hdf5(Dx,f.gv);
+    f.output_hdf5(Dy,f.gv);
+    f.output_hdf5(Dz,f.gv);
+*/
 
     Time.close();
     Space.close();
