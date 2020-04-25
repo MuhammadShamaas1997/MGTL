@@ -1,0 +1,8 @@
+Fe3O4
+Imported dielectric function
+ 2.04699993133545E-0001
+ 1.19450998306274E+0001
+eV
+W.Theiss
+21.10.2003
+J.Ph.C. 12,  1157-1164

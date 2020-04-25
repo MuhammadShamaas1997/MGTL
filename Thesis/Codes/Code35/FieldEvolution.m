@@ -1,5 +1,5 @@
 clc;clear all;
-f=fopen('FieldEvolutionOut.txt');
+f=fopen('FieldEvolutionIn3000GHz.txt');
 l=fgetl(f);
 i=1;
 while ischar(l)
@@ -35,29 +35,43 @@ while ischar(l)
 end
 
 hold on;
+t=((1:3400)./20).*(1/(3e11));
 
-subplot(4,3,1)
-hold on;plot(mag(A1,A2));%Hx
-subplot(4,3,2)
-hold on;plot(mag(A3,A4));%Hy
-subplot(4,3,3)
-hold on;plot(mag(A5,A6));%Hz
-subplot(4,3,4)
-hold on;plot(mag(A7,A8)./mag(A1,A2));%Bx
-subplot(4,3,5)
-hold on;plot(mag(A9,A10));%By
-subplot(4,3,6)
-hold on;plot(mag(A11,A12));%Bz
+%subplot(4,3,1)
+hold on;
+%plot(t,mag(A13,A14));%Hx
 
-subplot(4,3,7)
-hold on;plot(mag(A13,A14));%Hx
-subplot(4,3,8)
-hold on;plot(mag(A15,A16));%Hy
-subplot(4,3,9)
-hold on;plot(mag(A17,A18));%Hz
-subplot(4,3,10)
-hold on;plot(mag(A19,A20)./mag(A13,A14));%Bx
-subplot(4,3,11)
-hold on;plot(mag(A21,A22));%By
-subplot(4,3,12)
-hold on;plot(mag(A23,A24));%Bz
+y=mag(A13,A14);
+%y=cos(1:1000)
+L=length(y);
+Fs=L;
+NFFT=2^nextpow2(L);
+Y=fft(y,NFFT)/L;
+f=Fs/2*linspace(0,1,NFFT/2+1);
+plot(f,2*abs(Y(1:NFFT/2+1)))
+axis([0 1700 0 1])
+%plot(y)
+
+% subplot(4,3,2)
+% hold on;plot(mag(A3,A4));%Hy
+% subplot(4,3,3)
+% hold on;plot(mag(A5,A6));%Hz
+% subplot(4,3,4)
+% hold on;plot(mag(A7,A8)./mag(A1,A2));%Bx
+% subplot(4,3,5)
+% hold on;plot(mag(A9,A10));%By
+% subplot(4,3,6)
+% hold on;plot(mag(A11,A12));%Bz
+% 
+% subplot(4,3,7)
+% hold on;plot(mag(A13,A14));%Ex
+% subplot(4,3,8)
+% hold on;plot(mag(A15,A16));%Ey
+% subplot(4,3,9)
+% hold on;plot(mag(A17,A18));%Ez
+% subplot(4,3,10)
+% hold on;plot(mag(A19,A20)./mag(A13,A14));%Dx
+% subplot(4,3,11)
+% hold on;plot(mag(A21,A22));%Dy
+% subplot(4,3,12)
+% hold on;plot(mag(A23,A24));%Dz

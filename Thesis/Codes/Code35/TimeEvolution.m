@@ -1,5 +1,5 @@
 clc;clear all;
-f=fopen('TimeEvolution.txt');
+f=fopen('TimeEvolution3GHz.txt');
 l=fgetl(f);
 i=1;
 while ischar(l)
