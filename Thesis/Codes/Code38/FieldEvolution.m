@@ -1,5 +1,5 @@
 clc;clear all;
-f=fopen('FieldEvolutionOut.txt');
+f=fopen('FieldEvolutionIn.txt');
 l=fgetl(f);
 i=1;
 while ischar(l)
@@ -43,7 +43,7 @@ hold on;plot(mag(A3,A4));%Hy
 subplot(4,3,3)
 hold on;plot(mag(A5,A6));%Hz
 subplot(4,3,4)
-hold on;plot(mag(A7,A8)./mag(A1,A2));%Bx
+hold on;plot(mag(A7,A8));%Bx
 subplot(4,3,5)
 hold on;plot(mag(A9,A10));%By
 subplot(4,3,6)
@@ -56,7 +56,7 @@ hold on;plot(mag(A15,A16));%Hy
 subplot(4,3,9)
 hold on;plot(mag(A17,A18));%Hz
 subplot(4,3,10)
-hold on;plot(mag(A19,A20)./mag(A13,A14));%Bx
+hold on;plot(mag(A19,A20));%Bx
 subplot(4,3,11)
 hold on;plot(mag(A21,A22));%By
 subplot(4,3,12)
