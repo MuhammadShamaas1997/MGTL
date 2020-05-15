@@ -35,29 +35,32 @@ while ischar(l)
 end
 
 hold on;
-
+Hx=mag(A13,A14);
+Hy=mag(A15,A16);
+Hz=mag(A17,A18);
+H=Hx.*Hx+Hy.*Hy+Hz.*Hz;
 subplot(4,3,1)
-hold on;plot(mag(A1,A2));%Hx
+hold on;plot(A1);plot(A2);%Hx
 subplot(4,3,2)
-hold on;plot(mag(A3,A4));%Hy
+hold on;plot(A3);plot(A4);%Hy
 subplot(4,3,3)
-hold on;plot(mag(A5,A6));%Hz
+hold on;plot(A5);plot(A6);%Hz
 subplot(4,3,4)
-hold on;plot(mag(A7,A8));%Bx
+hold on;plot(A7);plot(A8);%Bx
 subplot(4,3,5)
-hold on;plot(mag(A9,A10));%By
+hold on;plot(A9);plot(A10);%By
 subplot(4,3,6)
-hold on;plot(mag(A11,A12));%Bz
+hold on;plot(A11);plot(A12);%Bz
 
 subplot(4,3,7)
-hold on;plot(mag(A13,A14));%Hx
+hold on;plot(A13);plot(A14);%Hx
 subplot(4,3,8)
-hold on;plot(mag(A15,A16));%Hy
+hold on;plot(A15);plot(A16);%Hy
 subplot(4,3,9)
-hold on;plot(mag(A17,A18));%Hz
+hold on;plot(A17);plot(A18);%Hz
 subplot(4,3,10)
-hold on;plot(mag(A19,A20));%Bx
+hold on;plot(A19);plot(A20);%Bx
 subplot(4,3,11)
-hold on;plot(mag(A21,A22));%By
+hold on;plot(A21);plot(A22);%By
 subplot(4,3,12)
-hold on;plot(mag(A23,A24));%Bz
+hold on;plot(A23);plot(A24);%Bz
