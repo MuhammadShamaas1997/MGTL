@@ -18,17 +18,17 @@ hold on;
 subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
 B=abs(A3)/max(abs(A2));%Flux_out
-plot(A1,abs(A2));
-axis([1e-3 1e-1 0 1e12]);
+loglog(A1,-A2);
+axis([0 100e-2 0 5]);
 subplot(3,1,2)
-plot(A1,A3);
-axis([1e-3 1e-1 0 1e7]);
+loglog(A1,-A3);
+axis([0 100e-2 0 2e-3]);
 subplot(3,1,3)
 C=B./A;
 for i=1:length(C)
     if (C(i)>1)
-        C(i)=0;
+        %C(i)=0;
     end
 end
-plot(A1,C);
-axis([0 0.0035 0 0.1]);
+loglog(A1,C);
+axis([0 100e-2 0 2e-3]);
