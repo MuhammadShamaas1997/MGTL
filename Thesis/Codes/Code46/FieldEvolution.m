@@ -52,9 +52,9 @@ hold on;
 
 subplot(4,1,1)
 hold on;%plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%H
-for m=1:length(A5)
-        %Hz(m)=A5(m)+i*A6(m);
-        Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
+for m=1:length(A3)
+        Hz(m)=A3(m)+i*A4(m);
+        %Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
         Hz(m)=Hz(m)*H0;
 end
 T=100*t0;
@@ -63,19 +63,19 @@ L=length(A1);
 NFFT=2^nextpow2(L);
 YHz=fft(Hz,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
-plot(f,2*abs(YHz(1:NFFT/2+1)));
+%plot(f,2*abs(YHz(1:NFFT/2+1)));
 % plot(f,2*angle(YHz(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
-ylabel('|Hz(f)|');
-%axis([])
+ylabel('|Hy(f)|');
+axis([2e9 15e9 0  1e-3])
 
 %subplot(2,2,2)
 %hold on;%plot(mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12)));%B
 
 subplot(4,1,2)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-for m=1:length(A17)
-        Ez(m)=A17(m)+i*A18(m);
+for m=1:length(A15)
+        Ez(m)=A15(m)+i*A16(m);
         Ez(m)=Ez(m)*E0;
 end
 T=100*t0;
@@ -85,23 +85,49 @@ NFFT=2^nextpow2(L);
 YEz=fft(Ez,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
 
-plot(f,2*abs(YEz(1:NFFT/2+1)));
+%plot(f,2*abs(YEz(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
-ylabel('|Ez(f)|');
+ylabel('|Ey(f)|');
+axis([2e9 15e9 0  1e3])
+
 Z=YEz./YHz;
 
-subplot(4,1,3)
+subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-loglog(f,2*abs(Z(1:NFFT/2+1)));
+%loglog(f,2*abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Z(f)|');
-axis([0 2e9 0  10e6])
+axis([2e9 15e9 0  3e6])
 
 % subplot(2,2,4)
 % hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
 
-subplot(4,1,4)
-plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
+subplot(2,1,2)
+%plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
 ylabel('\Theta Z(f)');
 xlabel('Frequency (Hz)')
-axis([0 2e9 -200  200])
+axis([2e9 15e9 -200  200])
+
+%smithchart(z2gamma(Z,120*pi*22))
+
+Y=1./Z;
+G=real(Y(1:NFFT/2+1));
+G=abs(G);
+C=imag(Y(1:NFFT/2+1))./(1i*2*pi*f);
+C=abs(C);
+
+subplot(2,1,1)
+hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
+plot(f,2*(G(1:NFFT/2+1)));
+xlabel('Frequency (Hz)')
+ylabel('Conductance(S/mm)');
+axis([2e9 15e9 0 0.2e-5])
+
+% subplot(2,2,4)
+% hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
+
+subplot(2,1,2)
+plot(f,2*(C(1:NFFT/2+1)));
+ylabel('Capacitance(F/mm)');
+xlabel('Frequency (Hz)')
+axis([2e9 15e9 0  1e-15])

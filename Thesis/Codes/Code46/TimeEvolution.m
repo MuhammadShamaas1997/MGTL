@@ -39,27 +39,27 @@ A5=A5*I0;A6=A6*I0;
 A7=A7*V0;A8=A8*V0;
 
 t=100*t0*(1:length(A1));
-subplot(2,2,1)
+subplot(2,1,1)
 hold on;plot(t,A1);plot(t,A2,'r');%Im
 ylabel('Magnetic Current (V)');
 xlabel('Time');
 legend('Re','Im');
 
-subplot(2,2,2)
+subplot(2,1,2)
 hold on;plot(t,A3);plot(t,A4,'r');%Vm
 ylabel('Magnetic Voltage (A)');
 xlabel('Time');
 legend('Re','Im');
 
-subplot(2,2,3)
-hold on;plot(t,A5);plot(t,A6,'r');%Ie
-ylabel('Electric Current (A)');
-xlabel('Time')
-legend('Re','Im');
-
-subplot(2,2,4)
-hold on;plot(t,A7);plot(t,A8,'r');%Ve
-ylabel('Electric Voltage (V)');
-xlabel('Time')
-legend('Re','Im');
-
+% subplot(2,2,3)
+% hold on;plot(t,A5);plot(t,A6,'r');%Ie
+% ylabel('Electric Current (A)');
+% xlabel('Time')
+% legend('Re','Im');
+% 
+% subplot(2,2,4)
+% hold on;plot(t,A7);plot(t,A8,'r');%Ve
+% ylabel('Electric Voltage (V)');
+% xlabel('Time')
+% legend('Re','Im');
+% 
