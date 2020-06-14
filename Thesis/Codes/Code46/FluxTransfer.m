@@ -49,12 +49,7 @@ xlabel('frequency (Hz)');
 
 subplot(3,1,3)
 C=B./A;
-for i=1:length(C)
-    if (C(i)>1)
-        %C(i)=0;
-    end
-end
-plot(f0*A1,S0*C);
-axis([0 20e9 0 S0*3]);
+plot(f0*A1,C);
+axis([0 20e9 0 3]);
 ylabel('|Sout/Sin|');
 xlabel('frequency (Hz)');

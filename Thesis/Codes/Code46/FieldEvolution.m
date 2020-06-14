@@ -53,16 +53,17 @@ hold on;
 subplot(4,1,1)
 hold on;%plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%H
 for m=1:length(A5)
-        Hz(m)=A5(m)+i*A6(m);
+        %Hz(m)=A5(m)+i*A6(m);
+        Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
         Hz(m)=Hz(m)*H0;
 end
 T=100*t0;
 Fs=1/T;
-L=50;
+L=length(A1);
 NFFT=2^nextpow2(L);
 YHz=fft(Hz,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
-semilogx(f,2*abs(YHz(1:NFFT/2+1)));
+plot(f,2*abs(YHz(1:NFFT/2+1)));
 % plot(f,2*angle(YHz(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Hz(f)|');
@@ -79,10 +80,11 @@ for m=1:length(A17)
 end
 T=100*t0;
 Fs=1/T;
-L=50;
+L=length(A1);
 NFFT=2^nextpow2(L);
 YEz=fft(Ez,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
+
 plot(f,2*abs(YEz(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Ez(f)|');
@@ -90,9 +92,11 @@ Z=YEz./YHz;
 
 subplot(4,1,3)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-plot(f,2*abs(Z(1:NFFT/2+1)));
+loglog(f,2*abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Z(f)|');
+axis([0 2e9 0  10e6])
+
 % subplot(2,2,4)
 % hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
 
@@ -100,3 +104,4 @@ subplot(4,1,4)
 plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
 ylabel('\Theta Z(f)');
 xlabel('Frequency (Hz)')
+axis([0 2e9 -200  200])
