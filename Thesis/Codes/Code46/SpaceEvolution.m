@@ -30,18 +30,19 @@ hold on;
 % hold on;plot(A7);plot(A8);%Ve
 
 subplot(2,2,1)
-hold on;plot(mag(A1,A2));
+hold on;plot(A1);plot(A2);
 ylabel('Im (V)');
 xlabel('Length (mm)');
+axis([0 100 -5e-3 5e-3]);
 subplot(2,2,2)
-hold on;plot(mag(A3,A4));%Vm
+hold on;plot(A3);plot(A4);%Vm
 ylabel('Vm (A)');
 xlabel('Length (mm)');
 subplot(2,2,3)
-hold on;plot(mag(A5,A6));%Ie
+hold on;plot(A5);plot(A6);%Ie
 ylabel('Ie (A)');
 xlabel('Length (mm)');
 subplot(2,2,4)
-hold on;plot(mag(A7,A8));%Ve
+hold on;plot(A7);plot(A8);%Ve
 ylabel('Ve (V)');
 xlabel('Length (mm)');

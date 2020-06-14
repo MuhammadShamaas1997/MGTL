@@ -13,23 +13,38 @@ while ischar(l)
     i=i+1;
 end
 
+epsr=0.9999;
+a0=1e-4;%0.1mm
+c0=2.99792458e8;%Speed of Light (m/s)
+f0=c0/a0;%3000GHz
+t0=1/f0;%0.33e-12 (s)
+mu0=4*pi*(1e-7);% (H/m)
+eps0=8.854187817e-12;% (F/m)
+I0=1; %(A)
+E0=I0/(a0*eps0*c0);%Electric Field
+D0=I0/(a0*c0);%Electric Displacement Field
+B0=I0/(a0*eps0*c0*c0);%Magnetic Field
+H0=I0/(a0);%Magnetizing Field
+S0=(I0*I0)/(eps0*c0*a0*a0);%//Poynting Vector
+
+
 hold on;
 
 subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
 B=abs(A3)/max(abs(A2));%Flux_out
 
-semilogy(A1,-A2);
-axis([2.5e-3 2.5e-2 0.01 10]);
-ylabel('log |Sin|');
-xlabel('frequency');
+plot(A1*f0,-A2*S0);
+axis([0 20e9 0 S0*100]);
+ylabel('|Sin| (W/m^2)');
+xlabel('frequency (Hz)');
 
 
 subplot(3,1,2)
-semilogy(A1,-A3);
-axis([2.5e-3 2.5e-2 0.0000001 0.01]);
-ylabel('log |Sout|');
-xlabel('frequency');
+plot(A1*f0,-A3*S0);
+axis([0 20e9 0 S0*150]);
+ylabel('|Sout| (W/m^2)');
+xlabel('frequency (Hz)');
 
 
 subplot(3,1,3)
@@ -39,7 +54,7 @@ for i=1:length(C)
         %C(i)=0;
     end
 end
-semilogy(A1,C);
-axis([2.5e-3 2.5e-2 0.00001 0.001]);
-ylabel('log |Sout/Sin|');
-xlabel('Length (mm)');
+plot(f0*A1,S0*C);
+axis([0 20e9 0 S0*3]);
+ylabel('|Sout/Sin|');
+xlabel('frequency (Hz)');

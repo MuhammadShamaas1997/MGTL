@@ -22,10 +22,21 @@ hold on;
 
 subplot(2,2,1)
 hold on;plot(mag(A1,A2));%Im
+ylabel('Im (V)');
+xlabel('Time')
+
 subplot(2,2,2)
 hold on;plot(mag(A3,A4));%Vm
+ylabel('Vm (A)');
+xlabel('Time')
+
 subplot(2,2,3)
 hold on;plot(mag(A5,A6));%Ie
+ylabel('Ie (A)');
+xlabel('Time')
+
 subplot(2,2,4)
 hold on;plot(mag(A7,A8));%Ve
+ylabel('Ve (V)');
+xlabel('Time')
 

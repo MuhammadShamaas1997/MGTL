@@ -1,1 +1,1 @@
-smithchart(z2gamma(Z,120*pi*100))
+smithchart(z2gamma(Z(1:32),120*pi*100))
