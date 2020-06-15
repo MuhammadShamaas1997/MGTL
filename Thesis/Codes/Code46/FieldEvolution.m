@@ -1,4 +1,4 @@
-clc;clear all;
+%clc;clear all;
 f=fopen('FieldEvolutionOut.txt');
 l=fgetl(f);
 in=1;
@@ -53,17 +53,17 @@ hold on;
 subplot(4,1,1)
 hold on;%plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%H
 for m=1:length(A3)
-        Hz(m)=A3(m)+i*A4(m);
+        Hy(m)=A3(m)+i*A4(m);
         %Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
-        Hz(m)=Hz(m)*H0;
+        Hy(m)=Hy(m)*H0;
 end
 T=100*t0;
 Fs=1/T;
 L=length(A1);
 NFFT=2^nextpow2(L);
-YHz=fft(Hz,NFFT)/L;
+FHy=fft(Hy,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
-%plot(f,2*abs(YHz(1:NFFT/2+1)));
+%plot(f,2*abs(FHy(1:NFFT/2+1)));
 % plot(f,2*angle(YHz(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Hy(f)|');
@@ -75,29 +75,28 @@ axis([2e9 15e9 0  1e-3])
 subplot(4,1,2)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 for m=1:length(A15)
-        Ez(m)=A15(m)+i*A16(m);
-        Ez(m)=Ez(m)*E0;
+        Ey(m)=A15(m)+i*A16(m);
+        Ey(m)=Ey(m)*E0;
 end
 T=100*t0;
 Fs=1/T;
 L=length(A1);
 NFFT=2^nextpow2(L);
-YEz=fft(Ez,NFFT)/L;
+FEy=fft(Ey,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
-
-%plot(f,2*abs(YEz(1:NFFT/2+1)));
+%plot(f,2*abs(FEy(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Ey(f)|');
 axis([2e9 15e9 0  1e3])
 
-Z=YEz./YHz;
+Z=FEy./FHy;
 
 subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-%loglog(f,2*abs(Z(1:NFFT/2+1)));
+%plot(f,2*abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
-ylabel('|Z(f)|');
-axis([2e9 15e9 0  3e6])
+ylabel('|Z(Ohm/m)|');
+axis([0.1e9 15e9 0  3e6])
 
 % subplot(2,2,4)
 % hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
@@ -106,28 +105,28 @@ subplot(2,1,2)
 %plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
 ylabel('\Theta Z(f)');
 xlabel('Frequency (Hz)')
-axis([2e9 15e9 -200  200])
+axis([0.1e9 15e9 -200  200])
 
 %smithchart(z2gamma(Z,120*pi*22))
 
-Y=1./Z;
-G=real(Y(1:NFFT/2+1));
-G=abs(G);
-C=imag(Y(1:NFFT/2+1))./(1i*2*pi*f);
-C=abs(C);
 
-subplot(2,1,1)
-hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-plot(f,2*(G(1:NFFT/2+1)));
+Lm=(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1))./(2*pi*f);
+G=real(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1));
+Cm=imag(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1))./(2*pi*f);
+subplot(3,1,1)
+plot(f,abs(Lm));
+ylabel('Lm(H/m)');
 xlabel('Frequency (Hz)')
-ylabel('Conductance(S/mm)');
-axis([2e9 15e9 0 0.2e-5])
+axis([0 15e9 0 0.2])
 
-% subplot(2,2,4)
-% hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
-
-subplot(2,1,2)
-plot(f,2*(C(1:NFFT/2+1)));
-ylabel('Capacitance(F/mm)');
+subplot(3,1,2)
+plot(f,abs(G));
+ylabel('G(S/m)');
 xlabel('Frequency (Hz)')
-axis([2e9 15e9 0  1e-15])
+axis([0 15e9 0 0.03])
+
+subplot(3,1,3)
+plot(f,abs(Cm));
+ylabel('Cm(F/m)');
+xlabel('Frequency (Hz)')
+axis([0 15e9 0 2e-13])

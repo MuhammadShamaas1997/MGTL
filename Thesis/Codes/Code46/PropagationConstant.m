@@ -122,22 +122,22 @@ f=Fs/2*linspace(0,1,NFFT/2+1);
 
 %plot(f,2*abs(FHyo(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
-ylabel('|Hyo(f)|');
+ylabel('|Hyo(A/m)|');
 axis([2e9 15e9 0  1e-3])
-Gamma=log(FHyi./FHyo)/(0.5);
+Gamma=log(FHyi./FHyo)/(0.5e-3);
 
 subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 loglog(f,2*abs(Gamma(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
-ylabel('\alpha (mm^-^1)');
-axis([2e9 15e9 0  15])
+ylabel('\alpha (m^-^1)');
+axis([0.1e9 15e9 0  15000])
 
 % subplot(2,2,4)
 % hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
 
 subplot(2,1,2)
 plot(f,2*angle(Gamma(1:NFFT/2+1))*(180/pi),'.-');
-ylabel('\beta (mm^-^1)');
+ylabel('\beta (m^-^1)');
 xlabel('Frequency (Hz)')
-axis([2e9 15e9 0 300])
+axis([0.1e9 15e9 0 300])
