@@ -13,22 +13,43 @@ while ischar(l)
     i=i+1;
 end
 
+epsr=0.9999;
+a0=1e-4;%0.1mm
+c0=2.99792458e8;%Speed of Light (m/s)
+f0=c0/a0;%3000GHz
+t0=1/f0;%0.33e-12 (s)
+mu0=4*pi*(1e-7);% (H/m)
+eps0=8.854187817e-12;% (F/m)
+I0=1; %(A)
+E0=I0/(a0*eps0*c0);%Electric Field
+D0=I0/(a0*c0);%Electric Displacement Field
+B0=I0/(a0*eps0*c0*c0);%Magnetic Field
+H0=I0/(a0);%Magnetizing Field
+S0=(I0*I0)/(eps0*c0*a0*a0);%//Poynting Vector
+
+
 hold on;
 
 subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
 B=abs(A3)/max(abs(A2));%Flux_out
-plot(A1,abs(A2));
-axis([1e-3 1e-1 0 1e12]);
+
+plot(A1*f0,-A2*S0);
+%axis([0 20e9 0 S0*100]);
+ylabel('|Sin| (W/m^2)');
+xlabel('frequency (Hz)');
+
+
 subplot(3,1,2)
-plot(A1,A3);
-axis([1e-3 1e-1 0 1e7]);
+plot(A1*f0,-A3*S0);
+%axis([0 20e9 0 S0*150]);
+ylabel('|Sout| (W/m^2)');
+xlabel('frequency (Hz)');
+
+
 subplot(3,1,3)
 C=B./A;
-for i=1:length(C)
-    if (C(i)>1)
-        C(i)=0;
-    end
-end
-plot(A1,C);
-axis([0 0.0035 0 0.1]);
+plot(f0*A1,C);
+%axis([0 20e9 0 3]);
+ylabel('|Sout/Sin|');
+xlabel('frequency (Hz)');

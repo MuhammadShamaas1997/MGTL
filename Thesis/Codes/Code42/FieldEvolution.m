@@ -1,63 +1,132 @@
-clc;clear all;
+%clc;clear all;
 f=fopen('FieldEvolutionOut.txt');
 l=fgetl(f);
-i=1;
+in=1;
 while ischar(l)
     %%disp(l);
-    text{i}=l;
-    data{i}=sscanf(text{i},'%f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f');
-    A1(i)=data{i}(1);
-    A2(i)=data{i}(2);
-    A3(i)=data{i}(3);
-    A4(i)=data{i}(4);
-    A5(i)=data{i}(5);
-    A6(i)=data{i}(6);
-    A7(i)=data{i}(7);
-    A8(i)=data{i}(8);
-    A9(i)=data{i}(9);
-    A10(i)=data{i}(10);
-    A11(i)=data{i}(11);
-    A12(i)=data{i}(12);
-    A13(i)=data{i}(13);
-    A14(i)=data{i}(14);
-    A15(i)=data{i}(15);
-    A16(i)=data{i}(16);
-    A17(i)=data{i}(17);
-    A18(i)=data{i}(18);
-    A19(i)=data{i}(19);
-    A20(i)=data{i}(20);
-    A21(i)=data{i}(21);
-    A22(i)=data{i}(22);
-    A23(i)=data{i}(23);
-    A24(i)=data{i}(24);
+    text{in}=l;
+    data{in}=sscanf(text{in},'%f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f');
+    A1(in)=data{in}(1);
+    A2(in)=data{in}(2);
+    A3(in)=data{in}(3);
+    A4(in)=data{in}(4);
+    A5(in)=data{in}(5);
+    A6(in)=data{in}(6);
+    A7(in)=data{in}(7);
+    A8(in)=data{in}(8);
+    A9(in)=data{in}(9);
+    A10(in)=data{in}(10);
+    A11(in)=data{in}(11);
+    A12(in)=data{in}(12);
+    A13(in)=data{in}(13);
+    A14(in)=data{in}(14);
+    A15(in)=data{in}(15);
+    A16(in)=data{in}(16);
+    A17(in)=data{in}(17);
+    A18(in)=data{in}(18);
+    A19(in)=data{in}(19);
+    A20(in)=data{in}(20);
+    A21(in)=data{in}(21);
+    A22(in)=data{in}(22);
+    A23(in)=data{in}(23);
+    A24(in)=data{in}(24);
     l=fgetl(f);
-    i=i+1;
+    in=in+1;
 end
+
+epsr=0.9999;
+a0=1e-4;%0.1mm
+c0=2.99792458e8;%Speed of Light (m/s)
+f0=c0/a0;%3000GHz
+t0=1/f0;%0.33e-12 (s)
+mu0=4*pi*(1e-7);% (H/m)
+eps0=8.854187817e-12;% (F/m)
+I0=1; %(A)
+E0=I0/(a0*eps0*c0);%Electric Field
+D0=I0/(a0*c0);%Electric Displacement Field
+B0=I0/(a0*eps0*c0*c0);%Magnetic Field
+H0=I0/(a0);%Magnetizing Field
+
 
 hold on;
 
-subplot(4,3,1)
-hold on;plot(A2);%Hx
-subplot(4,3,2)
-hold on;plot(A3);plot(A4);%Hy
-subplot(4,3,3)
-hold on;plot(A5);plot(A6);%Hz
-subplot(4,3,4)
-hold on;plot(A7);plot(A8);%Bx
-subplot(4,3,5)
-hold on;plot(A9);plot(A10);%By
-subplot(4,3,6)
-hold on;plot(A11);plot(A12);%Bz
+subplot(4,1,1)
+hold on;%plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%H
+for m=1:length(A3)
+        Hy(m)=A3(m)+i*A4(m);
+        %Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
+        Hy(m)=Hy(m)*H0;
+end
+T=100*t0;
+Fs=1/T;
+L=length(A1);
+NFFT=2^nextpow2(L);
+FHy=fft(Hy,NFFT)/L;
+f=Fs/2*linspace(0,1,NFFT/2+1);
+%plot(f,2*abs(FHy(1:NFFT/2+1)));
+% plot(f,2*angle(YHz(1:NFFT/2+1)));
+xlabel('Frequency (Hz)')
+ylabel('|Hy(f)|');
+axis([2e9 15e9 0  1e-3])
 
-subplot(4,3,7)
-hold on;plot(A13);plot(A14);%Ex
-subplot(4,3,8)
-hold on;plot(A15);plot(A16);%Ey
-subplot(4,3,9)
-hold on;plot(A17);plot(A18);%Ez
-subplot(4,3,10)
-hold on;plot(A19);plot(A20);%Dx
-subplot(4,3,11)
-hold on;plot(A21);plot(A22);%Dy
-subplot(4,3,12)
-hold on;plot(A23);plot(A24);%Dz
+%subplot(2,2,2)
+%hold on;%plot(mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12)));%B
+
+subplot(4,1,2)
+hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
+for m=1:length(A15)
+        Ey(m)=A15(m)+i*A16(m);
+        Ey(m)=Ey(m)*E0;
+end
+T=100*t0;
+Fs=1/T;
+L=length(A1);
+NFFT=2^nextpow2(L);
+FEy=fft(Ey,NFFT)/L;
+f=Fs/2*linspace(0,1,NFFT/2+1);
+%plot(f,2*abs(FEy(1:NFFT/2+1)));
+xlabel('Frequency (Hz)')
+ylabel('|Ey(f)|');
+axis([2e9 15e9 0  1e3])
+
+Z=FEy./FHy;
+
+subplot(2,1,1)
+hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
+plot(f,2*abs(Z(1:NFFT/2+1)));
+xlabel('Frequency (Hz)')
+ylabel('|Z(Ohm/m)|');
+axis([0.1e9 15e9 0  3e6])
+
+% subplot(2,2,4)
+% hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
+
+subplot(2,1,2)
+plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
+ylabel('\Theta Z(f)');
+xlabel('Frequency (Hz)')
+axis([0.1e9 15e9 -200  200])
+
+%smithchart(z2gamma(Z,120*pi*22))
+
+
+% Lm=(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1))./(2*pi*f);
+% G=real(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1));
+% Cm=imag(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1))./(2*pi*f);
+% subplot(3,1,1)
+% plot(f,(Lm));
+% ylabel('Lm(H/m)');
+% xlabel('Frequency (Hz)')
+% %axis([0 15e9 0 0.2])
+% 
+% subplot(3,1,2)
+% plot(f,abs(G));
+% ylabel('G(S/m)');
+% xlabel('Frequency (Hz)')
+% axis([0 15e9 0 0.03])
+% 
+% subplot(3,1,3)
+% plot(f,abs(Cm));
+% ylabel('Cm(F/m)');
+% xlabel('Frequency (Hz)')
+% axis([0 15e9 0 2e-13])

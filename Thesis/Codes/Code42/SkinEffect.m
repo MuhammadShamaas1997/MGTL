@@ -36,28 +36,24 @@ end
 
 hold on;
 
-subplot(4,3,1)
-hold on;plot(mag(A1,A2));%Hx
-subplot(4,3,2)
-hold on;plot(mag(A3,A4));%Hy
-subplot(4,3,3)
-hold on;plot(mag(A5,A6));%Hz
-subplot(4,3,4)
-hold on;plot(mag(A7,A8));%Bx
-subplot(4,3,5)
-hold on;plot(mag(A9,A10));%By
-subplot(4,3,6)
-hold on;plot(mag(A11,A12));%Bz
+subplot(2,2,1)
+hold on;plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%Hx
+ylabel('H (A/m)');
+xlabel('Length (mm)');
 
-subplot(4,3,7)
-hold on;plot(mag(A13,A14));%Hx
-subplot(4,3,8)
-hold on;plot(mag(A15,A16));%Hy
-subplot(4,3,9)
-hold on;plot(mag(A17,A18));%Hz
-subplot(4,3,10)
-hold on;plot(mag(A19,A20));%Bx
-subplot(4,3,11)
-hold on;plot(mag(A21,A22));%By
-subplot(4,3,12)
-hold on;plot(mag(A23,A24));%Bz
+subplot(2,2,2)
+hold on;plot(mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12)));%Hx
+ylabel('B (Wb/m^2)');
+xlabel('Length (mm)');
+
+subplot(2,2,3)
+hold on;plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%Hx
+ylabel('E (V/m)');
+xlabel('Length (mm)');
+
+subplot(2,2,4)
+hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%Hx
+ylabel('D (C/m^2)');
+xlabel('Length (mm)');
+
+
