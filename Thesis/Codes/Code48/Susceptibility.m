@@ -35,25 +35,29 @@ sigma0=NiFe_sig;
 omega0=2*pi*NiFe_frq;
 gamma0=NiFe_gam;
 
-um_scale=1000;
+um_scale=1;
 NiFe_frq = 1e9;
-NiFe_gam = 1e-6;
-NiFe_sig = 500;
-mu0=10000;
+NiFe_gam = 10e5;
+NiFe_sig = 1;
+mu0=0.0000001;
 sigmab=0;
 sigma0=NiFe_sig;
 omega0=NiFe_frq;
 gamma0=NiFe_gam;
 
 n=1;
-for omega=0:1e8:1e10
+for omega=0.99e9:1e5:1.01e9
     mu(n)=(1+(i*sigmab/omega))*(mu0+(sigma0*omega0)/(omega0*omega0-omega*omega-i*omega*gamma0));
     n=n+1;
 end
 hold on;
-plot(0:1e8:1e10,(mu))
-%plot(0:1e8:1e10,(mu))
-
+plot(0.99e9:1e5:1.01e9,real(mu))
+plot(0.99e9:1e5:1.01e9,imag(mu),'r')
+ylabel('Relative Permeability \mu_r')
+xlabel('Frequency (Hz)')
+legend('Real','Imaginary')
+set(gca,'xtick',[1e9])
+set(gca,'ytick',[])
 % eps0=1;
 % sigmad=1000;
 % n=1;
