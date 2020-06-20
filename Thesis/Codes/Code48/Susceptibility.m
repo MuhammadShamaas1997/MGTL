@@ -34,13 +34,25 @@ sigmab=0;
 sigma0=NiFe_sig;
 omega0=2*pi*NiFe_frq;
 gamma0=NiFe_gam;
+
+um_scale=1000;
+NiFe_frq = 1e9;
+NiFe_gam = 1e-6;
+NiFe_sig = 500;
+mu0=10000;
+sigmab=0;
+sigma0=NiFe_sig;
+omega0=NiFe_frq;
+gamma0=NiFe_gam;
+
 n=1;
-for omega=0:0.0001:0.1
+for omega=0:1e8:1e10
     mu(n)=(1+(i*sigmab/omega))*(mu0+(sigma0*omega0)/(omega0*omega0-omega*omega-i*omega*gamma0));
     n=n+1;
 end
-plot(0:0.0001:0.1,mu)
-
+hold on;
+plot(0:1e8:1e10,(mu))
+%plot(0:1e8:1e10,(mu))
 
 % eps0=1;
 % sigmad=1000;

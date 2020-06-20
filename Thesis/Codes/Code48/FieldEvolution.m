@@ -6,8 +6,8 @@ File=1;
 l=fgetl(f);
 in=1;
 Prev=1600*(File-1);
-%while ischar(l)
-for kj=1:81
+while ischar(l)
+%for kj=1:81
     %%disp(l);
     text{in}=l;
     data{in}=sscanf(text{in},'%f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f');
@@ -31,8 +31,10 @@ for kj=1:81
     in=in+1;
 end
 %subplot(9,1,1);
-plot(abs(Bz(1,20:60)))
-pause(1);
+for tr=1:length(Bz)
+plot(log(abs(Bz(tr,:))))
+pause(0.01);
+end
 %%
 f=fopen('F2.txt');
 File=2;
