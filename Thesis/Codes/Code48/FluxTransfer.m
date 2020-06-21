@@ -31,25 +31,27 @@ S0=(I0*I0)/(eps0*c0*a0*a0);%//Poynting Vector
 hold on;
 
 subplot(3,1,1)
-A=abs(A2)/max(abs(A2));%Flux_in
-B=abs(A3)/max(abs(A2));%Flux_out
+%A=A2);%/max(abs(A2));%Flux_in
+%B=abs(A3);%/max(abs(A2));%Flux_out
 
-plot(A1*f0,-A2*S0);
-axis([0 20e9 0 S0*100]);
+semilogx(A1*f0,-A2*S0);
+axis([1e7 1e10 0 2e9]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
-
+grid('on')
 
 subplot(3,1,2)
-plot(A1*f0,-A3*S0);
-axis([0 20e9 0 S0*150]);
+semilogx(A1*f0,-A3*S0);
+axis([1e7 1e10 0 3e7]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');
-
+grid('on')
 
 subplot(3,1,3)
-C=B./A;
-plot(f0*A1,C);
-axis([0 20e9 0 3]);
-ylabel('|Sout/Sin|');
+C=10*log(A2./A3);
+semilogx(f0*A1,C);
+axis([1e7 1e10 39.2 39.7]);
+ylabel('Insertion Loss (dB)');
 xlabel('frequency (Hz)');
+grid('on')
+

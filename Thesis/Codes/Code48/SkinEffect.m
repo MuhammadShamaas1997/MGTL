@@ -34,26 +34,40 @@ while ischar(l)
     i=i+1;
 end
 
+
+epsr=0.9999;
+a0=1e-4;%0.1mm
+c0=2.99792458e8;%Speed of Light (m/s)
+f0=c0/a0;%3000GHz
+t0=1/f0;%0.33e-12 (s)
+mu0=4*pi*(1e-7);% (H/m)
+eps0=8.854187817e-12;% (F/m)
+I0=1; %(A)
+E0=I0/(a0*eps0*c0);%Electric Field
+D0=I0/(a0*c0);%Electric Displacement Field
+B0=I0/(a0*eps0*c0*c0);%Magnetic Field
+H0=I0/(a0);%Magnetizing Field
+
 hold on;
 
 subplot(2,2,1)
-hold on;plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%Hx
-ylabel('H (A/m)');
+hold on;plot(-5:0.001:5-0.001,log(H0*mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6))));%Hx
+ylabel('log |H (A/m)|');
 xlabel('Length (mm)');
 
 subplot(2,2,2)
-hold on;plot(mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12)));%Hx
-ylabel('B (Wb/m^2)');
+hold on;plot(-5:0.001:5-0.001,log(B0*mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12))));%Hx
+ylabel('log |B (Wb/m^2)|');
 xlabel('Length (mm)');
 
 subplot(2,2,3)
-hold on;plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%Hx
-ylabel('E (V/m)');
+hold on;plot(-5:0.001:5-0.001,log(E0*mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18))));%Hx
+ylabel('log |E (V/m)|');
 xlabel('Length (mm)');
 
 subplot(2,2,4)
-hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%Hx
-ylabel('D (C/m^2)');
+hold on;plot(-5:0.001:5-0.001,log(D0*mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24))));%Hx
+ylabel('log |D (C/m^2)|');
 xlabel('Length (mm)');
 
 
