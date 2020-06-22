@@ -1,4 +1,4 @@
-%clc;clear all;
+clc;clear all;
 %hold on;
 %%
 f=fopen('F1.txt');
@@ -48,8 +48,8 @@ H0=I0/(a0);%Magnetizing Field
 
 %subplot(9,1,1);
 % hold on;
-% for tr=1:45
-% plot(-10:0.25:10,log((abs(Bz(tr,:))+1e-59)*B0))
+% for tr=1:5:100
+% plot(0:0.025:2,log((abs(Bz(tr,:))+1e-59)*B0))
 % pause(0.01);
 % end
 % xlabel('Length (mm)')
@@ -64,7 +64,7 @@ H0=I0/(a0);%Magnetizing Field
 
 
 
-hold on;
+%hold on;
 
 % subplot(2,1,1)
 % hold on;%plot(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));%H
@@ -73,12 +73,18 @@ hold on;
 %         %Hz=(mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6)));
 %         Hy(m)=Hy(m)*H0;
 % end
+
+
 T=t0;
 Fs=1/T;
 L=45;
 NFFT=2^nextpow2(L);
 FEx=fft(Ex(1:L,1)*E0,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
+
+
+
+
 %plot(f,2*abs(FEx(1:NFFT/2+1)));
 % plot(f,2*angle(FEx(1:NFFT/2+1)));
 % xlabel('Frequency (Hz)')
@@ -94,8 +100,11 @@ f=Fs/2*linspace(0,1,NFFT/2+1);
 %         Ey(m)=A15(m)+i*A16(m);
 %         Ey(m)=Ey(m)*E0;
 % end
+
+
 FHx=fft(Hx(1:L,1)*H0,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
+
 % plot(f,2*abs(FHx(1:NFFT/2+1)));
 % xlabel('Frequency (Hz)')
 % ylabel('|Hx(f)|');
@@ -120,27 +129,28 @@ ylabel('\Theta Z_w (f)');
 xlabel('Frequency (Hz)')
 %axis([0 10e9 -200 0])
 axis([0 1e11 -200 200])
-
-% %smithchart(z2gamma(Z,120*pi*22))
+% 
+% % %smithchart(z2gamma(Z,120*pi*22))
 % 
 % 
 Lm=(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1))./(2*pi*(f+1)');
 G=real(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1));
 Cm=imag(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1))./(2*pi*(f+1)');
+
 subplot(3,1,1)
 plot(f,abs(Lm(1:NFFT/2+1)));
 ylabel('Lm(H/m)');
 xlabel('Frequency (Hz)')
-axis([0 1e10 2e7 3e7])
+axis([0 1e11 0 2e9])
 
 subplot(3,1,2)
 plot(f,abs(G(1:NFFT/2+1)));
 ylabel('G(S/m)');
 xlabel('Frequency (Hz)')
-axis([0 1e10 0.2 0.21])
+axis([0 1e11 0 15])
 
 subplot(3,1,3)
 plot(f,abs(Cm(1:NFFT/2+1)));
 ylabel('Cm(F/m)');
 xlabel('Frequency (Hz)')
-axis([0 1e10 0.5e-3 1.5e-3])
+axis([0 1e11 0 0.05])

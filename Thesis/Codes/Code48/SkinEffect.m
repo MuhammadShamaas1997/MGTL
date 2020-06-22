@@ -51,22 +51,22 @@ H0=I0/(a0);%Magnetizing Field
 hold on;
 
 subplot(2,2,1)
-hold on;plot(-5:0.001:5-0.001,log(H0*mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6))));%Hx
+hold on;plot(0:0.0001:1-0.0001,log(H0*mag3(mag(A1,A2),mag(A3,A4),mag(A5,A6))));%Hx
 ylabel('log |H (A/m)|');
 xlabel('Length (mm)');
 
 subplot(2,2,2)
-hold on;plot(-5:0.001:5-0.001,log(B0*mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12))));%Hx
+hold on;plot(0:0.0001:1-0.0001,log(B0*mag3(mag(A7,A8),mag(A9,A10),mag(A11,A12))));%Hx
 ylabel('log |B (Wb/m^2)|');
 xlabel('Length (mm)');
 
 subplot(2,2,3)
-hold on;plot(-5:0.001:5-0.001,log(E0*mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18))));%Hx
+hold on;plot(0:0.0001:1-0.0001,log(E0*mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18))));%Hx
 ylabel('log |E (V/m)|');
 xlabel('Length (mm)');
 
 subplot(2,2,4)
-hold on;plot(-5:0.001:5-0.001,log(D0*mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24))));%Hx
+hold on;plot(0:0.0001:1-0.0001,log(D0*mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24))));%Hx
 ylabel('log |D (C/m^2)|');
 xlabel('Length (mm)');
 
