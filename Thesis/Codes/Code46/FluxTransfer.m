@@ -26,30 +26,30 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 S0=(I0*I0)/(eps0*c0*a0*a0);%//Poynting Vector
-
+sigmaD0=(epsr*eps0*c0)/a0;%Electric Conductivity
 
 hold on;
 
 subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
-B=abs(A3)/max(abs(A2));%Flux_out
+B=abs(A2)/max(abs(A3));%Flux_out
 
 plot(A1*f0,-A2*S0);
-axis([0 20e9 0 S0*100]);
+axis([0 20e9 -S0*10 S0*100]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,2)
 plot(A1*f0,-A3*S0);
-axis([0 20e9 0 S0*150]);
+axis([0 20e9 -S0*10 S0*150]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,3)
-C=B./A;
+C=A2./A3;
 plot(f0*A1,C);
-axis([0 20e9 0 3]);
-ylabel('|Sout/Sin|');
+axis([0 20e9 -1 5]);
+ylabel('Insertion Loss');
 xlabel('frequency (Hz)');
