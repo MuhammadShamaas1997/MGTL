@@ -34,22 +34,22 @@ subplot(3,1,1)
 A=abs(A2)/max(abs(A2));%Flux_in
 B=abs(A2)/max(abs(A3));%Flux_out
 
-plot(A1*f0,-A2*S0);
-axis([0 20e9 -S0*10 S0*100]);
+semilogy(A1*f0,abs(-A2*S0));
+axis([0 5e9 S0*0.01 S0*40]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,2)
-plot(A1*f0,-A3*S0);
-axis([0 20e9 -S0*10 S0*150]);
+semilogy(A1*f0,abs(-A3*S0));
+axis([0 5e9 S0*0.01 S0*25]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,3)
 C=A2./A3;
-plot(f0*A1,C);
-axis([0 20e9 -1 5]);
+plot(f0*A1,abs(C));
+axis([0 5e9 -1 5]);
 ylabel('Insertion Loss');
 xlabel('frequency (Hz)');
