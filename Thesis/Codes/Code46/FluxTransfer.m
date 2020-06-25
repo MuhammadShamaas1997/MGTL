@@ -31,25 +31,28 @@ sigmaD0=(epsr*eps0*c0)/a0;%Electric Conductivity
 hold on;
 
 subplot(3,1,1)
-A=abs(A2)/max(abs(A2));%Flux_in
-B=abs(A2)/max(abs(A3));%Flux_out
+% A=abs(A2)/max(abs(A2));%Flux_in
+% B=abs(A2)/max(abs(A3));%Flux_out
 
-semilogy(A1*f0,abs(-A2*S0));
-axis([0 5e9 S0*0.01 S0*40]);
+subplot(3,1,1)
+plot(A1*f0,abs(-A2*S0));
+axis([0 4e9 S0*0.01 S0*40]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,2)
-semilogy(A1*f0,abs(-A3*S0));
-axis([0 5e9 S0*0.01 S0*25]);
+plot(A1*f0,abs(-A3*S0));
+axis([0 4e9 S0*0.01 S0*25]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');
 
 
 subplot(3,1,3)
-C=A2./A3;
-plot(f0*A1,abs(C));
-axis([0 5e9 -1 5]);
+C=log(A2./A3);
+C=C(1:5:1000);
+A1=A1(1:5:1000);
+plot((f0*A1),(abs(C)));
+axis([0 4e9 -1 5]);
 ylabel('Insertion Loss');
 xlabel('frequency (Hz)');
