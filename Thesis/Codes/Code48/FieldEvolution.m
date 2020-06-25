@@ -32,7 +32,7 @@ while ischar(l)
 end
 
 
-epsr=0.9999;
+epsr=10;
 a0=1e-4;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
@@ -44,7 +44,7 @@ E0=I0/(a0*eps0*c0);%Electric Field
 D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
-
+sigmaD0=(epsr*eps0*c0)/a0;
 
 %subplot(9,1,1);
 % hold on;
