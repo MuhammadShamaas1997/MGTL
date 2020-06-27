@@ -41,9 +41,10 @@ double J0=I0/(a0*a0);//Electric Current Density
 double u0=(I0*I0)/(eps0*c0*c0*a0*a0);//Energy Density
 double S0=(I0*I0)/(eps0*c0*a0*a0);//Poynting Vector
 double Sc0=1/(c0);//Courant Factor
+double sig0=-500;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
-double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=100.0;
+double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=50.0;
 double wcore=2.0*dymax;
 double winding_thickness_p=01.0, insulation_thickness_p=02.5,pml_thickness=1.0;  
 //double sigma_Cu=100000000;
@@ -266,7 +267,7 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
     double dz=p.z - zcen;
 
   for (int i=0; i<corecoord; i++) {
-  	double dxp=p.x - xccoord[i];
+    double dxp=p.x - xccoord[i];
     double dyp=p.y - yccoord[i];
     double dzp=p.z - zccoord[i];    
     double drp=sqrt(dxp*dxp+dyp*dyp+dzp*dzp);
@@ -279,7 +280,7 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   // set permittivity and permeability
   double nn = in_middle ? sqrt(mu_core) : 1.0;
   double mm = in_middle ? sqrt(10.0) : 1.0;
-  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = mm * mm;
+  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = 10;
   //m->epsilon_offdiag.x.re = m->epsilon_offdiag.x.im = epsilon_offdiag.y.re = m->epsilon_offdiag.y.im = epsilon_offdiag.z.re = m->epsilon_offdiag.z.im = nn * nn;
   m->mu_diag.x = m->mu_diag.y = m->mu_diag.z = nn*nn;
 
@@ -292,28 +293,28 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   //m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = 0.0;
 
   if (in_middle)
-  {
+  {/*
     m->H_susceptibilities.num_items = 1;
     m->H_susceptibilities.items = new meep_geom::susceptibility[1];
 
     m->H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
     m->H_susceptibilities.items[0].sigma_offdiag.y = 0.0;
     m->H_susceptibilities.items[0].sigma_offdiag.z = 0.0;
-    m->H_susceptibilities.items[0].sigma_diag.x = 1e13;
-    m->H_susceptibilities.items[0].sigma_diag.y = 1e13;
-    m->H_susceptibilities.items[0].sigma_diag.z = 1e13;
+    m->H_susceptibilities.items[0].sigma_diag.x = 1e13;//(1e13)*f0*f0;
+    m->H_susceptibilities.items[0].sigma_diag.y = 1e13;//(1e13)*f0*f0;
+    m->H_susceptibilities.items[0].sigma_diag.z = 1e13;//(1e13)*f0*f0;
     m->H_susceptibilities.items[0].bias.x = 0.0;
     m->H_susceptibilities.items[0].bias.y = 0.0;
-    m->H_susceptibilities.items[0].bias.z = 1.0;
+    m->H_susceptibilities.items[0].bias.z = 0.0;
     m->H_susceptibilities.items[0].frequency = (1e9)/f0;
-    m->H_susceptibilities.items[0].gamma = 5e10;
-    m->H_susceptibilities.items[0].alpha = 0.0;
+    m->H_susceptibilities.items[0].gamma = (5e10);//*f0;
+    m->H_susceptibilities.items[0].alpha = 0;
     m->H_susceptibilities.items[0].noise_amp = 0.0;
-    m->H_susceptibilities.items[0].drude = false;
-    m->H_susceptibilities.items[0].saturated_gyrotropy = true;
+    m->H_susceptibilities.items[0].drude = true;
+    m->H_susceptibilities.items[0].saturated_gyrotropy = false;
     m->H_susceptibilities.items[0].is_file = false;
     m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = (5e-3)/sigmaD0;
-  }
+  */}
 
   for (int i=0; i<numcoord; i++) {
   double dxp=p.x - xpcoord[i];
@@ -347,19 +348,19 @@ public:
   virtual void sigma_row(component c, double sigrow[3], const vec &r) {
     (void)r; // unused
     if (component_direction(c) == X) {
-      sigrow[0] = (1e13);
-      sigrow[1] = (1e13)+1;
-      sigrow[2] = (1e13)+2;
+      sigrow[0] = sig0;
+      sigrow[1] = sig0+1;
+      sigrow[2] = sig0+2;
     }
     else if (component_direction(c) == Y) {
-      sigrow[0] = (1e13)+3;
-      sigrow[1] = (1e13)+4;
-      sigrow[2] = (1e13)+5;
+      sigrow[0] = sig0+3;
+      sigrow[1] = sig0+4;
+      sigrow[2] = sig0+5;
     }
     else {
-      sigrow[0] = (1e13)+7;
-      sigrow[1] = (1e13)+8;
-      sigrow[2] = (1e13)+9;
+      sigrow[0] = sig0+6;
+      sigrow[1] = sig0+7;
+      sigrow[2] = sig0+8;
     }
   }
 };
@@ -390,7 +391,7 @@ int main(int argc, char *argv[]) {
     //trash_output_directory(mydirname);
     double xsize=10;
     double ysize=10;
-    double zsize=220;
+    double zsize=120;
     //double xsize=6, ysize=6, zsize=6;
     
     k=2*pi*Np/(03.0);
@@ -487,29 +488,29 @@ int main(int argc, char *argv[]) {
     //m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
     //m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = 0.0;
 
-    my_medium_struct.H_susceptibilities.num_items = 1;
+    /*my_medium_struct.H_susceptibilities.num_items = 1;
     my_medium_struct.H_susceptibilities.items = new meep_geom::susceptibility[1];
 
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.z = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = 1e13;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = 1e13;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = 1e13;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = 1e13;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = 1e13;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = 1e13;//(1e13)*f0*f0;
     my_medium_struct.H_susceptibilities.items[0].bias.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.y = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].bias.z = 1.0;
-    my_medium_struct.H_susceptibilities.items[0].frequency = ((1e9)/f0);
-    my_medium_struct.H_susceptibilities.items[0].gamma = 5e10;
-    my_medium_struct.H_susceptibilities.items[0].alpha = 0.0;
+    my_medium_struct.H_susceptibilities.items[0].bias.z = 0.0;
+    my_medium_struct.H_susceptibilities.items[0].frequency = (1e9)/f0;
+    my_medium_struct.H_susceptibilities.items[0].gamma = (5e10);//*f0;
+    my_medium_struct.H_susceptibilities.items[0].alpha = 0;
     my_medium_struct.H_susceptibilities.items[0].noise_amp = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].drude = false;
-    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = true;
+    my_medium_struct.H_susceptibilities.items[0].drude = true;
+    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = false;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
-
+*/
     
     my_material_func_data data;
-    data.with_susceptibility = true;
+    data.with_susceptibility = false;
 
 
   meep_geom::material_type default_material =meep_geom::make_dielectric(1.0);     
@@ -580,7 +581,7 @@ int main(int argc, char *argv[]) {
     //lorentzian_susceptibility(double omega_0, double gamma, bool no_omega_0_denominator = false): omega_0(omega_0), gamma(gamma), no_omega_0_denominator(no_omega_0_denominator)
     */      
     anisodisp_materialH anisodispmatH;
-    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility((1e9)/f0, 1e-6));
+    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility(0.01, 1,true));
 
     fields f(& transformer);
     //fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
@@ -590,8 +591,8 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(0.01e9)/f0)
     { 
       double yp = 0.0;
       {
-        Permeability<<(fp)<<" "<<f.get_mu(vec(0.0,0.0,0.0),fp)<<endl;
-        Permittivity<<(fp)<<" "<<f.get_eps(vec(0.0,0.0,0.0),fp)<<endl;
+        Permeability<<(fp*f0)<<" "<<f.get_mu(vec(0.0,0.0,0.0),fp)<<endl;
+        Permittivity<<(fp*f0)<<" "<<f.get_eps(vec(0.0,0.0,0.0),fp)<<endl;
         //Chi1inv<<fp<<" "<<f.get_chi1inv(vec(0.0,0.0,0.0),fp)<<endl;
       }
       
@@ -611,7 +612,7 @@ for (int i=0;i<numcoord;i++)
       //for (double fr = 100000000.0; fr <= 1000000000.0; fr=fr+100000000.0)
       {
         //continuous_src_time src(cdouble(fr/f0,0.0));
-        gaussian_src_time src(fcen,df);
+        gaussian_src_time src(fcen,1/fcen,0.0,200);
         f.add_volume_source(Ex, src, vsrc1, cdouble(amplitude*cos(theta),0));
         f.add_volume_source(Ey, src, vsrc1, cdouble(-amplitude*sin(theta),0));
       }
@@ -621,11 +622,7 @@ for (int i=0;i<numcoord;i++)
     //void add_volume_source(component c, const src_time &src, const volume &, std::complex<double> amp = 1.0);
 
 
-    xcenp=xcen; 
-    ycenp=ycen-dymin-(05.0*wcore); 
-    zcenp=zcen;
     volume box1( vec(dxmax,-dymax,-dzmax), vec(-dxmax,dymax,0.0) );
-    ycenp=ycen+dymin+(0.5*wcore); 
     volume box2( vec(dxmax,-dymax,0.0), vec(-dxmax,dymax,dzmax) );
 
     fcen = (5e9)/f0; // ; pulse center frequency
@@ -786,7 +783,7 @@ int stop=0;
 
       }
 
-      if((i==20000)) 
+      if((i==1600)) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
@@ -853,7 +850,7 @@ int stop=0;
 
     cout<<"SpaceEvolution"<<endl;
     //for (double y=(ycen-dymin);y<=(ycen+dymin);y=y+0.001)
-    for (double z=-dzmax.0;z<=dzmax;z=z+1.0)  
+    for (double z=-dzmax;z<=dzmax;z=z+1.0)  
     {
       cdouble Im=compute_Im(f,z);
       cdouble Ie=compute_Ie(f,z);
