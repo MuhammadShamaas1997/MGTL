@@ -49,7 +49,7 @@ grid('on')
 
 subplot(3,1,3)
 C=10*log(A2./A3);
-semilogx(f0*A1,C);
+plot(f0*A1,C);
 %axis([1e7 1e11 39.2 39.7]);
 ylabel('Insertion Loss (dB)');
 xlabel('frequency (Hz)');

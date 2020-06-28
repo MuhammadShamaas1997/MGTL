@@ -31,12 +31,19 @@ while ischar(l)
     in=in+1;
 end
 
-hold on;
-for ti=1:5:200
-    plot((abs(Bz(ti,:))));
-    pause(.1)
-end
+% hold on;
+% for ti=1:10:256
+%     plot((abs(Bz(ti,:))));
+%     pause(1)
+% end
 
+% hold on;
+% plot(0:(2/400):2,(real(Bx(170,:))*B0));
+% plot(0:(2/400):2,(imag(Bx(170,:))*B0),'r');
+% grid('on');
+% xlabel('Distance (mm)');
+% ylabel('|Bz (Wb/m^2)|');
+% legend('Real','Imaginary')
 
 epsr=10;
 a0=1e-4;%0.1mm
@@ -54,57 +61,40 @@ sigmaD0=(epsr*eps0*c0)/a0;
 
 hold on;
 
-subplot(4,1,1)
 hold on;
 T=t0;
 Fs=1/T;
-L=200;
+L=256;
 L=2^nextpow2(L);
-% NFFT=2^nextpow2(L);
-% FHxi=(fft(Hx(1:L,5)*H0,NFFT)/L)();
-% FHxi(2:end-1)=
-% f=Fs/2*linspace(0,1,NFFT/2+1);
-
-FHxi=(fft(Hx(1:L,2)*H0,L));
+hold on
+for place=1:381
+FHxi=(fft(Hx(1:L,place)*H0,L));
 FHxi=FHxi(1:L/2+1);
-%FHxi(2:end-1)=2*FHxi(2:end-1)
 f=Fs*(0:L/2+1);
 f=f';
 
-FHxo=(fft(Hx(1:L,12)*H0,L));
+FHxo=(fft(Hx(1:L,place+20)*H0,L));
 FHxo=FHxo(1:L/2+1);
-%FHxo(2:end-1)=2*FHxo(2:end-1);
 
+Gamma=log(FHxo./FHxi)/(-(20/400)*(10e-3));
+
+% subplot(3,1,1)
 % hold on;
-% T=t0;
-% Fs=1/T;
-% L=45;
-% NFFT=2^nextpow2(L);
-% FHxo=fft(Hx(1:L,10)*H0,NFFT)/L;
-% f=Fs/2*linspace(0,1,NFFT/2+1);
-
-%plot(f,2*abs(FHyo(1:NFFT/2+1)));
+%plot(f(1:L/2+1),real(Gamma(1:L/2+1)));
+plot(f(1:L/2+1),2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1))));
+end
 % xlabel('Frequency (Hz)')
-% ylabel('|Hyo(A/m)|');
-% axis([2e9 15e9 0  1e-3])
-
-Gamma=log(FHxo./FHxi)/(-(10/80)*(2e-3));
-
-subplot(3,1,1)
-hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-plot(f(2:L/2+1),real(Gamma(2:L/2+1)));
-xlabel('Frequency (Hz)')
-ylabel('\alpha (Np.m^-^1)');
+% ylabel('\alpha (Np.m^-^1)');
 % axis([0 5e11 1.32e5 1.38e5])
 
 subplot(3,1,2)
-plot(f(2:L/2+1),abs(imag(Gamma(2:L/2+1))));
+plot(f(1:L/2+1),(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
 % axis([0 5e11 1e4 1.3e4])
 
 subplot(3,1,3)
-plot(f(2:L/2+1),f(2:L/2+1)./abs(imag(Gamma(2:L/2+1))));
+plot(f(1:L/2+1),2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1))));
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
 axis([0 5e11 0 5e7])
@@ -112,27 +102,28 @@ axis([0 5e11 0 5e7])
 
 T=t0;
 Fs=1/T;
-L=200;
+L=256;
 NFFT=2^nextpow2(L);
-FEx=fft(Ex(1:L,2)*E0,NFFT)/L;
+FEx=fft(Ex(1:L,3)*E0,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FHx=fft(Hx(1:L,2)*H0,NFFT)/L;
+FHx=fft(Hx(1:L,3)*H0,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
 Z=FEx./FHx;
 
 
 subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-plot(f(2:NFFT/2+1),2*abs(Z(2:NFFT/2+1)));
+plot(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Z_w (Ohm)|');
 % axis([0 5e11 3.3e4  3.45e4])
 
 subplot(2,1,2)
-plot(f(2:NFFT/2+1),angle(Z(2:NFFT/2+1))*(180/pi));
+plot(f(1:NFFT/2+1),angle(Z(1:NFFT/2+1))*(180/pi));
 ylabel('\Theta Z_w (deg)');
 xlabel('Frequency (Hz)');
 % axis([0 5e11 170 190])
+
 
 
 XLm=(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
@@ -147,19 +138,19 @@ xlabel('Frequency (Hz)');
 %axis([0 1e11 -5e9 5e9])
 
 subplot(3,1,1);
-plot(f(2:NFFT/2+1),(Gm(2:NFFT/2+1)));
+plot(f(1:NFFT/2+1),(Gm(1:NFFT/2+1)));
 ylabel('Conductance GL (S/m)');
 xlabel('Frequency (Hz)');
 % axis([0 5e11 -8.5 -7.5])
 
 subplot(3,1,2);
-plot(f(2:NFFT/2+1),(Rm(2:NFFT/2+1)));
+plot(f(1:NFFT/2+1),(Rm(1:NFFT/2+1)));
 ylabel('Reluctance Rmskin (1/H.m)');
 xlabel('Frequency (Hz)');
 % axis([0 5e11 0 3e13])
 
 subplot(3,1,3);
-plot(f(2:NFFT/2+1),(XCm(2:NFFT/2+1)));
+plot(f(1:NFFT/2+1),(XCm(1:NFFT/2+1)));
 ylabel('Susceptance XCL (S/m)');
 xlabel('Frequency (Hz)');
 % axis([0 5e11 0 1])
