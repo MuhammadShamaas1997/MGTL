@@ -34,14 +34,14 @@ subplot(3,1,1)
 %A=A2);%/max(abs(A2));%Flux_in
 %B=abs(A3);%/max(abs(A2));%Flux_out
 
-semilogx(A1*f0,-A2*S0);
+plot(A1*f0,-A2*S0);
 %axis([1e7 1e11 0 2e9]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
 grid('on')
 
 subplot(3,1,2)
-semilogx(A1*f0,-A3*S0);
+plot(A1*f0,-A3*S0);
 %axis([1e7 1e11 0 3e7]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');

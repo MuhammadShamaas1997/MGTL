@@ -1,31 +1,32 @@
 clc;clear all;
 %hold on;
 %%
-f=fopen('F1.txt');
+f=fopen('FieldEvolutionIn.txt');
 File=1;
 l=fgetl(f);
 in=1;
 Prev=1600*(File-1);
-while ischar(l)
+%while ischar(l)
+while (in <= (257*81))
 %for kj=1:81
     %%disp(l);
     text{in}=l;
     data{in}=sscanf(text{in},'%f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f , %f');
-    Hx(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(3)+1i*data{in}(4);
-    Hy(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(5)+1i*data{in}(6);
-    Hz(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(7)+1i*data{in}(8);
+    Hx(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(3)+1i*data{in}(4);
+    Hy(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(5)+1i*data{in}(6);
+    Hz(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(7)+1i*data{in}(8);
     
-    Bx(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(9)+1i*data{in}(10);
-    By(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(11)+1i*data{in}(12);
-    Bz(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(13)+1i*data{in}(14);
+    Bx(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(9)+1i*data{in}(10);
+    By(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(11)+1i*data{in}(12);
+    Bz(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(13)+1i*data{in}(14);
     
-    Ex(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(15)+1i*data{in}(16);
-    Ey(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(17)+1i*data{in}(18);
-    Ez(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(19)+1i*data{in}(20);
+    Ex(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(15)+1i*data{in}(16);
+    Ey(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(17)+1i*data{in}(18);
+    Ez(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(19)+1i*data{in}(20);
    
-    Dx(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(21)+1i*data{in}(22);
-    Dy(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(23)+1i*data{in}(24);
-    Dz(data{in}(1)-Prev,(((data{in}(2)+50)*4)+1))=data{in}(25)+1i*data{in}(26);
+    Dx(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(21)+1i*data{in}(22);
+    Dy(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(23)+1i*data{in}(24);
+    Dz(data{in}(1)-Prev,(((data{in}(2)+10)*4)+1))=data{in}(25)+1i*data{in}(26);
     
     l=fgetl(f);
     in=in+1;
@@ -46,7 +47,7 @@ end
 % legend('Real','Imaginary')
 
 epsr=10;
-a0=1e-4;%0.1mm
+a0=1;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -75,7 +76,7 @@ f=f';
 FHxo=(fft(Hx(1:L,3),L));
 FHxo=FHxo(1:L/2+1);
 
-Gamma=log(FHxo./FHxi)/(-(1/400)*(100*a0));
+Gamma=log(FHxo./FHxi)/(-(1/40)*(10*a0));
 
 subplot(3,1,1)
 hold on;
@@ -107,6 +108,10 @@ FHx=fft(Hx(1:L,2)*H0,NFFT)/L;
 f=Fs/2*linspace(0,1,NFFT/2+1);
 Z=FEx./FHx;
 
+for ih=1:257
+    H=[H Hz(ih,:)];
+    B=[B Bz(ih,:)];
+end
 
 subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
