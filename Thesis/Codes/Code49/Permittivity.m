@@ -22,7 +22,10 @@ t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
 
-plot(f,eps);
+loglog(f,eps);
+hold on;
+plot(f,imag(sqrt((1i*2*pi*f.*eps*mu0)./((1)+1i*2*pi*f*10*eps0))));
+
 %grid('on')
 xlabel('Frequency (Hz)')
 ylabel('Relative Permeability \mu_r')

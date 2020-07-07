@@ -46,7 +46,7 @@ end
 % legend('Real','Imaginary')
 
 epsr=10;
-a0=1;%0.1mm
+a0=1e-2;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -83,19 +83,19 @@ hold on;
 plot(f(2:L/2+1),real(Gamma(2:L/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('\alpha (Np.m^-^1)');
-%axis([1e9 1e10 710 730])
+axis([0 0.5e10 700 730])
 
 subplot(3,1,2)
 plot(f(2:L/2+1),abs(imag(Gamma(2:L/2+1))));
 ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
-%axis([1e9 1e10 215 220])
+axis([0 0.5e10 200 220])
 
 subplot(3,1,3)
 plot(f(2:L/2+1),abs(2*pi*f(2:L/2+1)./(imag(Gamma(2:L/2+1)))));
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
-%axis([1e9 1e10 0 5e8])
+axis([0 0.5e10 0 2e8])
 % X = 1/(4*sqrt(2*pi*0.01))*(exp(-t.^2/(2*0.01)));
 
 T=t0;
@@ -114,16 +114,16 @@ hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 plot(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Z_w (Ohm)|');
-%axis([1e9 1e10 114.5  114.7])
+axis([0 5e9 114.5 115])
 
 subplot(2,1,2)
 plot(f(1:NFFT/2+1),angle(Z(1:NFFT/2+1))*(180/pi));
 ylabel('\Theta Z_w (deg)');
 xlabel('Frequency (Hz)');
-%axis([1e9 1e10 -6 -5.5])
+axis([0 5e9 -5.9 -5.6])
 
 
-
+XL=(abs(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 XLm=(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 R=(real(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 Gm=(real(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1)));
@@ -134,7 +134,7 @@ subplot(2,1,1);
 plot(f,abs(XLm(1:NFFT/2+1)));
 ylabel('XLm(H/m)');
 xlabel('Frequency (Hz)');
-%axis([1e9 1e10 3.29e4 3.32e4])
+axis([0 5e9 3.05e4 3.35e4])
 
 subplot(2,1,2);
 plot(f,abs(R(1:NFFT/2+1)));
@@ -144,19 +144,19 @@ xlabel('Frequency (Hz)');
 
 
 subplot(3,1,1);
-plot(f(1:NFFT/2+1),abs(Gm(1:NFFT/2+1)));
+plot(f(2:NFFT/2+1),abs(Gm(2:NFFT/2+1)));
 ylabel('Conductance GL (S/m)');
 xlabel('Frequency (Hz)');
-%axis([1e9 1e10 6.35 6.5])
+axis([0 5e9 6.3 6.5])
 
 subplot(3,1,2);
-plot(f(1:NFFT/2+1),abs(Rm(1:NFFT/2+1)));
+plot(f(2:NFFT/2+1),abs(Rm(2:NFFT/2+1)));
 ylabel('Reluctance Rmskin (1/H.m)');
 xlabel('Frequency (Hz)');
-%axis([1e9 1e10 0 5e11])
+axis([0 5e9 0 2.5e11])
 
 subplot(3,1,3);
-plot(f(1:NFFT/2+1),abs(XCm(1:NFFT/2+1)));
+plot(f(2:NFFT/2+1),abs(XCm(2:NFFT/2+1)));
 ylabel('Susceptance XCL (S/m)');
 xlabel('Frequency (Hz)');
-%axis([1e9 1e10 1.24 1.275])
+axis([0 5e9 1.1 1.3])
