@@ -28,7 +28,7 @@ double epsr=10;
 double a0=1e-4;//0.1mm
 double c0=2.99792458e8;//Speed of Light (m/s)
 double f0=c0/a0;//300GHz
-double t0=1/f0;//0.33e-11 (s)
+double t0=1/f0;//0.33e-12 (s)
 double mu0=4*pi*(1e-7);// (H/m)
 double eps0=8.854187817e-12;// (F/m)
 double I0=1; //(A)
@@ -44,7 +44,7 @@ double Sc0=1/(c0);//Courant Factor
 double sig0=-100;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
-double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=10.0;
+double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=15.0;
 double wcore=2.0*dymax;
 double winding_thickness_p=01.0, insulation_thickness_p=02.5,pml_thickness=1.0;  
 //double sigma_Cu=100000000;
@@ -392,12 +392,12 @@ int main(int argc, char *argv[]) {
     Chi1inv.open ("Chi1inv.txt");
     //trash_output_directory(mydirname);
     double xsize=10;
-    double ysize=120;
-    double zsize=120;
+    double ysize=80;
+    double zsize=80;
     //double xsize=6, ysize=6, zsize=6;
     
     k=2*pi*Np/(03.0);
-    double z=-dzmax/2;
+    double z=-9.0;
     for (theta = 0.0; theta <= (2*pi); theta=theta+0.1)
     {
       xpcoord[numcoord]=-rp*sin(theta);
@@ -405,7 +405,7 @@ int main(int argc, char *argv[]) {
       zpcoord[numcoord]=z;
       xscoord[numcoord]=-rp*sin(theta);
       yscoord[numcoord]=rp*cos(theta);;
-      zscoord[numcoord]=z+(dzmax);
+      zscoord[numcoord]=z+18.0;
       numcoord++;
     }
 
@@ -505,9 +505,9 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.z = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = -500;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = -500;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = -500;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = -100;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = -100;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = -100;//(1e13)*f0*f0;
     my_medium_struct.H_susceptibilities.items[0].bias.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.z = 1.0;
@@ -598,7 +598,7 @@ int main(int argc, char *argv[]) {
     //fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
   
 
-for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(0.01e9)/f0)
+for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e7)/f0)
     { 
       double yp = 0.0;
       {
@@ -611,8 +611,8 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(0.01e9)/f0)
     
 
     //f_range;1e-5,1e-2
-    double fcen = (1e9)/f0; // ; pulse center frequency
-    double df = 0.999999*((1e9)/f0);    // ; df
+    double fcen = (2.5e9)/f0; // ; pulse center frequency
+    double df = 0.999999*((2.5e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,0));
     gaussian_src_time src(fcen,df);
 
@@ -632,8 +632,8 @@ for (int i=0;i<numcoord;i++)
     //void add_point_source(component c, double freq, double width, double peaktime, double cutoff, const vec &, std::complex<double> amp = 1.0, int is_continuous = 0);
     //void add_volume_source(component c, const src_time &src, const volume &, std::complex<double> amp = 1.0);
 
-    volume box1( vec(dxmax,-dymax,-dzmax), vec(-dxmax,dymax,0.0) );
-    volume box2( vec(dxmax,-dymax,0.0), vec(-dxmax,dymax,dzmax) );
+    volume box1( vec(rp,-rp,-10.0), vec(-rp,rp,-8.0) );
+    volume box2( vec(rp,-rp,8.0), vec(-rp,rp,10.0) );
 
     fcen = (5e9)/f0; // ; pulse center frequency
     df = 0.9999999*(fcen/f0);    // ; df
@@ -707,7 +707,7 @@ int stop=0;
 
        
 
-    if ((i%100)==0)
+    if ((i%1000)==0)
     {
     f.output_hdf5(Hx,vyz);
     f.output_hdf5(Hy,vyz);
@@ -725,8 +725,16 @@ int stop=0;
     f.output_hdf5(Sy,vyz);
     f.output_hdf5(Sz,vyz);
 
+    double *fl1 = flux1.flux();
+    double *fl2 = flux2.flux();
+    cout<<"Flux Harmonics"<<endl;
+    for (int i = 0; i < Nfreq; ++i) {
+      Fluxes<<(fmin + i * flux1.dfreq)<<" , "<<fl1[i]<<" , "<<fl2[i]<<endl;
+      //freq , fluxin , fluxout
+    } 
+
     }    
-       //if ((i%500)==0)
+       if (i<=257)
       {
         //cdouble Vm=compute_Vm(f,zcen);
         //cdouble Im=compute_Im(f,zcen);
@@ -789,10 +797,10 @@ int stop=0;
         FieldsIn<<i<<" , "<<z<<" , "<<H1i.real() <<" , "<<H1i.imag()<<" , "<<H2i.real()<<" , "<<H2i.imag()<<" , "<<H3i.real()<<" , "<<H3i.imag()<<" , "<<B1i.real()<<" , "<<B1i.imag()<<" , "<<B2i.real()<<" , "<<B2i.imag()<<" , "<<B3i.real()<<" , "<<B3i.imag()<<" , "<<E1i.real()<<" , "<<E1i.imag()<<" , "<<E2i.real()<<" , "<<E2i.imag()<<" , "<<E3i.real()<<" , "<<E3i.imag()<<" , "<<D1i.real()<<" , "<<D1i.imag()<<" , "<<D2i.real()<<" , "<<D2i.imag()<<" , "<<D3i.real()<<" , "<<D3i.imag()<<endl;
         //FieldsOut<<H1o.real()<<" , "<<H1o.imag()<<" , "<<H2o.real()<<" , "<<H2o.imag()<<" , "<<H3o.real()<<" , "<<H3o.imag()<<" , "<<B1o.real()<<" , "<<B1o.imag()<<" , "<<B2o.real()<<" , "<<B2o.imag()<<" , "<<B3o.real()<<" , "<<B3o.imag()<<" , "<<E1o.real()<<" , "<<E1o.imag()<<" , "<<E2o.real()<<" , "<<E2o.imag()<<" , "<<E3o.real()<<" , "<<E3o.imag()<<" , "<<D1o.real()<<" , "<<D1o.imag()<<" , "<<D2o.real()<<" , "<<D2o.imag()<<" , "<<D3o.real()<<" , "<<D3o.imag()<<endl;    
       }
-
+    
       }
 
-      if((i==(256*4))) 
+      if((i==(1e5))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;

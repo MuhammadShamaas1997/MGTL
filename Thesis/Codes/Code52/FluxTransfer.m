@@ -13,7 +13,7 @@ while ischar(l)
     i=i+1;
 end
 
-epsr=0.9999;
+epsr=10;
 a0=1e-4;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
@@ -33,23 +33,27 @@ hold on;
 subplot(3,1,1)
 %A=A2);%/max(abs(A2));%Flux_in
 %B=abs(A3);%/max(abs(A2));%Flux_out
-
-plot(A1*f0,-A2*S0);
+min=9001;
+max=10000;
+plot(A1(min:max)*f0,-A2(min:max)*S0);
 %axis([1e7 1e11 0 2e9]);
 ylabel('|Sin| (W/m^2)');
 xlabel('frequency (Hz)');
 grid('on')
 
 subplot(3,1,2)
-plot(A1*f0,-A3*S0);
+plot(A1(min:max)*f0,-A3(min:max)*S0);
 %axis([1e7 1e11 0 3e7]);
 ylabel('|Sout| (W/m^2)');
 xlabel('frequency (Hz)');
 grid('on')
 
 subplot(3,1,3)
-C=10*log(A2./A3);
-plot(f0*A1,C);
+C=(A2./A3);
+for mn=7:9
+plot(f0*A1(mn*1000+1:(mn+1)*1000),C(mn*1000+1:(mn+1)*1000));
+pause(5.0)
+end
 %axis([1e7 1e11 39.2 39.7]);
 ylabel('Insertion Loss (dB)');
 xlabel('frequency (Hz)');
