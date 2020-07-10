@@ -1,4 +1,4 @@
-%clc;clear all;
+clc;clear all;
 f=fopen('FieldEvolutionOut.txt');
 l=fgetl(f);
 in=1;
@@ -93,7 +93,7 @@ Z=FEy./FHy;
 
 subplot(2,1,1)
 hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
-%plot(f,2*abs(Z(1:NFFT/2+1)));
+plot(f,2*abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|Z(Ohm/m)|');
 axis([0.1e9 15e9 0  3e6])
@@ -102,7 +102,7 @@ axis([0.1e9 15e9 0  3e6])
 % hold on;plot(mag3(mag(A19,A20),mag(A21,A22),mag(A23,A24)));%D
 
 subplot(2,1,2)
-%plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
+plot(f,2*angle(Z(1:NFFT/2+1))*(180/pi),'.-');
 ylabel('\Theta Z(f)');
 xlabel('Frequency (Hz)')
 axis([0.1e9 15e9 -200  200])

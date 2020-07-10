@@ -46,7 +46,7 @@ loglog(f,eps);
 % hold on;
 figure;
 subplot(2,2,1);
-g=(sqrt((1i*2*pi*w.*mu*mu0).*((5e-3)+1i*2*pi*w*10*eps0)));
+g=(sqrt((1i*2*pi*w.*mu*mu0).*((0)+1i*2*pi*w*10*eps0)));
 plot(w,abs(real(g)));
 subplot(2,2,1);
 xlabel('Frequency (Hz)');ylabel('Attenuation Constant \alpha');
@@ -55,7 +55,7 @@ plot(w,abs(imag(g)));
 xlabel('Frequency (Hz)');ylabel('Phase Constant \beta');
 
 
-eta=(sqrt((1i*2*pi*w.*mu*mu0)./((5e-3)+1i*2*pi*w*10*eps0)));
+eta=(sqrt((1i*2*pi*w.*mu*mu0)./((0)+1i*2*pi*w*10*eps0)));
 subplot(2,2,3);
 plot(w,abs(eta));
 xlabel('Frequency (Hz)');ylabel('Intrinsic Impedance \eta');

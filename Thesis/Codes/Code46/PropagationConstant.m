@@ -69,7 +69,7 @@ while ischar(l)
     in=in+1;
 end
 
-epsr=0.9999;
+epsr=10;
 a0=1e-4;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
