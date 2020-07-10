@@ -41,7 +41,7 @@ double J0=I0/(a0*a0);//Electric Current Density
 double u0=(I0*I0)/(eps0*c0*c0*a0*a0);//Energy Density
 double S0=(I0*I0)/(eps0*c0*a0*a0);//Poynting Vector
 double Sc0=1/(c0);//Courant Factor
-double sig0=-100;
+double sig0=-20;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
 double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=15.0;
@@ -280,7 +280,7 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   // set permittivity and permeability
   double nn = in_middle ? sqrt(mu_core) : 1.0;
   double mm = in_middle ? sqrt(1.0) : 1.0;
-  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = 10;
+  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = 1.0;
   //m->epsilon_offdiag.x.re = m->epsilon_offdiag.x.im = epsilon_offdiag.y.re = m->epsilon_offdiag.y.im = epsilon_offdiag.z.re = m->epsilon_offdiag.z.im = nn * nn;
   m->mu_diag.x = m->mu_diag.y = m->mu_diag.z = nn*nn;
 
