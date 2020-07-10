@@ -47,7 +47,7 @@ end
 % legend('Real','Imaginary')
 
 epsr=1;
-a0=1e-2;%0.1mm
+a0=1e-4;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -63,14 +63,14 @@ sigmaD0=(epsr*eps0*c0)/a0;
 hold on;
 T=t0;
 Fs=1/T;
-L=256/2;
+L=256/1;
 L=2^nextpow2(L);
 hold on;
 f=Fs/2*linspace(0,1,L/2+1);
-FHxi=(fft(Hx(1:L,49),L));
-FHxo=(fft(Hx(1:L,50),L));
+FHxi=(fft(Hx(1:L,60),L));
+FHxo=(fft(Hx(1:L,61),L));
 
-Gamma=log(FHxo./FHxi)/(-(1/120)*(.30*a0));
+Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
 Gamma(1)=0;
 
 subplot(3,1,1)
@@ -97,11 +97,11 @@ xlabel('Frequency (Hz)')
 
 T=t0;
 Fs=1/T;
-L=256/2;
+L=256/1;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft(Ex(1:L,50)*E0,NFFT)/L;
-FHx=fft(Hx(1:L,50)*H0,NFFT)/L;
+FEx=fft(Ex(1:L,60)*E0,NFFT)/L;
+FHx=fft(Hx(1:L,60)*H0,NFFT)/L;
 Z=FEx./FHx;
 
 figure;
@@ -116,7 +116,7 @@ subplot(2,1,2)
 plot(f(1:NFFT/2+1),angle(Z(1:NFFT/2+1))*(180/pi));
 ylabel('\Theta Z_w (deg)');
 xlabel('Frequency (Hz)');
-axis([0 1e10 -200 200])
+%axis([0 1e10 -200 200])
 
 
 
