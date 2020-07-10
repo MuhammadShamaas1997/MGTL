@@ -31,11 +31,11 @@ while ischar(l)
     in=in+1;
 end
 
-% hold on;
-% for ti=1:10:256
-%     plot((abs(Bz(ti,:))));
-%     pause(1)
-% end
+hold on;
+for ti=1:10:256
+    plot((abs(Bz(ti,:))));
+    pause(.1)
+end
 
 % hold on;
 % plot(0:(2/400):2,(real(Bx(170,:))*B0));

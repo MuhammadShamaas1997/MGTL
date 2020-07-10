@@ -32,7 +32,7 @@ while (in <= (257*81))
     in=in+1;
 end
 
- hold on;
+
 for t=1:128
 plot(real(Bz(t,:)));hold on; plot(imag(Bz(t,:)));
 pause(0.1);
@@ -68,15 +68,15 @@ Fs=1/T;
 L=128;
 L=2^nextpow2(L);
 hold on
-FHxi=(fft(Hx(1:L,30),L));
+FHxi=(fft(Hx(1:L,40),L));
 FHxi=FHxi(1:L/2+1);
-f=Fs*(0:L/2+1);
+f=Fs/2*linspace(0,1,L/2+1);
 f=f';
 
-FHxo=(fft(Hx(1:L,31),L));
+FHxo=(fft(Hx(1:L,41),L));
 FHxo=FHxo(1:L/2+1);
 
-Gamma=log(FHxo./FHxi)/(-(1/120)*(30*a0));
+Gamma=log(FHxo./FHxi)/(-(1/120)*(0.30*a0));
 
 subplot(3,1,1)
 hold on;
@@ -91,6 +91,7 @@ ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
 %axis([0 5e9 1e4 1.3e4])
 
+f=f';
 subplot(3,1,3)
 plot(f(2:L/2+1),2*pi*f(2:L/2+1)./(imag(Gamma(2:L/2+1))));
 ylabel('vp (m.s^-^1)');
