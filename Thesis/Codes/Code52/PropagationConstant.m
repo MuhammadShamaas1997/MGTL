@@ -77,6 +77,7 @@ FHxo=(fft(Hx(1:L,41),L));
 FHxo=FHxo(1:L/2+1);
 
 Gamma=log(FHxo./FHxi)/(-(1/120)*(0.30*a0));
+Gamma(1)=0;
 
 subplot(3,1,1)
 hold on;
