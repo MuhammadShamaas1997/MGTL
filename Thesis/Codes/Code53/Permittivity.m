@@ -1,5 +1,5 @@
 clc;clear all;
-fi=fopen('Permeability.txt');
+fi=fopen('Permittivity.txt');
 l=fgetl(fi);
 in=1;
 while ischar(l)

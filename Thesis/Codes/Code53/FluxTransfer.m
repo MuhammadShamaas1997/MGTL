@@ -14,7 +14,7 @@ while ischar(l)
 end
 
 epsr=10;
-a0=1e-4;%0.1mm
+a0=1e-2;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -49,7 +49,7 @@ xlabel('frequency (Hz)');
 grid('on')
 
 subplot(3,1,3)
-C=(10*log10(A2./A3));
+C=((A2./A3));
 plot(f0*A1(min:max),C(min:max));
 %axis([1e7 1e11 39.2 39.7]);
 ylabel('Insertion Loss (dB)');
