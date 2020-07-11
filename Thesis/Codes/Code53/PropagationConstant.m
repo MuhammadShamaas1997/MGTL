@@ -33,7 +33,7 @@ while ischar(l)
 end
 
 
-for t=1:10:128
+for t=1:1:128*2
 plot(imag(Bz(t,:)));hold on;
 pause(0.1);
 end
@@ -62,11 +62,11 @@ sigmaD0=(epsr*eps0*c0)/a0;
 
 T=t0;
 Fs=1/T;
-L=256/2;
+L=256*2;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
-FHxi=(fft(Hx(1:L,60),L));
-FHxo=(fft(Hx(1:L,61),L));
+FHxi=(fft(Hy(1:L,30),L));
+FHxo=(fft(Hy(1:L,31),L));
 
 Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
 Gamma(1)=0;
@@ -114,17 +114,17 @@ plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 %hold on; plot(f(1:L/2+1),(3e8),'r');
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
-%axis([0 5e9 0 2e8])
+axis([0 f(L/2+1) 0 5e8])
 
 % X = 1/(4*sqrt(2*pi*0.01))*(exp(-t.^2/(2*0.01)));
 
 T=t0;
 Fs=1/T;
-L=256/2;
+L=256*2;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft(Ex(1:L,60)*E0,NFFT)/L;
-FHx=fft(Hx(1:L,60)*H0,NFFT)/L;
+FEx=fft(Ex(1:L,30)*E0,NFFT)/L;
+FHx=fft(Hx(1:L,30)*H0,NFFT)/L;
 Z=FEx./FHx;
 
 figure;
