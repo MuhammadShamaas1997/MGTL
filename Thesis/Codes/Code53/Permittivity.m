@@ -1,5 +1,5 @@
 clc;clear all;
-fi=fopen('Permittivity.txt');
+fi=fopen('Permeability.txt');
 l=fgetl(fi);
 in=1;
 while ischar(l)
@@ -23,6 +23,7 @@ mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
 
 loglog(f,eps);
-grid('on')
+grid('off')
 xlabel('Frequency (Hz)')
 ylabel('Relative Permeability \mu_r')
+axis([1e8 1e10 0.1 1e3])

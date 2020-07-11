@@ -46,7 +46,7 @@ end
 % ylabel('|Bz (Wb/m^2)|');
 % legend('Real','Imaginary')
 
-epsr=1;
+epsr=10;
 a0=1e-2;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
@@ -67,10 +67,10 @@ L=256/2;
 L=2^nextpow2(L);
 hold on;
 f=Fs/2*linspace(0,1,L/2+1);
-FHxi=(fft(Hx(1:L,49),L));
-FHxo=(fft(Hx(1:L,50),L));
+FHxi=(fft(Hx(1:L,40),L));
+FHxo=(fft(Hx(1:L,41),L));
 
-Gamma=log(FHxo./FHxi)/(-(1/120)*(.30*a0));
+Gamma=log(FHxo./FHxi)/(-(1/120)*(0.30*a0));
 Gamma(1)=0;
 
 subplot(3,1,1)
@@ -78,20 +78,20 @@ hold on;
 plot(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
 xlabel('Frequency (Hz)')
 ylabel('\alpha (Np.m^-^1)');
-%axis([0 1e10 0 2e3])
+axis([0 1e10 0 2e4])
 
 subplot(3,1,2)
-plot(f(1:L/2+1),(imag(Gamma(1:L/2+1))));
+plot(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
-%axis([0 1e10 0 2e4])
+axis([0 1e10 0 2e4])
 
 f=f';
 subplot(3,1,3)
-plot(f(1:L/2+1),2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1))));
+plot(f(1:L/2+1),2*pi*f(1:L/2+1)./abs(imag(Gamma(1:L/2+1))));
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
-%axis([0 1e10 0 3e8])
+axis([0 1e10 0 3e8])
 
 % X = 1/(4*sqrt(2*pi*0.01))*(exp(-t.^2/(2*0.01)));
 
@@ -100,8 +100,8 @@ Fs=1/T;
 L=256/2;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft(Ex(1:L,50)*E0,NFFT)/L;
-FHx=fft(Hx(1:L,50)*H0,NFFT)/L;
+FEx=fft(Ex(1:L,40)*E0,NFFT)/L;
+FHx=fft(Hx(1:L,40)*H0,NFFT)/L;
 Z=FEx./FHx;
 
 figure;
