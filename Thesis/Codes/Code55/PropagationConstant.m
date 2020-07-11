@@ -67,8 +67,8 @@ obs=60;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
-FHxi=(fft(Hy(1:L,obs),L));
-FHxo=(fft(Hy(1:L,obs+1),L));
+FHxi=(fft(Hx(1:L,obs),L));
+FHxo=(fft(Hx(1:L,obs+1),L));
 
 Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
 Gamma(1)=0;
@@ -87,7 +87,7 @@ figure
 subplot(2,1,1)
 plot(f(1:L/2+1),abs(FHxi(1:L/2+1)))
 xlabel('Frequency (s)');ylabel('|Hy (jw)|')
-axis([0 1e9 0 1e4])
+axis([0 1e9 0 0.15e4])
 subplot(2,1,2)
 plot(f(1:L/2+1),angle(FHxi(1:L/2+1))*(180/pi))
 xlabel('Frequency (s)');ylabel('\theta Hy (jw)')
@@ -95,20 +95,20 @@ axis([0 1e9 -200 200])
 
 
 figure;
-subplot(3,1,1)
+subplot(2,1,1)
 hold on;
 plot(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 xlabel('Frequency (Hz)')
 ylabel('\alpha (Np.m^-^1)');
-axis([0 1e9 0 2e2])
+axis([0 1e9 0 120])
 
-subplot(3,1,2)
+subplot(2,1,2)
 plot(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
-axis([0 1e9 0 2e2])
+axis([0 1e9 0 120])
 
 f=f';
 subplot(3,1,3)
