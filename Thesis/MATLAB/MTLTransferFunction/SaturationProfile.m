@@ -49,31 +49,31 @@
 % xlabel('H (A/m)');
 % ylabel('B (T)');
 
-% subplot(2,3,1)
-% plot(ScopeData5.time,ScopeData5.signals(1,1).values)
-% xlabel('Time (s)');ylabel('Speed (rpm)');%axis([0 0.04 0 2500]);
-% subplot(2,3,2)
-% plot(ScopeData5.time,ScopeData5.signals(1,2).values)
-% xlabel('Time (s)');ylabel('IFshunt (A)');%axis([0 0.04 2 5]);
-% subplot(2,3,3)
-% plot(ScopeData5.time,ScopeData5.signals(1,3).values)
-% xlabel('Time (s)');ylabel('IFSeries (A)');%axis([0 0.04 20 65]);
-% subplot(2,3,4)
-% plot(ScopeData5.time,ScopeData5.signals(1,4).values)
-% xlabel('Time (s)');ylabel('Net MMF(A.t)');%axis([0 0.04 2000 6500]);
-% subplot(2,3,5)
-% plot(ScopeData5.time,ScopeData5.signals(1,5).values)
-% xlabel('Time (s)');ylabel('Net EMF(V)');%axis([0 0.04 50 175]);
-% subplot(2,3,6)
-% plot(ScopeData5.time,ScopeData5.signals(1,6).values)
-% xlabel('Time (s)');ylabel('Terminal Voltage (V)');%axis([0 0.04 50 150]);
-
-subplot(2,1,1)
-mmf=ScopeData5.signals(1,1).values;
-emf=ScopeData5.signals(1,5).values;
-plot(mmf,emf);
-ylabel('Generated EMF (V)');xlabel('Net MMF (A)');
-%axis([400 2200 0 150]);
-subplot(2,1,2)
-plot(ScopeData5.time,ScopeData5.signals(1,5).values)
+subplot(2,3,1)
+stairs(0:0.01:0.06,1000:250:2500);
+xlabel('Time (s)');ylabel('Speed (rpm)');%axis([0 0.04 0 2500]);
+subplot(2,3,2)
+plot(IF.time,IF.signals().values)
+xlabel('Time (s)');ylabel('IFshunt (A)');%axis([0 0.04 2 5]);
+subplot(2,3,3)
+plot(IA.time,IA.signals().values)
+xlabel('Time (s)');ylabel('IFSeries (A)');%axis([0 0.04 20 65]);
+subplot(2,3,4)
+plot(PermeanceVm.time,PermeanceVm.signals().values)
+xlabel('Time (s)');ylabel('Net MMF(A.t)');%axis([0 0.04 2000 6500]);
+subplot(2,3,5)
+plot(EA.time,EA.signals().values)
+xlabel('Time (s)');ylabel('Net EMF(V)');%axis([0 0.04 50 175]);
+subplot(2,3,6)
+plot(VT.time,VT.signals().values)
 xlabel('Time (s)');ylabel('Terminal Voltage (V)');%axis([0 0.04 50 150]);
+
+% subplot(2,1,1)
+% mmf=ScopeData5.signals(1,1).values;
+% emf=ScopeData5.signals(1,5).values;
+% plot(mmf,emf);
+% ylabel('Generated EMF (V)');xlabel('Net MMF (A)');
+%axis([400 2200 0 150]);
+% subplot(2,1,2)
+% plot(ScopeData5.time,ScopeData5.signals(1,5).values)
+% xlabel('Time (s)');ylabel('Terminal Voltage (V)');%axis([0 0.04 50 150]);
