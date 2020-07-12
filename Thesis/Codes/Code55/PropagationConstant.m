@@ -67,8 +67,8 @@ obs=60;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
-FHxi=(fft(Hx(1:L,obs),L));
-FHxo=(fft(Hx(1:L,obs+1),L));
+FHxi=(fft(Hy(1:L,obs),L));
+FHxo=(fft(Hy(1:L,obs+1),L));
 
 Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
 Gamma(1)=0;
@@ -118,6 +118,11 @@ ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
 axis([0 1e9 0 4e8])
 
+FHxi=(fft(Hx(1:L,obs),L));
+FHxo=(fft(Hx(1:L,obs+1),L));
+Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
+Gamma(1)=0;
+
 % X = 1/(4*sqrt(2*pi*0.01))*(exp(-t.^2/(2*0.01)));
 
 T=t0;
@@ -148,7 +153,7 @@ axis([0 1e9 -200 200])
 Zimag=abs(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 Zreal=abs(real(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 Zabs=abs((Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
-Zangle=(angle((Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)))*(180/pi));
+Zangle=abs(angle((Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)))*(180/pi));
 Gm=abs(real(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1)));
 Rm=abs((Gm')*(-1).*(2*pi*f));%Reluctance
 XCm=abs(imag(Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1)));
@@ -163,7 +168,7 @@ xlabel('Frequency (Hz)');
 axis([0 1e9 0 2e5])
 
 subplot(2,1,2);
-plot(f,(Zangle(1:NFFT/2+1)),'r');
+plot(f,(Zangle(1:NFFT/2+1)));
 ylabel('\theta Z (Degree)');
 xlabel('Frequency (Hz)');
 axis([0 1e9 -200 200])
@@ -194,7 +199,7 @@ xlabel('Frequency (Hz)');
 axis([0 1e9 0 0.5])
 
 subplot(2,1,2);
-plot(f,(Yangle(1:NFFT/2+1)),'r');
+plot(f,(Yangle(1:NFFT/2+1)));
 ylabel('\theta Y (Degree)');
 xlabel('Frequency (Hz)');
 axis([0 1e9 -200 200])
