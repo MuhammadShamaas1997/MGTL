@@ -33,8 +33,8 @@ hold on;
 subplot(3,1,1)
 %A=A2);%/max(abs(A2));%Flux_in
 %B=abs(A3);%/max(abs(A2));%Flux_out
-min=0001;
-max=1000;
+min=1001;
+max=2000;
 plot(A1(min:max)*f0,-A2(min:max)*S0);
 %axis([0 1.5e9 0 2e9]);
 ylabel('|Sin| (W/m^2)');
