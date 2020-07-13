@@ -48,7 +48,7 @@ end
 
 epsr=1;
 a0=1e-1;%0.1mm
-c0=2.99792458e8;%Speed of Light (m/s)
+c0=3e8;%2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
@@ -76,18 +76,18 @@ Gamma(1)=0;
 figure;
 subplot(2,1,1)
 hold on;
-plot(t0*(1:L),real(Hy(1:L,obs)));
+plot(t0*(1:L),real(Hy(1:L,obs)))*H0;
 xlabel('Time (s)');ylabel('Real Hy(t)')
 subplot(2,1,2)
 hold on;
-plot(t0*(1:L),imag(Hy(1:L,obs)));
+plot(t0*(1:L),imag(Hy(1:L,obs))*H0);
 xlabel('Time (s)');ylabel('Imaginary Hy(t)')
 
 figure
 subplot(2,1,1)
 plot(f(1:L/2+1),abs(FHxi(1:L/2+1)))
 xlabel('Frequency (s)');ylabel('|Hy (jw)|')
-axis([0 1e9 0 0.15e4])
+axis([0 1e9 0 0.2e4])
 subplot(2,1,2)
 plot(f(1:L/2+1),angle(FHxi(1:L/2+1))*(180/pi))
 xlabel('Frequency (s)');ylabel('\theta Hy (jw)')
