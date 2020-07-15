@@ -15,15 +15,20 @@ while ischar(l)
 end
 
 epsr=0.9999;
-a0=1e-4;%0.1mm
+a0=1e-1;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
 
-loglog(f,eps);
-grid('off')
-xlabel('Frequency (Hz)')
-ylabel('Relative Permeability \mu_r')
-axis([7e7 1e10 0.1 1e4])
+% loglog(f,eps);
+% grid('off')
+% xlabel('Frequency (Hz)')
+% ylabel('Relative Permeability \mu_r')
+% axis([7e7 1e10 0.1 1e4])
+
+f0=0.5;sigma=1000;gamma=1;mu0=1;ind=1;
+f=1e-5:1e-5:1
+mur=mu0+(sigma.*f0.*f0)./(-f.*f-1i*gamma*f);
+plot(f,real(mur));

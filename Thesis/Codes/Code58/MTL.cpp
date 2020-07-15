@@ -25,9 +25,9 @@ typedef std::complex<double> cdouble;
 
 double epsr=10;
 //SI Conversion Factors
-double a0=1e-4;//0.1mm
+double a0=1e-1;//0.1m
 double c0=2.99792458e8;//Speed of Light (m/s)
-double f0=c0/a0;//300GHz
+double f0=c0/a0;//3GHz
 double t0=1/f0;//0.33e-12 (s)
 double mu0=4*pi*(1e-7);// (H/m)
 double eps0=8.854187817e-12;// (F/m)
@@ -41,7 +41,7 @@ double J0=I0/(a0*a0);//Electric Current Density
 double u0=(I0*I0)/(eps0*c0*c0*a0*a0);//Energy Density
 double S0=(I0*I0)/(eps0*c0*a0*a0);//Poynting Vector
 double Sc0=1/(c0);//Courant Factor
-double sig0=-20;
+double sig0=-10000;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
 double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=15.0;
@@ -53,7 +53,7 @@ int Np=1;//must be odd
 int Ns=1;//must be odd
 double margin=02.0;   
 double amplitude=1.0;
-double divisions=2;
+double divisions=3;
 
 int numcoord=0;
 int corecoord=0;
@@ -313,8 +313,8 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
     m->H_susceptibilities.items[0].drude = true;
     m->H_susceptibilities.items[0].saturated_gyrotropy = false;
     m->H_susceptibilities.items[0].is_file = false;
-    m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = (5e-3)/sigmaD0;
-  */}
+    */m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = (5e-3)/sigmaD0;
+  }
 
   for (int i=0; i<numcoord; i++) {
   double dxp=p.x - xpcoord[i];
@@ -392,8 +392,8 @@ int main(int argc, char *argv[]) {
     Chi1inv.open ("Chi1inv.txt");
     //trash_output_directory(mydirname);
     double xsize=10;
-    double ysize=80;
-    double zsize=80;
+    double ysize=40;
+    double zsize=40;
     //double xsize=6, ysize=6, zsize=6;
     
     k=2*pi*Np/(03.0);
@@ -592,13 +592,13 @@ int main(int argc, char *argv[]) {
     //lorentzian_susceptibility(double omega_0, double gamma, bool no_omega_0_denominator = false): omega_0(omega_0), gamma(gamma), no_omega_0_denominator(no_omega_0_denominator)
     */      
     anisodisp_materialH anisodispmatH;
-    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility(0.01, 1,true));
+    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility(0.0001, 0.0001,true));
 
     fields f(& transformer);
     //fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
   
 
-for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e6)/f0)
+for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e5)/f0)
     { 
       double yp = 0.0;
       {
@@ -707,7 +707,7 @@ int stop=0;
 
        
 
-    if ((i%500)==0)
+    if ((i%250)==0)
     {
     f.output_hdf5(Hx,vyz);
     f.output_hdf5(Hy,vyz);
@@ -728,10 +728,21 @@ int stop=0;
     double *fl1 = flux1.flux();
     double *fl2 = flux2.flux();
     cout<<"Flux Harmonics"<<endl;
-    for (int i = 0; i < Nfreq; ++i) {
-      Fluxes<<(fmin + i * flux1.dfreq)<<" , "<<fl1[i]<<" , "<<fl2[i]<<endl;
+    for (int n = 0; n < Nfreq; ++n) {
+      Fluxes<<(fmin + n * flux1.dfreq)<<" , "<<fl1[n]<<" , "<<fl2[n]<<endl;
       //freq , fluxin , fluxout
-    } 
+    }
+
+    /*cout<<"SpaceEvolution"<<endl;
+    //for (double y=(ycen-dymin);y<=(ycen+dymin);y=y+0.001)
+    for (double z=-dzmax;z<=dzmax;z=z+1/(2*divisions))  
+    {
+      cdouble Im=compute_Im(f,z);
+      cdouble Vm=compute_Vm(f,z);
+      Space<<i<<" , "<<z<<" , "<<Im.real()<<" , "<<Im.imag()<<" , "<<Vm.real()<<" , "<<Vm.imag()<<endl;
+      //Im , Vm , Ie , Ve
+    }*/
+ 
 
     }    
        if (i<=1000)
