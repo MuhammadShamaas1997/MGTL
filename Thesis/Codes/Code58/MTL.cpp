@@ -52,7 +52,7 @@ double mu_core=1.0;
 int Np=1;//must be odd
 int Ns=1;//must be odd
 double margin=02.0;   
-double amplitude=1.0;
+double amplitude=1e-6;
 double divisions=3;
 
 int numcoord=0;
