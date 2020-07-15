@@ -64,35 +64,36 @@ sigmaD0=(epsr*eps0*c0)/a0;
 
 T=t0;
 Fs=1/T;
-L=256/4;
-obs=30;
+L=256/2;
+obs=90;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
-FHxi=(fft(Hy(1:L,obs),L));
-FHxo=(fft(Hy(1:L,obs+1),L));
+Hx(1:L,obs)=Hx(1:L,obs)-mean(Hx(1:L,obs));
+FHxi=(fft(Hx(1:L,obs),L));
+FHxo=(fft(Hx(1:L,obs+1),L));
 
-Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
+Gamma=log(FHxo./FHxi)/(-(1/180)*(030*a0));
 Gamma(1)=0;
 
 figure;
 subplot(2,1,1)
 hold on;
-plot(t0*(1:L),real(Hy(1:L,obs)))*H0;
-xlabel('Time (s)');ylabel('Real Hy(t)')
+plot(t0*(1:L),real(Hx(1:L,obs))*H0);
+xlabel('Time (s)');ylabel('Real Hx(t)')
 subplot(2,1,2)
 hold on;
-plot(t0*(1:L),imag(Hy(1:L,obs))*H0);
-xlabel('Time (s)');ylabel('Imaginary Hy(t)')
+plot(t0*(1:L),imag(Hx(1:L,obs))*H0);
+xlabel('Time (s)');ylabel('Imaginary Hx(t)')
 
 figure
 subplot(2,1,1)
-loglog(f(1:L/2+1),abs(FHxi(1:L/2+1)))
-xlabel('Frequency (s)');ylabel('|Hy (jw)|')
+plot(f(1:L/2+1),abs(FHxi(1:L/2+1)))
+xlabel('Frequency (s)');ylabel('|Hx (jw)|')
 %axis([0 1e9 0 0.2e4])
 subplot(2,1,2)
 plot(f(1:L/2+1),angle(FHxi(1:L/2+1))*(180/pi))
-xlabel('Frequency (s)');ylabel('\theta Hy (jw)')
+xlabel('Frequency (s)');ylabel('\theta Hx (jw)')
 %axis([0 1e9 -200 200])
 
 
@@ -118,12 +119,12 @@ plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 %hold on; plot(f(1:L/2+1),(3e8),'r');
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
-%axis([0 1e9 0 4e8])
+axis([0 1e9 0 5e8])
 
-FHxi=(fft(Hx(1:L,obs),L));
-FHxo=(fft(Hx(1:L,obs+1),L));
-Gamma=log(FHxo./FHxi)/(-(1/120)*(030*a0));
-Gamma(1)=0;
+% FHxi=(fft(Hx(1:L,obs),L));
+% FHxo=(fft(Hx(1:L,obs+1),L));
+% Gamma=log(FHxo./FHxi)/(-(1/180)*(030*a0));
+% Gamma(1)=0;
 
 % X = 1/(4*sqrt(2*pi*0.01))*(exp(-t.^2/(2*0.01)));
 
@@ -132,9 +133,10 @@ Gamma(1)=0;
 % L=256/4;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft(Ex(1:L,obs)*E0,NFFT)/L;
-FHx=fft(Hx(1:L,obs)*H0,NFFT)/L;
+FEx=fft(Ex(1:L,obs),NFFT)/L;
+FHx=fft(Hx(1:L,obs),NFFT)/L;
 Z=FEx./FHx;
+Z=Z*377;
 
 figure;
 subplot(2,1,1)
@@ -142,7 +144,7 @@ hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 plot(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|\eta| (Ohm)');
-%axis([0 1e9 0 5000])
+axis([1e8 0.5e9 0 100000])
 
 subplot(2,1,2)
 plot(f(1:NFFT/2+1),(angle(Z(1:NFFT/2+1))*(180/pi)));
