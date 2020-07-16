@@ -477,12 +477,12 @@ int main(int argc, char *argv[]) {
     my_medium_struct.mu_offdiag.y=mu_core;
     my_medium_struct.mu_offdiag.z=mu_core;
     */
-    my_medium_struct.H_chi2_diag.x=1;
-    my_medium_struct.H_chi2_diag.y=1;
-    my_medium_struct.H_chi2_diag.z=1;
-    my_medium_struct.H_chi3_diag.x=1;
-    my_medium_struct.H_chi3_diag.y=1;
-    my_medium_struct.H_chi3_diag.z=1;
+    my_medium_struct.H_chi2_diag.x=10;
+    my_medium_struct.H_chi2_diag.y=10;
+    my_medium_struct.H_chi2_diag.z=10;
+    my_medium_struct.H_chi3_diag.x=10;
+    my_medium_struct.H_chi3_diag.y=10;
+    my_medium_struct.H_chi3_diag.z=10;
 
     my_medium_struct.E_chi2_diag.x=0.0;
     my_medium_struct.E_chi2_diag.y=0.0;
@@ -614,7 +614,7 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e5)/f0)
     double fcen = (100e9)/f0; // ; pulse center frequency
     double df = 0.999999*((100e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,df));
-    gaussian_src_time src(fcen,df,0.0,250.0);
+    gaussian_src_time src(fcen,df,0.0,100.0);
 
 for (int i=0;i<numcoord;i++)
     {
@@ -745,7 +745,7 @@ int stop=0;
  
 
     }    
-       if (i<=1000)
+       //if (i<=1000)
       {
         //cdouble Vm=compute_Vm(f,zcen);
         //cdouble Im=compute_Im(f,zcen);
@@ -811,7 +811,7 @@ int stop=0;
     
       }
 
-      if((i==(550))) 
+      if((i==(100*8))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
