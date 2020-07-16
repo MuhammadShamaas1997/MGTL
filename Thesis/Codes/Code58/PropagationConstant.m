@@ -61,15 +61,31 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
+muinf=1;gamma=.0001;fn=.0001;sigma=-10000;
+fr=0:1e-4:(1/3); 
+mur=muinf+(sigma.*fn.*fn)./(-fr.*fr-1i*gamma*fr);
+cf=(1+((fr*f0)./(0.2e6)).*((fr*f0)./(0.2e6)));
+mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((fr*f0)/(0.2e6));
+fr=fr*f0;mur=mur*mu0;sigma=5e-3;eps=(1*eps0)-1i*(sigma./(2*pi*fr));
+gammaor=1i.*2.*pi.*fr.*sqrt(mur.*eps);
+etaor=sqrt(mur./eps);
+Zor=gammaor.*etaor;Yor=gammaor./etaor;
+alphaor=real(gammaor);betaor=imag(gammaor);vpor=(2.*pi.*fr)./betaor;
+
+
+figure;
+subplot(2,1,1);loglog(fr*f0,real(mur));title('Real \mu');
+subplot(2,1,2);loglog(fr*f0,imag(mur));title('Imaginary \mu');
+
 
 T=t0;
 Fs=1/T;
-L=256/2;
-obs=30;
+L=128;
+obs=90;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
-Hx(1:L,obs)=Hx(1:L,obs)-mean(Hx(1:L,obs));
+%Hx(1:L,obs)=Hx(1:L,obs)-mean(Hx(1:L,obs));
 FHxi=(fft(Hx(1:L,obs),L));
 FHxo=(fft(Hx(1:L,obs+1),L));
 
@@ -113,6 +129,11 @@ ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
 %axis([0 1e9 0 120])
 
+figure;hold on;
+subplot(2,1,1);semilogx(fr,alphaor);title('alpha');
+subplot(2,1,2);semilogx(fr,betaor);title('beta');
+
+
 figure
 f=f';
 plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
@@ -120,6 +141,10 @@ plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
 axis([0 1e9 0 5e8])
+
+figure;
+semilogx(fr,vpor);title('vp');
+
 
 % FHxi=(fft(Hx(1:L,obs),L));
 % FHxo=(fft(Hx(1:L,obs+1),L));
@@ -153,6 +178,9 @@ ylabel('\Theta \eta (Degree)');
 xlabel('Frequency (Hz)');
 %axis([0 1e9 -200 200])
 
+figure;hold on;
+subplot(2,1,1);semilogx(fr,abs(etaor));title('\eta');
+subplot(2,1,2);semilogx(fr,angle(etaor)*(180/pi));title('theta \eta');
 
 
 Zimag=abs(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
@@ -177,6 +205,10 @@ plot(f,(Zangle(1:NFFT/2+1)));
 ylabel('\theta Z (Degree)');
 xlabel('Frequency (Hz)');
 %axis([0 1e9 -200 200])
+
+figure;hold on;
+subplot(2,1,1);semilogx(fr,abs(Zor));title('|Z|');
+subplot(2,1,2);semilogx(fr,angle(Zor)*(180/pi));title('theta Z');
 
 % subplot(3,1,1);
 % plot(f(1:NFFT/2+1),(Gm(1:NFFT/2+1)));
@@ -208,3 +240,7 @@ plot(f,(Yangle(1:NFFT/2+1)));
 ylabel('\theta Y (Degree)');
 xlabel('Frequency (Hz)');
 %axis([0 1e9 -200 200])
+
+figure;hold on;
+subplot(2,1,1);semilogx(fr,abs(Yor));title('|Y|');
+subplot(2,1,2);semilogx(fr,angle(Yor)*(180/pi));title('theta Y');
