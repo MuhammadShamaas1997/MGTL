@@ -65,7 +65,7 @@ sigmaD0=(epsr*eps0*c0)/a0;
 T=t0;
 Fs=1/T;
 L=256/2;
-obs=90;
+obs=30;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
@@ -137,6 +137,7 @@ FEx=fft(Ex(1:L,obs),NFFT)/L;
 FHx=fft(Hx(1:L,obs),NFFT)/L;
 Z=FEx./FHx;
 Z=Z*377;
+Z(1)=0;
 
 figure;
 subplot(2,1,1)
@@ -144,7 +145,7 @@ hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 plot(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|\eta| (Ohm)');
-axis([1e8 0.5e9 0 100000])
+%axis([1e8 0.5e9 0 100000])
 
 subplot(2,1,2)
 plot(f(1:NFFT/2+1),(angle(Z(1:NFFT/2+1))*(180/pi)));

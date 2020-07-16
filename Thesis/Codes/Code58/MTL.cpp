@@ -52,7 +52,7 @@ double mu_core=1.0;
 int Np=1;//must be odd
 int Ns=1;//must be odd
 double margin=02.0;   
-double amplitude=1e-6;
+double amplitude=1;
 double divisions=3;
 
 int numcoord=0;
@@ -505,14 +505,14 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.z = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = -100;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = -100;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = -100;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = sig0;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = sig0;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = sig0;//(1e13)*f0*f0;
     my_medium_struct.H_susceptibilities.items[0].bias.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.z = 1.0;
-    my_medium_struct.H_susceptibilities.items[0].frequency = 0.01;
-    my_medium_struct.H_susceptibilities.items[0].gamma = 1;//*f0;
+    my_medium_struct.H_susceptibilities.items[0].frequency = 0.0001;
+    my_medium_struct.H_susceptibilities.items[0].gamma = 0.0001;//*f0;
     my_medium_struct.H_susceptibilities.items[0].alpha = 0;
     my_medium_struct.H_susceptibilities.items[0].noise_amp = 0.0;
     my_medium_struct.H_susceptibilities.items[0].drude = true;
@@ -611,10 +611,10 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e5)/f0)
     
 
     //f_range;1e-5,1e-2
-    double fcen = (0.5e9)/f0; // ; pulse center frequency
-    double df = 0.999999*((0.5e9)/f0);    // ; df
-    continuous_src_time src(cdouble(fcen,df));
-    //gaussian_src_time src(fcen,df);
+    double fcen = (100e9)/f0; // ; pulse center frequency
+    double df = 0.999999*((100e9)/f0);    // ; df
+    //continuous_src_time src(cdouble(fcen,df));
+    gaussian_src_time src(fcen,df,0.0,250.0);
 
 for (int i=0;i<numcoord;i++)
     {
@@ -811,7 +811,7 @@ int stop=0;
     
       }
 
-      if((i==(1e3))) 
+      if((i==(550))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
