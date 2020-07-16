@@ -84,7 +84,7 @@ plot(abs(By(1:800,:))./abs(Hy(1:800,:)))
 T=t0;
 Fs=1/T;
 L=512/4;
-obs=90;
+obs=20;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));

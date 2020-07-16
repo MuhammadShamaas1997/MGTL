@@ -397,7 +397,7 @@ int main(int argc, char *argv[]) {
     //double xsize=6, ysize=6, zsize=6;
     
     k=2*pi*Np/(03.0);
-    double z=-9.0;
+    double z=-15.0;
     for (theta = 0.0; theta <= (2*pi); theta=theta+0.1)
     {
       xpcoord[numcoord]=-rp*sin(theta);
@@ -405,12 +405,13 @@ int main(int argc, char *argv[]) {
       zpcoord[numcoord]=z;
       xscoord[numcoord]=-rp*sin(theta);
       yscoord[numcoord]=rp*cos(theta);;
-      zscoord[numcoord]=z+18.0;
+      zscoord[numcoord]=z+15.0;
       numcoord++;
     }
 
 
-  for(double y=-dzmax;y<=dzmax;y=y+dzmax)
+  //for(double y=-dzmax;y<=dzmax;y=y+dzmax)
+  double y=0;
   {for (double z=-dzmax;z<=dzmax;z=z+00.1){
     xccoord[corecoord]=xcen;
     yccoord[corecoord]=y;
@@ -418,13 +419,13 @@ int main(int argc, char *argv[]) {
     corecoord++;
   }}
 
-  for(double z=-dzmax;z<=dzmax;z=z+(2*dzmax))
+  /*for(double z=-dzmax;z<=dzmax;z=z+(2*dzmax))
   {for (double y=-dzmax-(wcore/2);y<=dzmax+(wcore/2);y=y+00.1){
     xccoord[corecoord]=xcen;
     yccoord[corecoord]=y;
     zccoord[corecoord]=z;
     corecoord++;
-  }}
+  }}*/
 
   /*for(double z=-07.5;z<=07.5;z=z+15.0)
   {for (double y=-12.5;y<=12.5;y=y+00.1){
@@ -614,7 +615,7 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e5)/f0)
     double fcen = (100e9)/f0; // ; pulse center frequency
     double df = 0.999999*((100e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,df));
-    gaussian_src_time src(fcen,df,0.0,100.0);
+    gaussian_src_time src(fcen,df,0.0,50.0);
 
 for (int i=0;i<numcoord;i++)
     {
@@ -632,8 +633,8 @@ for (int i=0;i<numcoord;i++)
     //void add_point_source(component c, double freq, double width, double peaktime, double cutoff, const vec &, std::complex<double> amp = 1.0, int is_continuous = 0);
     //void add_volume_source(component c, const src_time &src, const volume &, std::complex<double> amp = 1.0);
 
-    volume box1( vec(rp,-rp,-10.0), vec(-rp,rp,-8.0) );
-    volume box2( vec(rp,-rp,8.0), vec(-rp,rp,10.0) );
+    volume box1( vec(rp,-rp,-16.0), vec(-rp,rp,-14.0) );
+    volume box2( vec(rp,-rp,-1.0), vec(-rp,rp,1.0) );
 
     fcen = (5e9)/f0; // ; pulse center frequency
     df = 0.9999999*(fcen/f0);    // ; df
