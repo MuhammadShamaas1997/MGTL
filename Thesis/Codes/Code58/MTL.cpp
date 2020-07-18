@@ -53,7 +53,7 @@ int Np=1;//must be odd
 int Ns=1;//must be odd
 double margin=02.0;   
 double amplitude=1;
-double divisions=3;
+double divisions=5;
 
 int numcoord=0;
 int corecoord=0;
@@ -392,7 +392,7 @@ int main(int argc, char *argv[]) {
     Chi1inv.open ("Chi1inv.txt");
     //trash_output_directory(mydirname);
     double xsize=10;
-    double ysize=40;
+    double ysize=10;
     double zsize=40;
     //double xsize=6, ysize=6, zsize=6;
     
@@ -538,30 +538,30 @@ int main(int argc, char *argv[]) {
     //vector3 center = {0, 0, 0};
     //geometric_object go = ctlgeom::geometric_object(my_material,center);
     
-    geometric_object objects[5];
+    geometric_object objects[1];
   vector3 center = {0.0, 0.0, 0.0};  
-  vector3 center1 = {0.0, -dzmax, 0.0};
+  //vector3 center1 = {0.0, -dzmax, 0.0};
   vector3 center2 = {0.0, 0.0, 0.0};
-  vector3 center3 = {0.0, dzmax, 0.0};
-  vector3 center4 = {0.0, 0.0, dzmax};
-  vector3 center5 = {0.0, 0.0, -dzmax};
+  //vector3 center3 = {0.0, dzmax, 0.0};
+  //vector3 center4 = {0.0, 0.0, dzmax};
+  //vector3 center5 = {0.0, 0.0, -dzmax};
   double radius = 3.0;
   double height = 1.0e20;
   vector3 xhat1 = {1.0, 0.0, 0.0};
   vector3 yhat1 = {0.0, 1.0, 0.0};
   vector3 zhat1 = {0.0, 0.0, 1.0};
-  vector3 size1 = {wcore, wcore, 2*dzmax};
+  //vector3 size1 = {wcore, wcore, 2*dzmax};
   vector3 size2 = {wcore, wcore, 2*dzmax};
-  vector3 size3 = {wcore, wcore, 2*dzmax};
-  vector3 size4 = {wcore, 2*dzmax+(wcore), wcore};
-  vector3 size5 = {wcore, 2*dzmax+(wcore), wcore};
+  //vector3 size3 = {wcore, wcore, 2*dzmax};
+  //vector3 size4 = {wcore, 2*dzmax+(wcore), wcore};
+  //vector3 size5 = {wcore, 2*dzmax+(wcore), wcore};
   //objects[0] = make_block(my_material, center, radius, height, zhat);
-  objects[0] = make_block(my_user_material, center1, xhat1, yhat1, zhat1, size1);
-  objects[1] = make_block(my_user_material, center2, xhat1, yhat1, zhat1, size2);
-  objects[2] = make_block(my_user_material, center3, xhat1, yhat1, zhat1, size3);
-  objects[3] = make_block(my_user_material, center4, xhat1, yhat1, zhat1, size4);
-  objects[4] = make_block(my_user_material, center5, xhat1, yhat1, zhat1, size5);
-  geometric_object_list g = {5, objects};
+  //objects[0] = make_block(my_user_material, center1, xhat1, yhat1, zhat1, size1);
+  objects[0] = make_block(my_user_material, center2, xhat1, yhat1, zhat1, size2);
+  //objects[2] = make_block(my_user_material, center3, xhat1, yhat1, zhat1, size3);
+  //objects[3] = make_block(my_user_material, center4, xhat1, yhat1, zhat1, size4);
+  //objects[4] = make_block(my_user_material, center5, xhat1, yhat1, zhat1, size5);
+  geometric_object_list g = {1, objects};
   
 
 
@@ -615,7 +615,7 @@ for (double fp=0.0;fp<=(10e9)/f0;fp=fp+(1e5)/f0)
     double fcen = (100e9)/f0; // ; pulse center frequency
     double df = 0.999999*((100e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,df));
-    gaussian_src_time src(fcen,df,0.0,50.0);
+    gaussian_src_time src(fcen,df,0.0,1.0);
 
 for (int i=0;i<numcoord;i++)
     {
@@ -639,7 +639,7 @@ for (int i=0;i<numcoord;i++)
     fcen = (5e9)/f0; // ; pulse center frequency
     df = 0.9999999*(fcen/f0);    // ; df
   
-    double fmin = (1)/f0, fmax = (1e12)/f0;
+    double fmin = (1)/f0, fmax = (1e10)/f0;
     int Nfreq = 1000;
     dft_flux flux1 = f.add_dft_flux_box(box1, fmin, fmax, Nfreq);
     dft_flux flux2 = f.add_dft_flux_box(box2, fmin, fmax, Nfreq);
@@ -812,7 +812,7 @@ int stop=0;
     
       }
 
-      if((i==(100*8))) 
+      if((i==(100*6))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
