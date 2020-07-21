@@ -35,7 +35,7 @@ while (in <= (518*300))
 end
 
 
-for t=1:256
+for t=1:(256/2)
 plot(real(Hy(t,:)));hold on;
 pause(0.1);
 end
@@ -50,7 +50,7 @@ end
 % legend('Real','Imaginary')
 
 epsr=1;
-a0=1e1;%0.1mm
+a0=1e-1;%0.1mm
 c0=3e8;%2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -62,11 +62,11 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e5;
-fmax=1e7;
+fmin=1e6;
+fmax=1e9;
 
 muinf=1;gamma=.0001;fn=.0001;sigma=-10000;
-fr=(1/300):1e-4:(1/3); 
+fr=(1/3000):1e-4:(1/3); 
 mur=muinf+(sigma.*fn.*fn)./(-fr.*fr-1i*gamma*fr);
 cf=(1+((fr*f0)./(0.2e6)).*((fr*f0)./(0.2e6)));
 mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((fr*f0)/(0.2e6));
@@ -86,7 +86,7 @@ plot(abs(By(1:512,:))./abs(Hy(1:512,:)))
 
 T=t0;
 Fs=1/T;
-L=512/2;
+L=512*32*2;
 obs=50;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
@@ -95,23 +95,23 @@ f=Fs/2*linspace(0,1,L/2+1);
 %Hx(1:L,obs)=exp((-(((1:L)-(L/2)).*((1:L)-(L/2))))/1000000000);
 %Hx(1:L,obs)= 1/(4*sqrt(2*pi*0.01))*(exp(-(1:L).^2/(2*0.01)));
 for obs=1:50
-FHxis(:,obs)=(fft((Hx(1:L,obs)),L));
-FHxos(:,obs)=(fft((Hx(1:L,obs+1)),L));
+FHxis(:,obs)=(fft((Hx(1:L/128,obs)),L));
+FHxos(:,obs)=(fft((Hx(1:L/128,obs+1)),L));
 Gammas(:,obs)=(log(FHxos(:,obs)./FHxis(:,obs)))/(-(1/300)*(030*a0));
 Gammas(1,obs)=0;
 end
-FHxi=min(FHxis,[],2);
-FHxo=min(FHxos,[],2);
-Gamma=min(Gammas,[],2);
+FHxi=mean(FHxis,2);
+FHxo=mean(FHxos,2);
+Gamma=mean(Gammas,2);
 
 figure;
 subplot(2,1,1)
 hold on;
-plot(t0*(1:L),abs(Hx(1:L,obs))*H0);
+plot(t0*(1:L/128),abs(Hx(1:L/128,obs))*H0);
 xlabel('Time (s)');ylabel('|Hx(t)|')
 subplot(2,1,2)
 hold on;
-plot(t0*(1:L),angle(Hx(1:L,obs))*H0);
+plot(t0*(1:L/64),angle(Hx(1:L/64,obs))*H0);
 xlabel('Time (s)');ylabel('\theta Hx(t)')
 
 figure
@@ -168,15 +168,15 @@ semilogx(fr,vpor);title('vp');
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 for obs=1:50
-    FExs(:,obs)=fft((Ex(1:L,obs)),NFFT)/L;
-    FHxs(:,obs)=fft((Hx(1:L,obs)),NFFT)/L;
+    FExs(:,obs)=fft((Ex(1:L/128,obs)),NFFT)/L;
+    FHxs(:,obs)=fft((Hx(1:L/128,obs)),NFFT)/L;
     Zs(:,obs)=FExs(:,obs)./FHxs(:,obs);
     Zs(:,obs)=Zs(:,obs)*377;
     Zs(1,obs)=0;
 end
-FEx=min(FExs,[],2);
-FHx=min(FHxs,[],2);
-Z=min(Zs,[],2);
+FEx=mean(FExs,2);
+FHx=mean(FHxs,2);
+Z=mean(Zs,2);
 
 figure;
 subplot(2,1,1)

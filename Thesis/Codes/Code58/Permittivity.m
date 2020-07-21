@@ -15,7 +15,7 @@ clc;clear all;
 % end
 
 epsr=0.9999;
-a0=1e-1;%0.1mm
+a0=1e0;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
