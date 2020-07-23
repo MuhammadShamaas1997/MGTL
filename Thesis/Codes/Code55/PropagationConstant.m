@@ -86,13 +86,13 @@ xlabel('Time (s)');ylabel('Imaginary Hy(t)')
 figure
 subplot(2,1,1)
 plot(f(1:L/2+1),abs(FHxi(1:L/2+1)))
-xlabel('Frequency (s)');ylabel('|Hy (jw)|')
-xlim([0e8 5e8]);
+xlabel('Frequency (s)');ylabel('|Hx (jw)|')
+xlim([1e8 6e8]);
 %axis([0 1e9 0 0.2e4])
 subplot(2,1,2)
 plot(f(1:L/2+1),(angle(FHxi(1:L/2+1))*(180/pi)))
-xlabel('Frequency (s)');ylabel('\theta Hy (jw)')
-xlim([0e8 5e8]);
+xlabel('Frequency (s)');ylabel('\theta Hx (jw)')
+xlim([1e8 6e8]);
 %axis([0 1e9 -200 200])
 
 
@@ -103,7 +103,7 @@ plot(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 xlabel('Frequency (Hz)')
 ylabel('\alpha (Np.m^-^1)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 0 120])
 
 subplot(2,1,2)
@@ -111,7 +111,7 @@ plot(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 ylabel('\beta (rad.m^-^1)');
 xlabel('Frequency (Hz)')
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 0 120])
 
 f=f';
@@ -120,7 +120,7 @@ plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 %hold on; plot(f(1:L/2+1),(3e8),'r');
 ylabel('vp (m.s^-^1)');
 xlabel('Frequency (Hz)')
-xlim([0e8 5e8]);
+xlim([1e8 10e8]);
 %axis([0 1e9 0 4e8])
 
 FHxi=(fft(Hx(1:L,obs),L));
@@ -145,14 +145,14 @@ hold on;%plot(mag3(mag(A13,A14),mag(A15,A16),mag(A17,A18)));%E
 plot(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
 xlabel('Frequency (Hz)')
 ylabel('|\eta| (Ohm)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 0 5000])
 
 subplot(2,1,2)
 plot(f(1:NFFT/2+1),(angle(Z(1:NFFT/2+1))*(180/pi)));
 ylabel('\Theta \eta (Degree)');
 xlabel('Frequency (Hz)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 -200 200])
 
 
@@ -172,14 +172,14 @@ subplot(2,1,1)
 plot(f,(Zabs(1:NFFT/2+1)));
 ylabel('|Z| (Ohm/m)');
 xlabel('Frequency (Hz)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 0 2e5])
 
 subplot(2,1,2);
 plot(f,(Zangle(1:NFFT/2+1)));
 ylabel('\theta Z (Degree)');
 xlabel('Frequency (Hz)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 -200 200])
 
 % subplot(3,1,1);
@@ -205,12 +205,12 @@ subplot(2,1,1)
 plot(f,(Yabs(1:NFFT/2+1)));
 ylabel('Y (1/Ohm.m)');
 xlabel('Frequency (Hz)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 0 0.5])
 
 subplot(2,1,2);
 plot(f,(Yangle(1:NFFT/2+1)));
 ylabel('\theta Y (Degree)');
 xlabel('Frequency (Hz)');
-xlim([0e8 5e8]);
+xlim([1e8 6e8]);
 %axis([0 1e9 -200 200])

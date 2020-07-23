@@ -50,9 +50,8 @@ grid('on')
 
 subplot(3,1,3)
 C=(10*log10(A2./A3));
-plot(f0*A1(min:max),C(min:max));
+plot(f0*A1(min:max),abs(C(min:max)));
 %axis([0 1.5e9 10.385 10.4]);
 ylabel('Insertion Loss (dB)');
 xlabel('frequency (Hz)');
 grid('on')
-
