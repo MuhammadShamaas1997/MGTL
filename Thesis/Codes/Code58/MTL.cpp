@@ -25,7 +25,7 @@ typedef std::complex<double> cdouble;
 
 double epsr=10;
 //SI Conversion Factors
-double a0=1e-1;//0.1mm
+double a0=1e-4;//0.1mm
 double c0=2.99792458e8;//Speed of Light (m/s)
 double f0=c0/a0;//300GHz
 double t0=1/f0;//0.33e-12 (s)
@@ -41,9 +41,7 @@ double J0=I0/(a0*a0);//Electric Current Density
 double u0=(I0*I0)/(eps0*c0*c0*a0*a0);//Energy Density
 double S0=(I0*I0)/(eps0*c0*a0*a0);//Poynting Vector
 double Sc0=1/(c0);//Courant Factor
-double sig0=1;
-double b0=1e-6;
-double chi0=1.0;
+double sig0=-20;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
 double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=15.0;
@@ -273,24 +271,24 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
     double dyp=p.y - yccoord[i];
     double dzp=p.z - zccoord[i];    
     double drp=sqrt(dxp*dxp+dyp*dyp+dzp*dzp);
-    if((dxp<=(wcore/2.0))&&(dyp<=(wcore/2.0))&&(dzp<=(wcore/2.0)))
-    //if(drp<=(wcore/2.0))
+    //if((dxp<=(wcore/2.0))&&(dyp<=(wcore/2.0))&&(dzp<=(wcore/2.0))){
+    if(drp<=(wcore/2.0))
       {in_middle=true;}
     
     }
 
   // set permittivity and permeability
-  double nn = in_middle ? sqrt(mu_core) : 10000.0;
+  double nn = in_middle ? sqrt(mu_core) : 1.0;
   double mm = in_middle ? sqrt(1.0) : 1.0;
   m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = 10.0;
   //m->epsilon_offdiag.x.re = m->epsilon_offdiag.x.im = epsilon_offdiag.y.re = m->epsilon_offdiag.y.im = epsilon_offdiag.z.re = m->epsilon_offdiag.z.im = nn * nn;
   m->mu_diag.x = m->mu_diag.y = m->mu_diag.z = nn*nn;
 
   //m->mu_offdiag.x.re = m->mu_offdiag.x.im = mu_offdiag.y.re = m->mu_offdiag.y.im = mu_offdiag.z.re = m->mu_offdiag.z.im = nn * nn;
-  m->E_chi2_diag.x = m->E_chi2_diag.y = m->E_chi2_diag.z = 0.0;
-  m->E_chi3_diag.x = m->E_chi3_diag.y = m->E_chi3_diag.z = 0.0;
-  m->H_chi2_diag.x = m->H_chi2_diag.y = m->H_chi2_diag.z = chi0;
-  m->H_chi3_diag.x = m->H_chi3_diag.y = m->H_chi3_diag.z = chi0;
+  m->E_chi2_diag.x = m->E_chi2_diag.y = m->E_chi2_diag.z = 1.0;
+  m->E_chi3_diag.x = m->E_chi3_diag.y = m->E_chi3_diag.z = 1.0;
+  m->H_chi2_diag.x = m->H_chi2_diag.y = m->H_chi2_diag.z = 1.0;
+  m->H_chi3_diag.x = m->H_chi3_diag.y = m->H_chi3_diag.z = 1.0;
   //m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
   //m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = 0.0;
 
@@ -382,7 +380,9 @@ int main(int argc, char *argv[]) {
     std::ofstream Skin;
     std::ofstream Permeability;
     std::ofstream Permittivity;
+    std::ofstream Chi1inv;
     std::ofstream SourceFFT;
+
     Time.open ("TimeEvolution.txt");
     Space.open ("SpaceEvolution.txt");
     FieldsIn.open ("FieldEvolutionIn.txt");
@@ -392,6 +392,7 @@ int main(int argc, char *argv[]) {
     Permeability.open ("Permeability.txt");
     Permittivity.open ("Permittivity.txt");
     SourceFFT.open ("SourceFFT.txt");
+
     //trash_output_directory(mydirname);
     double xsize=10;
     double ysize=80;
@@ -479,12 +480,12 @@ int main(int argc, char *argv[]) {
     my_medium_struct.mu_offdiag.y=mu_core;
     my_medium_struct.mu_offdiag.z=mu_core;
     */
-    my_medium_struct.H_chi2_diag.x=chi0;
-    my_medium_struct.H_chi2_diag.y=chi0;
-    my_medium_struct.H_chi2_diag.z=chi0;
-    my_medium_struct.H_chi3_diag.x=chi0;
-    my_medium_struct.H_chi3_diag.y=chi0;
-    my_medium_struct.H_chi3_diag.z=chi0;
+    my_medium_struct.H_chi2_diag.x=0.0;
+    my_medium_struct.H_chi2_diag.y=0.0;
+    my_medium_struct.H_chi2_diag.z=0.0;
+    my_medium_struct.H_chi3_diag.x=0.0;
+    my_medium_struct.H_chi3_diag.y=0.0;
+    my_medium_struct.H_chi3_diag.z=0.0;
 
     my_medium_struct.E_chi2_diag.x=0.0;
     my_medium_struct.E_chi2_diag.y=0.0;
@@ -507,18 +508,18 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.y = 0.0;
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.z = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = sig0;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = sig0;//(1e13)*f0*f0;
-    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = sig0;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.x = -100;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.y = -100;//(1e13)*f0*f0;
+    my_medium_struct.H_susceptibilities.items[0].sigma_diag.z = -100;//(1e13)*f0*f0;
     my_medium_struct.H_susceptibilities.items[0].bias.x = 0.0;
     my_medium_struct.H_susceptibilities.items[0].bias.y = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].bias.z = b0;
-    my_medium_struct.H_susceptibilities.items[0].frequency = 10;
-    my_medium_struct.H_susceptibilities.items[0].gamma = 0.1;//*f0;
+    my_medium_struct.H_susceptibilities.items[0].bias.z = 0.0;
+    my_medium_struct.H_susceptibilities.items[0].frequency = 0.01;
+    my_medium_struct.H_susceptibilities.items[0].gamma = 1;//*f0;
     my_medium_struct.H_susceptibilities.items[0].alpha = 0;
     my_medium_struct.H_susceptibilities.items[0].noise_amp = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].drude = false;
-    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = true;
+    my_medium_struct.H_susceptibilities.items[0].drude = true;
+    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = false;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
     
     
@@ -594,13 +595,13 @@ int main(int argc, char *argv[]) {
     //lorentzian_susceptibility(double omega_0, double gamma, bool no_omega_0_denominator = false): omega_0(omega_0), gamma(gamma), no_omega_0_denominator(no_omega_0_denominator)
     */      
     anisodisp_materialH anisodispmatH;
-    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility(10, 0.1,true));
+    transformer.add_susceptibility(anisodispmatH, H_stuff, lorentzian_susceptibility(0.01, 1,true));
 
     fields f(& transformer);
     //fields(structure *, double m = 0, double beta = 0, bool zero_fields_near_cylorigin = true);
   
 
-for (double fp=0.0;fp<=(1e9)/f0;fp=fp+(1e6)/f0)
+for (double fp=0.0;fp<=(1e9)/f0;fp=fp+(1e4)/f0)
     { 
       double yp = 0.0;
       {
@@ -614,7 +615,7 @@ for (double fp=0.0;fp<=(1e9)/f0;fp=fp+(1e6)/f0)
 
     //f_range;1e-5,1e-2
     double fcen = (0.5e9)/f0; // ; pulse center frequency
-    double df = 0.999999*((1e9)/f0);    // ; df
+    double df = 0.999999*((1.0e9)/f0);    // ; df
     //continuous_src_time src(cdouble(fcen,df));
     gaussian_src_time src(fcen,df);
 
@@ -650,7 +651,7 @@ for (int i=0;i<numcoord;i++)
     fcen = (5e9)/f0; // ; pulse center frequency
     df = 0.9999999*(fcen/f0);    // ; df
   
-    double fmin = (1)/f0, fmax = (1e12)/f0;
+    double fmin = (1)/f0, fmax = (1e9)/f0;
     int Nfreq = 1000;
     dft_flux flux1 = f.add_dft_flux_box(box1, fmin, fmax, Nfreq);
     dft_flux flux2 = f.add_dft_flux_box(box2, fmin, fmax, Nfreq);
@@ -737,13 +738,13 @@ int stop=0;
     f.output_hdf5(Sy,vyz);
     f.output_hdf5(Sz,vyz);
 
-    /*double *fl1 = flux1.flux();
+    double *fl1 = flux1.flux();
     double *fl2 = flux2.flux();
     cout<<"Flux Harmonics"<<endl;
     for (int i = 0; i < Nfreq; ++i) {
       Fluxes<<(fmin + i * flux1.dfreq)<<" , "<<fl1[i]<<" , "<<fl2[i]<<endl;
       //freq , fluxin , fluxout
-    }*/ 
+    } 
 
     }    
        if (i<=600)
