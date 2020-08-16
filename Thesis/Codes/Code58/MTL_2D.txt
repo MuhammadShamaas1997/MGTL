@@ -279,168 +279,73 @@ typedef struct my_material_func_data {
 void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   my_material_func_data *data = (my_material_func_data *)user_data;
   
-    bool in_middle=false;
 
-    double dx=p.x - xcen;
-    double dy=p.y - ycen;
+  /*double rxInner = data->rxInner, rxInner2 = rxInner * rxInner;
+  double ryInner = data->ryInner, ryInner2 = ryInner * ryInner;
+  double rOuter = data->rOuter, rOuter2 = rOuter * rOuter;
 
+  double x = p.x, x2 = x * x, y = p.y, y2 = y * y;
 
-    if ( (abs(dx)<=dxmax) && (abs(dy)<=dymax) )
-    {
+  // test for point inside inner ellipsoid
+  bool innermost = ((x2 / rxInner2 + y2 / ryInner2) < 1.0);
+  bool outermost = ((x * x + y * y) > rOuter2);
+  bool in_middle = (!innermost && !outermost);
+  */
+
+  bool in_middle=false;
+
+  double dx=p.x - xcen;
+  double dy=p.y - ycen;
+
+  if ( (abs(dx)<=dxmax) && (abs(dy)<=dymax) )
+  {
     in_middle=true;
-    }
+  }
 
-    if ( (abs(dx)<=dxmin) && (abs(dy)<=dymin) )
-    {
+
+  if ( (abs(dx)<=dxmin) && (abs(dy)<=dymin) )
+  {
     in_middle=false;
-    }
+  }
 
-  // set permittivity and permeability
-  double nn = in_middle ? sqrt(mu_core) : 1.0;
-  double mm = in_middle ? sqrt(3.5) : 1.0;
-  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = mm * mm;
+
+  // set permittivity
+  double nn = in_middle ? mu_core : 1.0;
+  m->epsilon_diag.x = m->epsilon_diag.y = m->epsilon_diag.z = nn * nn;
   //m->epsilon_offdiag.x.re = m->epsilon_offdiag.x.im = epsilon_offdiag.y.re = m->epsilon_offdiag.y.im = epsilon_offdiag.z.re = m->epsilon_offdiag.z.im = nn * nn;
   m->mu_diag.x = m->mu_diag.y = m->mu_diag.z = nn*nn;
 
-
-
-if(data->with_susceptibility){
   //m->mu_offdiag.x.re = m->mu_offdiag.x.im = mu_offdiag.y.re = m->mu_offdiag.y.im = mu_offdiag.z.re = m->mu_offdiag.z.im = nn * nn;
-  m->E_chi2_diag.x = m->E_chi2_diag.y = m->E_chi2_diag.z = 0.0;
-  m->E_chi3_diag.x = m->E_chi3_diag.y = m->E_chi3_diag.z = 0.0;
+  /*m->E_chi2_diag.x = m->E_chi2_diag.y = m->E_chi2_diag.z = nn * nn;
+  m->E_chi3_diag.x = m->E_chi3_diag.y = m->E_chi3_diag.z = nn * nn;
   m->H_chi2_diag.x = m->H_chi2_diag.y = m->H_chi2_diag.z = nn * nn;
   m->H_chi3_diag.x = m->H_chi3_diag.y = m->H_chi3_diag.z = nn * nn;
-  //m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
-  //m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = 0.0;
+  m->D_conductivity_diag.x = m->D_conductivity_diag.y = m->D_conductivity_diag.z = nn * nn;
+  m->B_conductivity_diag.x = m->B_conductivity_diag.y = m->B_conductivity_diag.z = nn * nn;
+*/
+  // add susceptibilities (two-oscillator model for Ag)
+  if (in_middle && data->with_susceptibility) {
+    m->E_susceptibilities.num_items = 1;
+    m->E_susceptibilities.items = new meep_geom::susceptibility[1];
 
-  // add susceptibilities
-  
-
-    double xcenp=xcen; 
-    double ycenp=ycen-dymin-(0.5*wcore); 
-    double zcenp=zcen;
-
-    double dxminp=dxmax+insulation_thickness_p;
-    double dxmaxp=dxminp+winding_thickness_p;
-    double dyminp=(0.5*wcore)+insulation_thickness_p; 
-    double dymaxp=dyminp+winding_thickness_p;
-    double dzminp=0; 
-    double dzmaxp=0.5*winding_thickness_p;    
-  
-    zcenp=zcen-(0.5*double(Np-1)*insulation_thickness_p)-(0.5*double(Np-1)*winding_thickness_p);
-
-    for (int i=0;i<Np;i++)
-    {
-
-    double dx=p.x - xcenp;
-    double dy=p.y - ycenp;
-    double dz=p.z - zcenp;
-
-
-    if ( (abs(dx)<=dxmaxp) && (abs(dy)<=dymaxp) && (abs(dz)<=dzmaxp) )
-    {
-    m->E_susceptibilities.num_items = 5;
-    m->E_susceptibilities.items = new meep_geom::susceptibility[5];
-
-    m->E_susceptibilities.items[0].sigma_diag.x = Cu_sig0;
-    m->E_susceptibilities.items[0].sigma_diag.y = Cu_sig0;
-    m->E_susceptibilities.items[0].sigma_diag.z = Cu_sig0;
-    m->E_susceptibilities.items[0].frequency = Cu_frq0;
-    m->E_susceptibilities.items[0].gamma = Cu_gam0;
-    m->E_susceptibilities.items[0].drude = true;
-
-    m->E_susceptibilities.items[1].sigma_diag.x = Cu_sig1;
-    m->E_susceptibilities.items[1].sigma_diag.y = Cu_sig1;
-    m->E_susceptibilities.items[1].sigma_diag.z = Cu_sig1;
-    m->E_susceptibilities.items[1].frequency = Cu_frq1;
-    m->E_susceptibilities.items[1].gamma = Cu_gam1;
-    m->E_susceptibilities.items[1].drude = true;
-
-    m->E_susceptibilities.items[2].sigma_diag.x = Cu_sig2;
-    m->E_susceptibilities.items[2].sigma_diag.y = Cu_sig2;
-    m->E_susceptibilities.items[2].sigma_diag.z = Cu_sig2;
-    m->E_susceptibilities.items[2].frequency = Cu_frq2;
-    m->E_susceptibilities.items[2].gamma = Cu_gam2;
-    m->E_susceptibilities.items[2].drude = true;
-
-    m->E_susceptibilities.items[3].sigma_diag.x = Cu_sig3;
-    m->E_susceptibilities.items[3].sigma_diag.y = Cu_sig3;
-    m->E_susceptibilities.items[3].sigma_diag.z = Cu_sig3;
-    m->E_susceptibilities.items[3].frequency = Cu_frq3;
-    m->E_susceptibilities.items[3].gamma = Cu_gam3;
-    m->E_susceptibilities.items[3].drude = true;
-
-    m->E_susceptibilities.items[4].sigma_diag.x = Cu_sig4;
-    m->E_susceptibilities.items[4].sigma_diag.y = Cu_sig4;
-    m->E_susceptibilities.items[4].sigma_diag.z = Cu_sig4;
-    m->E_susceptibilities.items[4].frequency = Cu_frq4;
-    m->E_susceptibilities.items[4].gamma = Cu_gam4;
-    m->E_susceptibilities.items[4].drude = true;
-
-    }
-
-    zcenp=zcenp+insulation_thickness_p+winding_thickness_p;     
-    }
+    m->E_susceptibilities.items[0].sigma_offdiag.x = 0.0;
+    m->E_susceptibilities.items[0].sigma_offdiag.y = 0.0;
+    m->E_susceptibilities.items[0].sigma_offdiag.z = 0.0;
+    m->E_susceptibilities.items[0].sigma_diag.x = NiFe_sig;
+    m->E_susceptibilities.items[0].sigma_diag.y = NiFe_sig;
+    m->E_susceptibilities.items[0].sigma_diag.z = NiFe_sig;
+    m->E_susceptibilities.items[0].bias.x = NiFe_sig;
+    m->E_susceptibilities.items[0].bias.y = NiFe_sig;
+    m->E_susceptibilities.items[0].bias.z = NiFe_sig;
+    m->E_susceptibilities.items[0].frequency = NiFe_frq;
+    m->E_susceptibilities.items[0].gamma = NiFe_gam;
+    m->E_susceptibilities.items[0].alpha = NiFe_sig;
+    m->E_susceptibilities.items[0].noise_amp = 0.0;
+    m->E_susceptibilities.items[0].drude = false;
+    m->E_susceptibilities.items[0].saturated_gyrotropy = true;
+    m->E_susceptibilities.items[0].is_file = false;
 
 
-    ycenp=ycen+dymin+(0.5*wcore); 
-    zcenp=zcen-(0.5*double(Ns-1)*insulation_thickness_p)-(0.5*double(Ns-1)*winding_thickness_p);
-
-    for (int i=0;i<Ns;i++)
-    {
-
-    double dx=p.x - xcenp;
-    double dy=p.y - ycenp;
-    double dz=p.z - zcenp;
-
-
-    if ( (abs(dx)<=dxmaxp) && (abs(dy)<=dymaxp) && (abs(dz)<=dzmaxp) )
-    {
-    m->E_susceptibilities.num_items = 5;
-    m->E_susceptibilities.items = new meep_geom::susceptibility[5];
-
-    m->E_susceptibilities.items[0].sigma_diag.x = Cu_sig0;
-    m->E_susceptibilities.items[0].sigma_diag.y = Cu_sig0;
-    m->E_susceptibilities.items[0].sigma_diag.z = Cu_sig0;
-    m->E_susceptibilities.items[0].frequency = Cu_frq0;
-    m->E_susceptibilities.items[0].gamma = Cu_gam0;
-    m->E_susceptibilities.items[0].drude = true;
-
-    m->E_susceptibilities.items[1].sigma_diag.x = Cu_sig1;
-    m->E_susceptibilities.items[1].sigma_diag.y = Cu_sig1;
-    m->E_susceptibilities.items[1].sigma_diag.z = Cu_sig1;
-    m->E_susceptibilities.items[1].frequency = Cu_frq1;
-    m->E_susceptibilities.items[1].gamma = Cu_gam1;
-    m->E_susceptibilities.items[1].drude = true;
-
-    m->E_susceptibilities.items[2].sigma_diag.x = Cu_sig2;
-    m->E_susceptibilities.items[2].sigma_diag.y = Cu_sig2;
-    m->E_susceptibilities.items[2].sigma_diag.z = Cu_sig2;
-    m->E_susceptibilities.items[2].frequency = Cu_frq2;
-    m->E_susceptibilities.items[2].gamma = Cu_gam2;
-    m->E_susceptibilities.items[2].drude = true;
-
-    m->E_susceptibilities.items[3].sigma_diag.x = Cu_sig3;
-    m->E_susceptibilities.items[3].sigma_diag.y = Cu_sig3;
-    m->E_susceptibilities.items[3].sigma_diag.z = Cu_sig3;
-    m->E_susceptibilities.items[3].frequency = Cu_frq3;
-    m->E_susceptibilities.items[3].gamma = Cu_gam3;
-    m->E_susceptibilities.items[3].drude = true;
-
-    m->E_susceptibilities.items[4].sigma_diag.x = Cu_sig4;
-    m->E_susceptibilities.items[4].sigma_diag.y = Cu_sig4;
-    m->E_susceptibilities.items[4].sigma_diag.z = Cu_sig4;
-    m->E_susceptibilities.items[4].frequency = Cu_frq4;
-    m->E_susceptibilities.items[4].gamma = Cu_gam4;
-    m->E_susceptibilities.items[4].drude = true;
-    }
-
-    zcenp=zcenp+insulation_thickness_p+winding_thickness_p;     
-    }
-
-
-    if (in_middle)
-    {
     m->H_susceptibilities.num_items = 1;
     m->H_susceptibilities.items = new meep_geom::susceptibility[1];
 
@@ -450,9 +355,9 @@ if(data->with_susceptibility){
     m->H_susceptibilities.items[0].sigma_diag.x = NiFe_sig;
     m->H_susceptibilities.items[0].sigma_diag.y = NiFe_sig;
     m->H_susceptibilities.items[0].sigma_diag.z = NiFe_sig;
-    m->H_susceptibilities.items[0].bias.x = 0.0;
-    m->H_susceptibilities.items[0].bias.y = 0.0;
-    m->H_susceptibilities.items[0].bias.z = 0.0;
+    m->H_susceptibilities.items[0].bias.x = NiFe_sig;
+    m->H_susceptibilities.items[0].bias.y = NiFe_sig;
+    m->H_susceptibilities.items[0].bias.z = NiFe_sig;
     m->H_susceptibilities.items[0].frequency = NiFe_frq;
     m->H_susceptibilities.items[0].gamma = NiFe_gam;
     m->H_susceptibilities.items[0].alpha = NiFe_gam;
@@ -460,10 +365,9 @@ if(data->with_susceptibility){
     m->H_susceptibilities.items[0].drude = false;
     m->H_susceptibilities.items[0].saturated_gyrotropy = true;
     m->H_susceptibilities.items[0].is_file = false;
-    }
+
   }
 }
-
 
 
 int main(int argc, char *argv[]) {
@@ -486,7 +390,7 @@ int main(int argc, char *argv[]) {
   
     core_material core_mat;
     //structure transformer(gv, core_mat);
-  structure transformer(gv, eps, pml(1.0));
+	structure transformer(gv, eps, pml(1.0));
 
     //transformer.set_epsilon(eps,true);
     //transformer.set_mu(mu,true);
@@ -498,11 +402,11 @@ int main(int argc, char *argv[]) {
     transformer.set_output_directory(mydirname);
     //transformer->set_mu(mu);
 
-  my_material_func_data data;
-    data.with_susceptibility = true;
-  meep_geom::material_type my_material =
+	my_material_func_data data;
+  	data.with_susceptibility = true;
+	meep_geom::material_type my_material =
     meep_geom::make_user_material(my_material_func, (void *)&data, false);
-  
+	
   geometric_object_list g = {0,0};
 
   vector3 center = {0, 0, 0};
@@ -542,11 +446,11 @@ int main(int argc, char *argv[]) {
   
 
 
-    double fcen = 0.005; // ; pulse center frequency
+  	double fcen = 0.005; // ; pulse center frequency
     double df = 0.004;    // ; df
     //continuous_src_time src(cdouble(fcen,0));
     gaussian_src_time src(fcen,df);
-  //    continuous_src_time src(cdouble(fcen,0));
+	//    continuous_src_time src(cdouble(fcen,0));
 
 
     double xcenp=xcen; 
@@ -613,27 +517,15 @@ int main(int argc, char *argv[]) {
     for(int i=1;i<5000;i++)
     {
       f.step();
-  if ((i%100)==0)
-  {
-    f.output_hdf5(Hx,gv.surroundings());
-    f.output_hdf5(Hy,gv.surroundings());
-    f.output_hdf5(Hz,gv.surroundings());
-    f.output_hdf5(Bx,gv.surroundings());
-    f.output_hdf5(By,gv.surroundings());
-    f.output_hdf5(Bz,gv.surroundings());
-    f.output_hdf5(Ex,gv.surroundings());
-    f.output_hdf5(Ey,gv.surroundings());
-    f.output_hdf5(Ez,gv.surroundings());
-    f.output_hdf5(Dx,gv.surroundings());
-    f.output_hdf5(Dy,gv.surroundings());
-    f.output_hdf5(Dz,gv.surroundings());
-
-  }
+ 	if ((i%100)==0)
+ 	{
+ 		f.output_hdf5(By,gv.surroundings());
+ 	}
       //cdouble Vm=compute_Im(f,ycen);
       //cdouble Im=compute_Im(f,ycen);
       //cdouble Ve=compute_Im(f,ycen);
       //cdouble Ie=compute_Im(f,ycen);
-  
+	
     monitor_point p;
     f.get_point(&p, vec(xcen,ycen-dymin-0.5*wcore,zcen));
     cdouble H1 = p.get_component(Hx);
