@@ -15,4 +15,8 @@ while ischar(l)
     l=fgetl(f);
     in=in+1;
 end
-plot(fr,abs(FFT))
+figure
+hold on;
+plot(fr*(3e12),real(FFT))
+plot(fr*(3e12),imag(FFT),'r')
+plot(fr*(3e12),abs(FFT),'k')

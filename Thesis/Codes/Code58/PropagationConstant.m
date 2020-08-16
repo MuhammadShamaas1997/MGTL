@@ -34,11 +34,20 @@ while ischar(l)
     in=in+1;
 end
 
-
-for t=1:32
-plot(real(Hy(t,:)));hold on;
-pause(0.1);
+for ind=245:256
+Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
+Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
+Dx(ind,:)=0;Dy(ind,:)=0;Dz(ind,:)=0;
+Ex(ind,:)=0;Ey(ind,:)=0;Ez(ind,:)=0;
 end
+
+Sx=Ex.*conj(Hx);
+Sy=Ey.*conj(Hy);
+Sz=Ez.*conj(Hz);
+S=abs(mag3(Sx,Sy,Sz));
+
+figure;surf(abs(real(Sz(1:200,:))));hold on;
+figure;surf(abs(imag(Sz(1:200,:))));hold on;
 
 
 % hold on;
@@ -62,7 +71,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e6;
+fmin=1e8;
 fmax=1e9;
 
 muinf=1;gamma=.0001;fn=.0001;sigma=-10000;
@@ -84,25 +93,25 @@ subplot(2,1,2);loglog(fr,imag(mur)/mu0);title('Imaginary \mu');
 figure
 plot(abs(By)./abs(Hy))
 
-T=t0;
+T=t0/4;
 Fs=1/T;
-L=32;
-obs=50;
+L=256;
+obs=90;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
 %Hx(1:L,obs)=Hx(1:L,obs)-mean(Hx(1:L,obs));
 %Hx(1:L,obs)=exp((-(((1:L)-(L/2)).*((1:L)-(L/2))))/1000000000);
 %Hx(1:L,obs)= 1/(4*sqrt(2*pi*0.01))*(exp(-(1:L).^2/(2*0.01)));
-for obs=1:50
-FHxis(:,obs)=(fft((Hx(1:L,obs)),L));
-FHxos(:,obs)=(fft((Hx(1:L,obs+1)),L));
-Gammas(:,obs)=(log(FHxos(:,obs)./FHxis(:,obs)))/(-(1/4)*(a0));
-Gammas(1,obs)=0;
-end
-FHxi=mean(FHxis,2);
-FHxo=mean(FHxos,2);
-Gamma=mean(Gammas,2);
+%for obs=1:50
+FHxi=(fft((Hx(1:L,obs)),L));
+FHxo=(fft((Hx(1:L,obs+1)),L));
+Gamma=(log(FHxo./FHxi))/(-(1/4)*(a0));
+Gamma(1)=0;
+%end
+% FHxi=mean(FHxis,2);
+% FHxo=mean(FHxos,2);
+% Gamma=mean(Gammas,2);
 
 % figure;
 % subplot(2,1,1)
@@ -130,13 +139,13 @@ subplot(2,1,1)
 hold on;
 semilogx(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
-xlabel('Frequency (Hz)');ylabel('\alpha (Np.m^-^1)');%xlim([fmin fmax]);
+xlabel('Frequency (Hz)');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 %axis([0 1e9 0 120])
 
 subplot(2,1,2)
 semilogx(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 %hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
-ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 0 120])
 
 figure;hold on;
@@ -148,7 +157,7 @@ figure
 f=f';
 semilogx(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 %hold on; plot(f(1:L/2+1),(3e8),'r');
-ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 0 5e8])
 
 figure;
@@ -167,26 +176,21 @@ semilogx(fr,vpor);title('vp');
 % L=256/4;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-for obs=1:50
-    FExs(:,obs)=fft((Ex(1:L/128,obs)),NFFT)/L;
-    FHxs(:,obs)=fft((Hx(1:L/128,obs)),NFFT)/L;
-    Zs(:,obs)=FExs(:,obs)./FHxs(:,obs);
-    Zs(:,obs)=Zs(:,obs)*377;
-    Zs(1,obs)=0;
-end
-FEx=mean(FExs,2);
-FHx=mean(FHxs,2);
-Z=mean(Zs,2);
+FEx=fft((Ex(1:L,obs)),NFFT)/L;
+FHx=fft((Hx(1:L,obs)),NFFT)/L;
+Z=FEx./FHx;
+Z=Z*377;
+Z(1)=0;
 
 figure;
 subplot(2,1,1)
 semilogx(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
-xlabel('Frequency (Hz)');ylabel('|\eta| (Ohm)');%xlim([fmin fmax]);
+xlabel('Frequency (Hz)');ylabel('|\eta| (Ohm)');xlim([fmin fmax]);
 %axis([1e8 0.5e9 0 100000])
 
 subplot(2,1,2)
 semilogx(f(1:NFFT/2+1),(angle(Z(1:NFFT/2+1))*(180/pi)));
-ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 -200 200])
 
 figure;hold on;
@@ -207,12 +211,12 @@ Yangle=(angle((Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1)))*(180/pi));
 figure;
 subplot(2,1,1)
 semilogx(f,(Zabs(1:NFFT/2+1)));
-ylabel('|Z| (Ohm/m)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('|Z| (Ohm/m)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 0 2e5])
 
 subplot(2,1,2);
 semilogx(f,(Zangle(1:NFFT/2+1)));
-ylabel('\theta Z (Degree)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('\theta Z (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 -200 200])
 
 figure;hold on;
@@ -240,12 +244,12 @@ subplot(2,1,2);semilogx(fr,angle(Zor)*(180/pi));title('theta Z');
 figure;
 subplot(2,1,1)
 semilogx(f,(Yabs(1:NFFT/2+1)));
-ylabel('Y (1/Ohm.m)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('Y (1/Ohm.m)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 0 0.5])
 
 subplot(2,1,2);
 semilogx(f,(Yangle(1:NFFT/2+1)));
-ylabel('\theta Y (Degree)');xlabel('Frequency (Hz)');%xlim([fmin fmax]);
+ylabel('\theta Y (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 %axis([0 1e9 -200 200])
 
 figure;hold on;
