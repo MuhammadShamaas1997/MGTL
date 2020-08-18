@@ -59,7 +59,7 @@ figure;surf(abs(imag(Sz(1:200,:))));hold on;
 % legend('Real','Imaginary')
 
 epsr=1;
-a0=1e-1;%0.1mm
+a0=1e-4;%0.1mm
 c0=3e8;%2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -71,11 +71,11 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e8;
-fmax=1e9;
+fmin=1e11;
+fmax=6e11;
 
-muinf=1;gamma=.0001;fn=.0001;sigma=-10000;
-fr=(1/3000):1e-4:(1/3); 
+muinf=1;gamma=1;fn=.01;sigma=-20;
+fr=((1e11)/f0):1e-4:((6e11)/f0); 
 mur=muinf+(sigma.*fn.*fn)./(-fr.*fr-1i*gamma*fr);
 cf=(1+((fr*f0)./(0.2e6)).*((fr*f0)./(0.2e6)));
 mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((fr*f0)/(0.2e6));
@@ -87,8 +87,8 @@ alphaor=real(gammaor);betaor=imag(gammaor);vpor=(2.*pi.*fr)./betaor;
 
 
 figure;
-subplot(2,1,1);loglog(fr,real(mur)/mu0);title('Real \mu');
-subplot(2,1,2);loglog(fr,imag(mur)/mu0);title('Imaginary \mu');
+subplot(2,1,1);plot(fr,real(mur)/mu0);title('Real \mu');
+subplot(2,1,2);plot(fr,imag(mur)/mu0);title('Imaginary \mu');
 
 figure
 plot(abs(By)./abs(Hy))
