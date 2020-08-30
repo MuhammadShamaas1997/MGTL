@@ -16,36 +16,32 @@ while ischar(l)
 end
 
 epsr=0.9999;
-a0=1e-2;%0.1mm
+a0=1e-1;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
 
-semilogx(f/100,eps);
+loglog(f/(1e3),eps);
 grid('off')
 xlabel('Frequency (Hz)')
 ylabel('Relative Permeability \mu_r')
-title('MEEP')
-%axis([1e8 1e9 0 1e4])
+axis([1e8 1e9 0 1e4])
 
-muinf=1;gamma=1;fn=.01;sigma=-20;
-f=0:1e-7:(1/3); 
+muinf=1;gamma=.0001;fn=.0001;sigma=-10000;
+f=0:1e-4:(1/3); 
 mur=muinf+(sigma.*fn.*fn)./(-f.*f-1i*gamma*f);
-figure;
-subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');
-subplot(2,1,2);semilogx(f*f0,imag(mur));
-
-f=1e3:1e3:1e9;
-nomf=((f)./(0.2e6));
-cf=(1+nomf.*nomf);
-mur2=mu0+((10000*mu0)./cf)-(1i.*nomf.*(10000*mu0))./cf;
-
+cf=(1+((f*f0)./(0.2e6)).*((f*f0)./(0.2e6)));
+mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((f*f0)/(0.2e6));
 
 figure;
-subplot(2,1,1);semilogx(f,real(mur2)/mu0);title('Literature');
-subplot(2,1,2);semilogx(f,imag(mur2)/mu0);
+subplot(2,1,1);loglog(f*f0,real(mur));title('Real \mu');
+subplot(2,1,2);loglog(f*f0,imag(mur));title('Imaginary \mu');
+
+figure;
+subplot(2,1,1);loglog(f*f0,real(mur2)/mu0);title('Real \mu');
+subplot(2,1,2);loglog(f*f0,imag(mur)/mu0);title('Imaginary \mu');
 
 
 f=f*f0;mur=mur*mu0;sigma=5e-3;eps=(1*eps0)-1i*(sigma./(2*pi*f));
