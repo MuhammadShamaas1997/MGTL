@@ -90,34 +90,40 @@ sigmaD0=(epsr*eps0*c0)/a0;
 fmin=1e6;
 fmax=1e8;
 
-muinf=1;gamma=1;fn=.01;sigma=-20;
+muinf=1;
+gamma=.01/(8*4*pi*pi*pi*pi*pi);
+fn=0.01/(4*pi*pi);
+sigma=-100*(4*pi*pi);
 fr=((fmin)/f0):1e-4:((fmax)/f0); 
-mur=muinf+(sigma.*fn.*fn)./(-fr.*fr-1i*gamma*fr);
-fr=fr*f0;
-mur=mur*mu0;
+fi=fr*(4*pi*pi);
+mur=muinf+(sigma.*fn.*fn)./(fn.*fn-fi.*fi-1i.*gamma.*fi);
+
+fr2=fr*f0;
+mur2=mur*mu0;
 sigma=5e-3;
-eps=(1*eps0)-1i*(sigma./(2*pi*fr));
+eps=(1*eps0)-1i*(sigma./(2*pi*fr2));
 
-cf=(1+((fr*f0)./(0.2e6)).*((fr*f0)./(0.2e6)));
-mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((fr*f0)/(0.2e6));
+% cf=(1+((fr*f0)./(0.2e6)).*((fr*f0)./(0.2e6)));
+% mur2=mu0+((10000*mu0)./cf)-1i.*cf.*((fr*f0)/(0.2e6));
+% 
+% fr2=(0:100:(1e8-100));
+% mur2=ones(1,1000000)*mu0;
+% fi=fopen('Permeability.txt');
+% l=fgetl(fi);
+% in=1;
+% while ischar(l)
+% %for kj=1:81
+%     %%disp(l);
+%     text{in}=l;
+%     data{in}=sscanf(text{in},'%f %f');
+%     fr2(in)=(data{in}(1))/(a0/(1e-4));
+%     mur2(in)=data{in}(2)*mu0;
+%     
+%     l=fgetl(fi);
+%     in=in+1;
+% end
+% eps=10*eps0;
 
-fr2=(0:100:(1e8-100));
-mur2=ones(1,1000000)*mu0;
-fi=fopen('Permeability.txt');
-l=fgetl(fi);
-in=1;
-while ischar(l)
-%for kj=1:81
-    %%disp(l);
-    text{in}=l;
-    data{in}=sscanf(text{in},'%f %f');
-    fr2(in)=(data{in}(1))/(a0/(1e-4));
-    mur2(in)=data{in}(2)*mu0;
-    
-    l=fgetl(fi);
-    in=in+1;
-end
-eps=10*eps0;
 gammaor=1i.*2.*pi.*fr2.*sqrt(mur2.*eps);
 etaor=sqrt(mur2./eps);
 Zor=gammaor.*etaor;
@@ -133,11 +139,10 @@ subplot(2,1,2);semilogx(fr2,imag(mur2)/mu0);title('Imaginary \mu');xlim([fmin fm
 
 figure
 %plot(abs(By)./abs(Hy))
-
 T=t0/4;
 Fs=1/T;
 L=L2;
-obs=90;
+obs=91;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 %Hy(1:L,obs)=cos(pi*(1:L));
@@ -145,8 +150,8 @@ f=Fs/2*linspace(0,1,L/2+1);
 %Hx(1:L,obs)=exp((-(((1:L)-(L/2)).*((1:L)-(L/2))))/1000000000);
 %Hx(1:L,obs)= 1/(4*sqrt(2*pi*0.01))*(exp(-(1:L).^2/(2*0.01)));
 %for obs=1:50
-FHxi=(fft((Hx(1:L,obs)),L));
-FHxo=(fft((Hx(1:L,obs+1)),L));
+FHxi=(fft((Ey(1:L,obs)),L));
+FHxo=(fft((Ey(1:L,obs+1)),L));
 Gamma=(log(FHxo./FHxi))/(-(1/4)*(a0));
 Gamma(1)=0;
 %end
@@ -164,26 +169,23 @@ Gamma(1)=0;
 % plot(t0*(1:L/64),angle(Hx(1:L,obs))*H0);
 % xlabel('Time (s)');ylabel('\theta Hx(t)')
 
-figure
-subplot(2,1,1)
-semilogx(f(1:L/2+1),abs(FHxi(1:L/2+1)))
-xlabel('Frequency (s)');ylabel('|Hx (jw)|');xlim([fmin fmax]);
-%axis([0 1e9 0 0.2e4])
-subplot(2,1,2)
-semilogx(f(1:L/2+1),angle(FHxi(1:L/2+1))*(180/pi))
-xlabel('Frequency (s)');ylabel('\theta Hx (jw)');xlim([fmin fmax]);
-%axis([0 1e9 -200 200])
+% figure
+% subplot(2,1,1)
+% semilogx(f(1:L/2+1),abs(FHxi(1:L/2+1)))
+% xlabel('Frequency (s)');ylabel('|Hx (jw)|');xlim([fmin fmax]);
+% 
+% subplot(2,1,2)
+% semilogx(f(1:L/2+1),angle(FHxi(1:L/2+1))*(180/pi))
+% xlabel('Frequency (s)');ylabel('\theta Hx (jw)');xlim([fmin fmax]);
 
 figure;
 subplot(2,1,1);
 semilogx(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
-%hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 xlabel('Frequency (Hz)');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 hold on;semilogx(fr2,alphaor,'r');title('alpha');xlim([fmin fmax]);
 
 subplot(2,1,2)
 semilogx(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
-%hold on; plot(f(1:L/2+1),2*pi*f(1:L/2+1)/(3e8),'r');
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;semilogx(fr2,betaor,'r');title('beta');xlim([fmin fmax]);
 
@@ -208,6 +210,7 @@ hold on;semilogx(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 % T=t0;
 % Fs=1/T;
 % L=256/4;
+obs=95;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT)/L;
