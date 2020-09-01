@@ -88,12 +88,12 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
 fmin=1e6;
-fmax=1e8;
+fmax=1e10;
 
 muinf=1;
 gamma=.01/(8*4*pi*pi*pi*pi*pi);
 fn=0.01/(4*pi*pi);
-sigma=-100*(4*pi*pi);
+sigma=-125*(4*pi*pi);
 fr=((fmin)/f0):1e-4:((fmax)/f0); 
 fi=fr*(4*pi*pi);
 mur=muinf+(sigma.*fn.*fn)./(fn.*fn-fi.*fi-1i.*gamma.*fi);

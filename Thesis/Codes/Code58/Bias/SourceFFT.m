@@ -20,3 +20,7 @@ hold on;
 plot(fr*(3e12),real(FFT))
 plot(fr*(3e12),imag(FFT),'r')
 plot(fr*(3e12),abs(FFT),'k')
+xlabel('Frequency (Hz)')
+ylabel('G(j\omega)')
+title('Fourier Transform of Gaussian Pulse')
+legend('Re(G(j\omega))','Im(G(j\omega))','|G(j\omega)|')
