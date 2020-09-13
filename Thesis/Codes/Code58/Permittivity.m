@@ -22,24 +22,48 @@ f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
+I0=1;
+E0=I0/(a0*eps0*c0);
+D0=I0/(a0*c0);
+B0=I0/(a0*eps0*c0*c0);
+H0=I0/(a0);
+sigmaD0=(epsr*eps0*c0)/a0;
+J0=I0/(a0*a0);
+u0=(I0*I0)/(eps0*c0*c0*a0*a0);
+S0=(I0*I0)/(eps0*c0*a0*a0);
+Sc0=1/(c0);
+sig0=-20;
 
-semilogx(f/(a0/1e-4),eps);
+
+semilogx(f/(a0/(1e-4)),eps);xlim([10e5 1e7]);
 grid('off')
 xlabel('Frequency (Hz)')
 ylabel('Relative Permeability \mu_r')
 title('MEEP')
 %axis([1e8 1e9 0 1e4])
 
-muinf=1;gamma=.01/(8*4*pi*pi*pi*pi*pi);fn=0.01/(4*pi*pi);
-sigma=-20*(4*pi*pi);
+% muinf=1;gamma=.01/(8*4*pi*pi*pi*pi*pi);fn=0.01/(4*pi*pi);
+% f=0:1e-7:(1/3);
+% fi=f*(4*pi*pi);
+% sigma=-100*(4*pi*pi);
+% kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
+% b0=1.0;
+% kwi2=(fi.*fi.*b0.*b0)./kwi;
+% mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
+
+fn=0.01/(16*pi*pi*pi*pi);
+sigma=1e5;
+muinf=1;gamma=1/(16*pi*pi*pi*pi);
 f=0:1e-7:(1/3);
-fi=f*(4*pi*pi);
-%mur=muinf+(sigma.*fn.*fn)./(-fi.*fi-1i.*gamma.*f);
-sigma=-100*(4*pi*pi);
-mur=muinf+(sigma.*fn.*fn)./(fn.*fn-fi.*fi-1i.*gamma.*fi);
+fi=f;
+kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
+b0=0.0;
+kwi2=(fi.*fi.*b0.*b0)./kwi;
+mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
+
 figure;
-subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');
-subplot(2,1,2);semilogx(f*f0,imag(mur));
+subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');xlim([10e5 1e7]);
+subplot(2,1,2);semilogx(f*f0,imag(mur));xlim([10e5 1e7]);
 
 f=1e3:1e3:1e9;
 nomf=((f)./(0.2e6));
