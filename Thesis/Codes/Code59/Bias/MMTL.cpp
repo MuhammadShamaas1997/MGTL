@@ -41,8 +41,8 @@ double J0=I0/(a0*a0);//Electric Current Density
 double u0=(I0*I0)/(eps0*c0*c0*a0*a0);//Energy Density
 double S0=(I0*I0)/(eps0*c0*a0*a0);//Poynting Vector
 double Sc0=1/(c0);//Courant Factor
-double sig0=-0.5e4;
-double b0=1.0;
+double sig0=-1e4;
+double b0=1e-5;
 
 double xcen=0.0, ycen=0.0, zcen=0.0;
 double dxmin=0.0, dxmax=02.5, dymin=0.0, dymax=02.5, dzmin=0.0, dzmax=15.0;
@@ -415,8 +415,8 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].gamma = 1e-6;//*f0;
     my_medium_struct.H_susceptibilities.items[0].alpha = 0;
     my_medium_struct.H_susceptibilities.items[0].noise_amp = 0.0;
-    my_medium_struct.H_susceptibilities.items[0].drude = false;
-    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = true;
+    my_medium_struct.H_susceptibilities.items[0].drude = true;
+    my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = false;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
     my_material_func_data data;
     data.with_susceptibility = true;
@@ -467,8 +467,8 @@ int main(int argc, char *argv[]) {
     set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, default_material,al,mtl);
 
     anisodisp_materialH anisodispmatH;
-//    transformer.add_susceptibility(anisodispmatH, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(0.6667e-5), 1e-6,0.0,GYROTROPIC_DRUDE));
-    transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility((0.6667e-5), 1e-6));
+    //transformer.add_susceptibility(anisodispmatH, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(0.6667e-5), 1e-6,1e-6,GYROTROPIC_LORENTZIAN));
+    transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(0.6667e-5, 1e-6));
 
     fields f(& transformer);
   
