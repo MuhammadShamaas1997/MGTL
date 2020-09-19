@@ -64,11 +64,15 @@ figure;surf(abs(real(Sz(1:100,:))));hold on;
 figure;
 hold on
 for dist=1:121
-plot3([0 imag(Hx(90,dist))],[dist dist+1], [0 0]);
-plot3([0 0], [dist dist+1],[0 imag(Hy(90,dist))],'r');
+plot3([0 real(Hx(90,dist))*H0],[dist dist+1], [0 0]);
+plot3([0 0], [dist dist+1],[0 real(Hy(90,dist))*H0],'r');
 %axis([-1e-4 1e-4 0 122 -1e-4 1e-4])
 end
-
+ylabel('Time Step n');
+xlabel('Hx');
+zlabel('Hy');
+legend('Hx','Hy');
+title('Real Field');
 
 
 % hold on;
@@ -121,35 +125,40 @@ betaor=imag(gammaor);
 vpor=(2.*pi.*fr2)./betaor;
 
 
-figure;
-subplot(2,1,1);loglog(fr2,real(mur2)/mu0);title('Real \mu');xlim([fmin fmax]);
-subplot(2,1,2);loglog(fr2,imag(mur2)/mu0);title('Imaginary \mu');xlim([fmin fmax]);
+figure;hold on;
+subplot(2,1,1);loglog(fr2,real(mur2)/mu0);ylabel('Real \mu_r');xlim([fmin fmax]);
+title('Relative Permeability \mu_r');
+subplot(2,1,2);loglog(fr2,imag(mur2)/mu0);ylabel('Imaginary \mu_r');xlim([fmin fmax]);
+xlabel('Frequency (Hz)')
 
 figure
 T=t0/4;
 Fs=1/T;
 L=L2;
-obs=15;
+
+dobs=1;
+obs=25;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
-FHxi=(fft((Ex(1:L,obs)),L));
-FHxo=(fft((Ex(1:L,obs+20)),L));
-Gamma=(log(FHxo./FHxi))/(-(20/4)*(a0));
+FHxi=(fft((Ey(1:L,obs)),L));
+FHxo=(fft((Ey(1:L,obs+dobs)),L));
+Gamma=(log(FHxo./FHxi))/(-(dobs/4)*(a0));
 Gamma(1)=0;
 
 
 figure;
 subplot(2,1,1);
 loglog(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
-xlabel('Frequency (Hz)');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
-hold on;loglog(fr2,alphaor,'r');title('alpha');xlim([fmin fmax]);
+ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
+hold on;loglog(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
+title('Propagation Constant \gamma');legend('Simulation','Theory');
 
 subplot(2,1,2)
 loglog(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,betaor,'r');title('beta');xlim([fmin fmax]);
-
+hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
+legend('Simulation','Theory');
 
 figure
 f=f';
@@ -170,14 +179,17 @@ Z=Z*377;
 figure;
 subplot(2,1,1)
 loglog(f(1:NFFT/2+1),abs(Z(1:NFFT/2+1)));
-xlabel('Frequency (Hz)');ylabel('|\eta| (Ohm)');xlim([fmin fmax]);
+ylabel('|\eta| (Ohm)');xlim([fmin fmax]);
 hold on;
-loglog(fr2,abs(etaor),'r');title('\eta');xlim([fmin fmax]);
+loglog(fr2,abs(etaor),'r');title('Intrinsic Impedance \eta');xlim([fmin fmax]);
+legend('Simulation','Theory');
 
 subplot(2,1,2)
-loglog(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi)));
+semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi)));
 ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,abs(angle(etaor))*(180/pi),'r');title('theta \eta');xlim([fmin fmax]);ylim([-180 180]);
+hold on;semilogx(fr2,abs(angle(etaor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
+legend('Simulation','Theory');
+
 
 Zimag=abs(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 Zreal=abs(real(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
@@ -191,18 +203,18 @@ Yangle=(angle((Gamma(1:NFFT/2+1)./Z(1:NFFT/2+1)))*(180/pi));
 
 figure;
 subplot(2,1,1)
-loglog(f,(Zabs(1:NFFT/2+1)));
-ylabel('|Z| (Ohm/m)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
+loglog(f,(Zabs(1:NFFT/2+1)));title('Transverse Impedance Z');
+ylabel('|Z| (Ohm/m)');xlim([fmin fmax]);
 hold on;
-loglog(fr2,abs(Zor),'r');title('|Z|');xlim([fmin fmax]);
-%axis([0 1e9 0 2e5])
-
+loglog(fr2,abs(Zor),'r');xlim([fmin fmax]);
+legend('Simulation','Theory');
 
 subplot(2,1,2);
-loglog(f,(Zangle(1:NFFT/2+1)));
+semilogx(f,(Zangle(1:NFFT/2+1)));
 ylabel('\theta Z (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;
-loglog(fr2,angle(Zor)*(180/pi),'r');title('theta Z');xlim([fmin fmax]);ylim([-180 180]);
+semilogx(fr2,angle(Zor)*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
+legend('Simulation','Theory');
 
 % subplot(3,1,1);
 % plot(f(1:NFFT/2+1),(Gm(1:NFFT/2+1)));
@@ -225,10 +237,11 @@ loglog(fr2,angle(Zor)*(180/pi),'r');title('theta Z');xlim([fmin fmax]);ylim([-18
 figure;
 subplot(2,1,1)
 loglog(f,(Yabs(1:NFFT/2+1)));
-ylabel('Y (1/Ohm.m)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,abs(Yor),'r');title('|Y|');xlim([fmin fmax]);
-
+ylabel('Y (1/Ohm.m)');xlim([fmin fmax]);
+hold on;loglog(fr2,abs(Yor),'r');title('Longitudinal Admittance Y');xlim([fmin fmax]);
+legend('Simulation','Theory');
 subplot(2,1,2);
-loglog(f,abs(Yangle(1:NFFT/2+1)));
+semilogx(f,abs(Yangle(1:NFFT/2+1)));
 ylabel('\theta Y (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,abs(angle(Yor))*(180/pi),'r');title('theta Y');xlim([fmin fmax]);ylim([-180 180]);
+hold on;semilogx(fr2,abs(angle(Yor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
+legend('Simulation','Theory');
