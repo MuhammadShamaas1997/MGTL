@@ -17,9 +17,9 @@ while ischar(l)
 end
 figure
 hold on;
-plot(fr*(3e12),real(FFT))
-plot(fr*(3e12),imag(FFT),'r')
-plot(fr*(3e12),abs(FFT),'k')
+plot(fr*(3e10),real(FFT))
+plot(fr*(3e10),imag(FFT),'r')
+plot(fr*(3e10),abs(FFT),'k')
 xlabel('Frequency (Hz)')
 ylabel('G(j\omega)')
 title('Fourier Transform of Gaussian Pulse')
