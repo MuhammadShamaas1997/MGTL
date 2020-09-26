@@ -1,7 +1,9 @@
 clc;clear all;
 Nf=1000;
 If=0:0.5:7;
+% Ea=[0 20 40 60 80 95 107 115 121 125 129 133 136 139.5 142];
 Ea=[0 20 40 60 80 95 107 115 121 125 129 133 136 139.5 142];
+
 plot(Nf*If,Ea);
 xlabel('Field MMF (A.t)');ylabel('Generated EMF (V)');title('Magnetization Curve of Generator at 1800rpm');
 K=1;

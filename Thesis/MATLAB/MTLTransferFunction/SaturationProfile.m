@@ -51,22 +51,22 @@
 
 subplot(2,3,1)
 stairs(0:0.01:0.06,1000:250:2500);
-xlabel('Time (s)');ylabel('Speed (rpm)');%axis([0 0.04 0 2500]);
+xlabel('Time (s)');ylabel('Speed (rpm)');axis([0 0.06 500 2500]);
 subplot(2,3,2)
 plot(IF.time,IF.signals().values)
-xlabel('Time (s)');ylabel('IFshunt (A)');%axis([0 0.04 2 5]);
+xlabel('Time (s)');ylabel('IFshunt (A)');axis([0 0.06 1 2.5]);
 subplot(2,3,3)
 plot(IA.time,IA.signals().values)
-xlabel('Time (s)');ylabel('IFSeries (A)');%axis([0 0.04 20 65]);
+xlabel('Time (s)');ylabel('IFSeries (A)');axis([0 0.06 1 2.5]);
 subplot(2,3,4)
 plot(PermeanceVm.time,PermeanceVm.signals().values)
-xlabel('Time (s)');ylabel('Net MMF(A.t)');%axis([0 0.04 2000 6500]);
+xlabel('Time (s)');ylabel('Net MMF(A.t)');axis([0 0.06 3000 7000]);
 subplot(2,3,5)
 plot(EA.time,EA.signals().values)
-xlabel('Time (s)');ylabel('Net EMF(V)');%axis([0 0.04 50 175]);
+xlabel('Time (s)');ylabel('Net EMF(V)');axis([0 0.06 20 50]);
 subplot(2,3,6)
 plot(VT.time,VT.signals().values)
-xlabel('Time (s)');ylabel('Terminal Voltage (V)');%axis([0 0.04 50 150]);
+xlabel('Time (s)');ylabel('Terminal Voltage (V)');axis([0 0.06 20 50]);
 
 % subplot(2,1,1)
 % mmf=ScopeData5.signals(1,1).values;
