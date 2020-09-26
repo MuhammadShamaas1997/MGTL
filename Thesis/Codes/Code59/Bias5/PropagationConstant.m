@@ -34,6 +34,20 @@ while ischar(l)
     in=in+1;
 end
 
+epsr=1;
+a0=1e-2;%0.1mm
+c0=3e8;%2.99792458e8;%Speed of Light (m/s)
+f0=c0/a0;%3000GHz
+t0=1/f0;%0.33e-12 (s)
+mu0=4*pi*(1e-7);% (H/m)
+eps0=8.854187817e-12;% (F/m)
+I0=1; %(A)
+E0=I0/(a0*eps0*c0);%Electric Field
+D0=I0/(a0*c0);%Electric Displacement Field
+B0=I0/(a0*eps0*c0*c0);%Magnetic Field
+H0=I0/(a0);%Magnetizing Field
+
+
 % for ind=129:500
 % Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 % Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
