@@ -78,6 +78,15 @@ export HDF5_MPI="ON"
 pip3 install --user --no-binary=h5py h5py
 pip3 install --user matplotlib>3.0.0
 
+add to .bashrc and .profile
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PYTHONPATH="/usr/local/lib/python3.5/site-packages"
+export LD_LIBRARY_PATH="$HOME/install/bin:$HOME/install/lib:$HOME/install/share:$HOME/install/include:$HOME/install/h5utils/bin:$HOME/install/h5utils/lib:$HOME/install/h5utils/share:$HOME/install/h5utils/include:$HOME/install/harminv/bin:$HOME/install/harminv/lib:$HOME/install/harminv/share:$HOME/install/harminv/include:$HOME/install/hdf5-1.10.5/bin:$HOME/install/hdf5-1.10.5/lib:$HOME/install/hdf5-1.10.5/include:$HOME/install/hdf5-1.10.5/share:$HOME/install/libctl/bin:$HOME/install/libctl/lib:$HOME/install/libctl/include:$HOME/install/libctl/share:$HOME/install/libGDSII/include:$HOME/install/libGDSII/lib:$HOME/install/libGDSII/bin:$HOME/install/libGDSII/share:$HOME/install/mpb/include:$HOME/install/mpb/share:$HOME/install/mpb/bin:$HOME/install/mpb/lib:$HOME/install/meep/lib:$HOME/install/meep/bin:$HOME/install/meep/share:$HOME/install/meep/include:$LD_LIBRARY_PATH"
+
+RPATH_FLAGS="-Wl,-rpath,/usr/local/lib:/usr/lib/x86_64-linux-gnu/hdf5/openmpi"
+MY_LDFLAGS="-L/usr/local/lib -L/usr/lib/x86_64-linux-gnu/hdf5/openmpi ${RPATH_FLAGS}"
+MY_CPPFLAGS="-I/usr/local/include -I/usr/include/hdf5/openmpi"
+
 cd ~/install
 git clone https://github.com/NanoComp/meep.git
 cd meep/
