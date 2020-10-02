@@ -120,7 +120,7 @@ sigma=-1e4;
 fr=((fmin)/f0):1e-5:((fmax)/f0); 
 fi=fr;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
-b0=0;
+b0=1e0;
 kwi2=(fi.*fi.*b0.*b0)./kwi;
 mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
 

@@ -7,9 +7,9 @@ while ischar(l)
 %for kj=1:81
     %%disp(l);
     text{in}=l;
-    data{in}=sscanf(text{in},'%f %f');
+    data{in}=sscanf(text{in},'%f (%f,%f)');
     f(in)=(data{in}(1));
-    eps(in)=data{in}(2);
+    eps(in)=data{in}(2)+1i*data{in}(3);
     
     l=fgetl(fi);
     in=in+1;
@@ -34,9 +34,11 @@ S0=(I0*I0)/(eps0*c0*a0*a0);
 Sc0=1/(c0);
 sig0=-20;
 
+subplot(2,1,1);
+semilogx(f/(a0/(1e-2)),real(eps));xlim([10e5 1e7]);
+subplot(2,1,2);
+semilogx(f/(a0/(1e-2)),imag(eps));xlim([10e5 1e7]);
 
-semilogx(f/(a0/(1e-2)),eps);xlim([10e5 1e7]);
-grid('off')
 xlabel('Frequency (Hz)')
 ylabel('Relative Permeability \mu_r')
 title('MEEP')
@@ -51,13 +53,13 @@ title('MEEP')
 % kwi2=(fi.*fi.*b0.*b0)./kwi;
 % mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
 
-fn=(2/3)*(1e-5);
-sigma=-1e4;
-muinf=1;gamma=(.1e-5)/(2*pi);
+fn=(5.8)*(1e-5);
+sigma=1e4;
+muinf=1;gamma=-(.33e-2)/(2*pi);
 f=0:1e-7:(1/30);
 fi=f;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
-b0=1e-5;
+b0=0;
 kwi2=(fi.*fi.*b0.*b0)./kwi;
 mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
 
@@ -74,12 +76,12 @@ mur2=mu0+((10000*mu0)./cf)-(1i.*nomf.*(10000*mu0))./cf;
 figure;
 subplot(2,1,1);hold on;
 f=0:1e-7:(1/30);
-semilogx(f*f0,real(mur));title('Formula');xlim([10e5 1e7]);
+loglog(f*f0,real(mur));title('Formula');xlim([1e3 1000e5]);
 f=1e3:1e3:1e9;
-semilogx(f,real(mur2)/mu0,'r');title('Literature');xlim([10e5 1e7]);
+loglog(f,real(mur2)/mu0,'r');title('Literature');xlim([1e3 1000e5]);
 subplot(2,1,2);hold on;
 f=0:1e-7:(1/30);
-semilogx(f*f0,imag(mur));xlim([10e5 1e7]);
+loglog(f*f0,imag(mur));xlim([1e3 1000e5]);
 f=1e3:1e3:1e9;
-semilogx(f,imag(mur2)/mu0,'r');xlim([10e5 1e7]);
+loglog(f,imag(mur2)/mu0,'r');xlim([1e3 1000e5]);
 
