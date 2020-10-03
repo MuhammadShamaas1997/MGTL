@@ -114,7 +114,7 @@ fmin=1e6;
 fmax=1e9;
 
 muinf=1;
-gamma=(-0.33e-2);
+gamma=(-0.33e-2)/(2*pi);
 fn=(5.8e-5);
 sigma=1e4;
 fr=((fmin)/f0):1e-5:((fmax)/f0); 
