@@ -398,7 +398,7 @@ int main(int argc, char *argv[]) {
     my_medium_struct.E_chi3_diag.y=0.0;
     my_medium_struct.E_chi3_diag.z=0.0;
 
-    my_medium_struct.H_susceptibilities.num_items = 1;
+    /*my_medium_struct.H_susceptibilities.num_items = 1;
     my_medium_struct.H_susceptibilities.items = new meep_geom::susceptibility[1];
 
     my_medium_struct.H_susceptibilities.items[0].sigma_offdiag.x = 0.0;
@@ -417,7 +417,7 @@ int main(int argc, char *argv[]) {
     my_medium_struct.H_susceptibilities.items[0].drude = true;
     my_medium_struct.H_susceptibilities.items[0].saturated_gyrotropy = false;
     my_medium_struct.H_susceptibilities.items[0].is_file = false;
-    my_material_func_data data;
+    */my_material_func_data data;
     data.with_susceptibility = true;
 
 
@@ -466,8 +466,8 @@ int main(int argc, char *argv[]) {
     set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, default_material,al,mtl);
 
     anisodisp_materialH anisodispmatH;
-    //transformer.add_susceptibility(anisodispmatH, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(0.6667e-5), 1e-6,1e-6,GYROTROPIC_LORENTZIAN));
-    transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(5.8e-5, -0.33e-2));
+    transformer.add_susceptibility(sigma, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(5.8e-5), (-0.33e-2)/(2*3.1459),0.0,GYROTROPIC_DRUDE));
+    //transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(5.8e-5, (-0.33e-2)/(2*3.1459)));
 
     fields f(& transformer);
   
@@ -562,7 +562,7 @@ int stop=0;
     f.output_hdf5(Sx,vyz);
     f.output_hdf5(Sy,vyz);
     f.output_hdf5(Sz,vyz);
-
+    
     double *fl1 = flux1.flux();
     double *fl2 = flux2.flux();
     cout<<"Flux Harmonics"<<endl;
