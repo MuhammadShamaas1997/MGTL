@@ -48,7 +48,7 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
 
-for ind=129:500
+for ind=55:500
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
 Dx(ind,:)=0;Dy(ind,:)=0;Dz(ind,:)=0;
@@ -62,7 +62,7 @@ Hx(L2,121)=0;Hy(L2,121)=0;Hz(L2,121)=0;
 Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
 
 % hold on;
-% for stp=1:500
+% for stp=1:100
 %     plot(real(Hx(stp,:)));
 %     pause(.1);
 % end
@@ -78,15 +78,15 @@ figure;surf(abs(real(Sz(1:100,:))));hold on;
 figure;
 hold on
 for dist=1:121
-plot3([0 real(Hx(90,dist))*H0],[dist dist+1], [0 0]);
-plot3([0 0], [dist dist+1],[0 real(Hy(90,dist))*H0],'r');
+plot3([0 imag(Hx(50,dist))*H0],[dist dist+1], [0 0]);
+plot3([0 0], [dist dist+1],[0 imag(Hy(50,dist))*H0],'r');
 %axis([-1e-4 1e-4 0 122 -1e-4 1e-4])
 end
 ylabel('Time Step n');
 xlabel('Hx');
 zlabel('Hy');
 legend('Hx','Hy');
-title('Real Field');
+title('Imaginary Field');
 
 
 % hold on;
@@ -145,13 +145,13 @@ title('Relative Permeability \mu_r');
 subplot(2,1,2);semilogx(fr2,imag(mur2)/mu0);ylabel('Imaginary \mu_r');xlim([fmin fmax]);
 xlabel('Frequency (Hz)')
 
-figure
+
 T=t0/4;
 Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=90;
+obs=66;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
@@ -174,6 +174,7 @@ ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
+
 figure
 f=f';
 loglog(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
@@ -182,11 +183,11 @@ ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 
-obs=25;
+obs=2;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft((Ey(1:L,obs)),NFFT);
-FHx=fft((Hy(1:L,obs)),NFFT);
+FEx=fft((Ex(1:L,obs)),NFFT);
+FHx=fft((Hx(1:L,obs)),NFFT);
 Z=FEx./FHx;
 Z=Z*377;
 
@@ -224,10 +225,10 @@ loglog(fr2,abs(Zor),'r');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
 subplot(2,1,2);
-semilogx(f,(Zangle(1:NFFT/2+1)));
+semilogx(f,abs(Zangle(1:NFFT/2+1)));
 ylabel('\theta Z (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;
-semilogx(fr2,angle(Zor)*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
+semilogx(fr2,abs(angle(Zor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
 legend('Simulation','Theory');
 
 % subplot(3,1,1);
