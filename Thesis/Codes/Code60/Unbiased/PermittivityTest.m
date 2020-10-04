@@ -53,7 +53,7 @@ semilogx(fdata,-muimdata,'r');xlim([1e4 .2e7]);
 xlabel('Frequency (Hz)')
 ylabel('Imaginary')
 
-
+figure;
 semilogx(f/(a0/(1e-2)),real(eps));
 hold on;
 semilogx(fdata,muredata,'r');
@@ -70,20 +70,22 @@ legend('Real (Simulation)','Real (Datasheet)','Imaginary (Simulation)','Imaginar
 % b0=1.0;
 % kwi2=(fi.*fi.*b0.*b0)./kwi;
 % mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
-
+b0=1e-2;
+hold on;
 fn=(5.8)*(1e-5);
 sigma=1e4;
 muinf=1;gamma=-(.33e-2)/(2*pi);
 f=0:1e-7:(1/30);
 fi=f;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
-b0=0;
 kwi2=(fi.*fi.*b0.*b0)./kwi;
 mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
+hold on;
+semilogx(f*f0,real(mur));
 
-% figure;
-% subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');xlim([10e5 1e7]);
-% subplot(2,1,2);semilogx(f*f0,imag(mur));xlim([10e5 1e7]);
+figure;
+subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');xlim([10e5 1e9]);
+subplot(2,1,2);semilogx(f*f0,imag(mur));xlim([10e5 1e9]);
 
 f=1e3:1e3:1e9;
 nomf=((f)./(0.2e6));
