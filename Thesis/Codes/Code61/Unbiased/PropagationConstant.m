@@ -48,7 +48,7 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
 
-for ind=55:500
+for ind=55:1000
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
 Dx(ind,:)=0;Dy(ind,:)=0;Dz(ind,:)=0;
@@ -151,7 +151,7 @@ Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=66;
+obs=1;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
@@ -183,7 +183,7 @@ ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 
-obs=2;
+obs=1;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT);
