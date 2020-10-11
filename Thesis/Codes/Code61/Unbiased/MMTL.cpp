@@ -465,8 +465,8 @@ int main(int argc, char *argv[]) {
     set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, default_material,al,mtl);
 
     anisodisp_materialH anisodispmatH;
-    transformer.add_susceptibility(sigma, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(5.8e-5), (-0.33e-2)/(2*3.1459),0.0,GYROTROPIC_LORENTZIAN));
-    //transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(5.8e-5, (-0.33e-2)/(2*3.1459)));
+    //transformer.add_susceptibility(sigma, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(5.8e-5), (-0.33e-2)/(2*3.1459),0.0,GYROTROPIC_LORENTZIAN));
+    transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(5.8e-5, (-0.33e-2)/(2*3.1459)));
 
     fields f(& transformer);
   
