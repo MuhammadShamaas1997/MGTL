@@ -151,7 +151,7 @@ Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=1;
+obs=2;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
@@ -183,7 +183,7 @@ ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 
-obs=1;
+obs=2;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT);
