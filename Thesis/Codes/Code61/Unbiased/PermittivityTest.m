@@ -79,7 +79,7 @@ f=0:1e-7:(1/30);
 fi=f;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
 kwi2=(fi.*fi.*b0.*b0)./kwi;
-mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
+mur=(sigma.*fn.*fn.*b0.*fi)./(kwi.*kwi-fi.*fi.*b0.*b0);
 hold on;
 semilogx(f*f0,real(mur));
 

@@ -183,13 +183,14 @@ ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 
-obs=2;
+obs=111;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT);
 FHx=fft((Hx(1:L,obs)),NFFT);
 Z=FEx./FHx;
 Z=Z*377;
+
 
 figure;
 subplot(2,1,1)
@@ -204,7 +205,6 @@ semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi)));
 ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;semilogx(fr2,abs(angle(etaor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
 legend('Simulation','Theory');
-
 
 Zimag=abs(imag(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
 Zreal=abs(real(Gamma(1:NFFT/2+1).*Z(1:NFFT/2+1)));
@@ -231,23 +231,24 @@ hold on;
 semilogx(fr2,abs(angle(Zor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
 legend('Simulation','Theory');
 
-% subplot(3,1,1);
-% plot(f(1:NFFT/2+1),(Gm(1:NFFT/2+1)));
-% ylabel('Conductance GL (S/m)');
-% xlabel('Frequency (Hz)');
-% % axis([0 5e11 -8.5 -7.5])
-% 
+subplot(2,1,1);
+plot(f(1:NFFT/2+1),(Gm(1:NFFT/2+1)));
+ylabel('Conductance GL (S/m)');
+xlabel('Frequency (Hz)');
+xlim([fmin fmax]);
+% axis([0 5e11 -8.5 -7.5])
+
 % subplot(3,1,2);
 % plot(f(1:NFFT/2+1),(Rm(1:NFFT/2+1)));
 % ylabel('Reluctance Rmskin (1/H.m)');
-% xlabel('Frequency (Hz)');
+% xlabel('Frequency (Hz)');xlim([fmin fmax]);
 % % axis([0 5e11 0 3e13])
-% 
-% subplot(3,1,3);
-% plot(f(1:NFFT/2+1),(XCm(1:NFFT/2+1)));
-% ylabel('Susceptance XCL (S/m)');
-% xlabel('Frequency (Hz)');
-% % axis([0 5e11 0 1])
+
+subplot(2,1,2);
+plot(f(1:NFFT/2+1),(XCm(1:NFFT/2+1)));
+ylabel('Susceptance XCL (S/m)');
+xlabel('Frequency (Hz)');xlim([fmin fmax]);
+% axis([0 5e11 0 1])
 
 figure;
 subplot(2,1,1)

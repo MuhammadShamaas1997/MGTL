@@ -71,7 +71,6 @@ legend('Real (Simulation)','Real (Datasheet)','Imaginary (Simulation)','Imaginar
 % kwi2=(fi.*fi.*b0.*b0)./kwi;
 % mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
 b0=1e-2;
-hold on;
 fn=(5.8)*(1e-5);
 sigma=1e4;
 muinf=1;gamma=-(.33e-2)/(2*pi);

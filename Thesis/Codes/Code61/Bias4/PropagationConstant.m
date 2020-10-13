@@ -48,7 +48,7 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
 
-for ind=55:500
+for ind=65:1000
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
 Dx(ind,:)=0;Dy(ind,:)=0;Dz(ind,:)=0;
@@ -56,15 +56,22 @@ Ex(ind,:)=0;Ey(ind,:)=0;Ez(ind,:)=0;
 end
 
 L2=32768*4;
+Hx=[zeros(L2-64,121); Hx(1:64,:)]; 
+Hy=[zeros(L2-64,121); Hy(1:64,:)]; 
+Hz=[zeros(L2-64,121); Hz(1:64,:)]; 
+Ex=[zeros(L2-64,121); Ex(1:64,:)]; 
+Ey=[zeros(L2-64,121); Ey(1:64,:)]; 
+Ez=[zeros(L2-64,121); Ez(1:64,:)]; 
+
 %Bx(L2,121)=0;By(L2,121)=0;Bz(L2,121)=0;
-Hx(L2,121)=0;Hy(L2,121)=0;Hz(L2,121)=0;
+%Hx(L2,121)=0;Hy(L2,121)=0;Hz(L2,121)=0;
 %Dx(L2,:)=0;Dy(L2,:)=0;Dz(L2,:)=0;
-Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
+%Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
 
 % hold on;
-% for stp=1:100
-%     plot(real(Hx(stp,:)));
-%     pause(.1);
+% for stp=(L2-70):L2
+%     plot(abs(Hx(stp,1:20)));ylim([0 3e-7])
+%     pause(1);
 % end
 
 %Sx=Ex(1:100,:).*conj(Hx(1:100,:));
@@ -110,8 +117,8 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e6;
-fmax=1e9;
+fmin=1e8;
+fmax=1e10;
 
 muinf=1;
 gamma=(-0.33e-2)/(2*pi);
@@ -151,39 +158,70 @@ Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=66;
+obs=5;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
-FHxi=(fft((Ey(1:L,obs)),L));
-FHxo=(fft((Ey(1:L,obs+dobs)),L));
+FHxi=(fft((Ex(1:L,obs)),L));
+FHxo=(fft((Ex(1:L,obs+dobs)),L));
 Gamma=(log(FHxo./FHxi))/(-(dobs/4)*(a0));
 Gamma(1)=0;
 
+Galpha=real(Gamma(1:L/2+1));
+Gbeta=imag(Gamma(1:L/2+1));
+for indgamma=1:L/2+1
+    if (Galpha(indgamma)<min(alphaor))
+        Galpha(indgamma)=min(alphaor);
+    end
+    if (Gbeta(indgamma)<min(betaor))
+        Gbeta(indgamma)=min(betaor);
+    end
+
+end
+
+% figure;
+% subplot(2,1,1);
+% loglog(f(1:L/2+1),Galpha);
+% ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
+% hold on;loglog(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
+% title('Propagation Constant \gamma');legend('Simulation','Theory');
+% 
+% subplot(2,1,2)
+% loglog(f(1:L/2+1),Gbeta);
+% ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
+% hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
+% legend('Simulation','Theory');
+% 
+% figure
+% f=f';
+% plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./Gbeta));
+% %hold on; plot(f(1:L/2+1),(3e8),'r');
+% ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
+% hold on;plot(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 figure;
 subplot(2,1,1);
-loglog(f(1:L/2+1),abs(real(Gamma(1:L/2+1))));
+plot(f(1:L/2+1),(real(Gamma(1:L/2+1))));
 ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
-hold on;loglog(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
+hold on;plot(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 title('Propagation Constant \gamma');legend('Simulation','Theory');
 
 subplot(2,1,2)
-loglog(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
+plot(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
+hold on;plot(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
 
 figure
 f=f';
-loglog(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
+plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
 %hold on; plot(f(1:L/2+1),(3e8),'r');
 ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
+hold on;plot(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
 
-obs=2;
+obs=14;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT);
@@ -200,7 +238,7 @@ loglog(fr2,abs(etaor),'r');title('Intrinsic Impedance \eta');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
 subplot(2,1,2)
-semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi)));
+semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi))-180);
 ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;semilogx(fr2,abs(angle(etaor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
 legend('Simulation','Theory');

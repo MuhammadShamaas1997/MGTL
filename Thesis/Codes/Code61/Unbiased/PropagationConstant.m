@@ -48,7 +48,7 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
 
-for ind=55:1000
+for ind=65:1000
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
 Dx(ind,:)=0;Dy(ind,:)=0;Dz(ind,:)=0;
@@ -56,15 +56,22 @@ Ex(ind,:)=0;Ey(ind,:)=0;Ez(ind,:)=0;
 end
 
 L2=32768*4;
+Hx=[zeros(L2-64,121); Hx(1:64,:)]; 
+Hy=[zeros(L2-64,121); Hy(1:64,:)]; 
+Hz=[zeros(L2-64,121); Hz(1:64,:)]; 
+Ex=[zeros(L2-64,121); Ex(1:64,:)]; 
+Ey=[zeros(L2-64,121); Ey(1:64,:)]; 
+Ez=[zeros(L2-64,121); Ez(1:64,:)]; 
+
 %Bx(L2,121)=0;By(L2,121)=0;Bz(L2,121)=0;
-Hx(L2,121)=0;Hy(L2,121)=0;Hz(L2,121)=0;
+%Hx(L2,121)=0;Hy(L2,121)=0;Hz(L2,121)=0;
 %Dx(L2,:)=0;Dy(L2,:)=0;Dz(L2,:)=0;
-Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
+%Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
 
 % hold on;
-% for stp=1:100
-%     plot(abs(Hx(stp,:)));
-%     pause(.1);
+% for stp=(L2-70):L2
+%     plot(abs(Hx(stp,1:20)));ylim([0 3e-7])
+%     pause(1);
 % end
 
 %Sx=Ex(1:100,:).*conj(Hx(1:100,:));
@@ -110,7 +117,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e6;
+fmin=1e8;
 fmax=1e10;
 
 muinf=1;
@@ -151,12 +158,12 @@ Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=2;
+obs=5;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
-FHxi=(fft((Ey(1:L,obs)),L));
-FHxo=(fft((Ey(1:L,obs+dobs)),L));
+FHxi=(fft((Ex(1:L,obs)),L));
+FHxo=(fft((Ex(1:L,obs+dobs)),L));
 Gamma=(log(FHxo./FHxi))/(-(dobs/4)*(a0));
 Gamma(1)=0;
 
