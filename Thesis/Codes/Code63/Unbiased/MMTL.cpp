@@ -138,7 +138,7 @@ cdouble compute_Ie(fields & f, double z)
 cdouble compute_Vm(fields & f, double z)
 {
   //cdouble Vy=line_integral_y(f,Hy,0.001,ycen-dymin,y,xcen,zcen-dzmin);
-  cdouble Vz=line_integral_z(f,Hz,0.001,zcen-dzmax,z,xcen,ycen);
+  cdouble Vz=line_integral_y(f,Hy,0.001,-25.0,0.0,xcen,z);
   //cdouble Vm=Vy+Vz;
   return Vz;
 }
@@ -146,7 +146,7 @@ cdouble compute_Vm(fields & f, double z)
 cdouble compute_Ve(fields & f, double z)
 {
   //cdouble Vy=line_integral_y(f,Ey,0.001,ycen-dymin,y,xcen,zcen-dzmin);
-  cdouble Vz=line_integral_z(f,Ez,0.001,zcen-dzmax,z,xcen,ycen);
+  cdouble Vz=line_integral_y(f,Ey,0.001,-25.0,0.0,xcen,z);
   //cdouble Ve=Vy+Vz;
   return Vz;
 }
@@ -504,7 +504,7 @@ for (int i=0;i<numcoord;i++)
       const volume vsrc1 =volume(vec(xpcoord[i],ypcoord[i],zpcoord[i]), vec(xpcoord[i],ypcoord[i],zpcoord[i]));
       {
         f.add_volume_source(Ex, src, vsrc1, cdouble(amplitude,0));
-        f.add_volume_source(Ey, src, vsrc1, cdouble(amplitude,0));
+        //f.add_volume_source(Ey, src, vsrc1, cdouble(amplitude,0));
       }
     
     }
@@ -571,7 +571,7 @@ int stop=0;
     }*/ 
 
     }    
-       if (i<=600)
+       if (i<=2000)
       {
         //cdouble Vm=compute_Vm(f,zcen);
         //cdouble Im=compute_Im(f,zcen);
@@ -602,7 +602,7 @@ int stop=0;
     
       }
 
-      if((i==(600))) 
+      if((i==(2000))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
