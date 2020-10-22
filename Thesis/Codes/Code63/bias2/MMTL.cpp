@@ -227,8 +227,8 @@ void my_material_func(vector3 p, void *user_data, meep_geom::medium_struct *m) {
   m->mu_diag.x = m->mu_diag.y = m->mu_diag.z = nn*nn;
   m->E_chi2_diag.x = m->E_chi2_diag.y = m->E_chi2_diag.z = 0.0;
   m->E_chi3_diag.x = m->E_chi3_diag.y = m->E_chi3_diag.z = 0.0;
-  m->H_chi2_diag.x = m->H_chi2_diag.y = m->H_chi2_diag.z = 0.0;
-  m->H_chi3_diag.x = m->H_chi3_diag.y = m->H_chi3_diag.z = 0.0;
+  m->H_chi2_diag.x = m->H_chi2_diag.y = m->H_chi2_diag.z = 1.0;
+  m->H_chi3_diag.x = m->H_chi3_diag.y = m->H_chi3_diag.z = 1.0;
 
   if (in_middle)
   {
@@ -383,12 +383,12 @@ int main(int argc, char *argv[]) {
     my_medium_struct.mu_diag.y=1.0;
     my_medium_struct.mu_diag.z=1.0;
 
-    my_medium_struct.H_chi2_diag.x=0.0;
-    my_medium_struct.H_chi2_diag.y=0.0;
-    my_medium_struct.H_chi2_diag.z=0.0;
-    my_medium_struct.H_chi3_diag.x=0.0;
-    my_medium_struct.H_chi3_diag.y=0.0;
-    my_medium_struct.H_chi3_diag.z=0.0;
+    my_medium_struct.H_chi2_diag.x=1.0;
+    my_medium_struct.H_chi2_diag.y=1.0;
+    my_medium_struct.H_chi2_diag.z=1.0;
+    my_medium_struct.H_chi3_diag.x=1.0;
+    my_medium_struct.H_chi3_diag.y=1.0;
+    my_medium_struct.H_chi3_diag.z=1.0;
 
     my_medium_struct.E_chi2_diag.x=0.0;
     my_medium_struct.E_chi2_diag.y=0.0;
@@ -571,13 +571,14 @@ int stop=0;
     }*/ 
 
     }    
-       if (i<=600)
+       if (i<=2000)
       {
-        //cdouble Vm=compute_Vm(f,zcen);
-        //cdouble Im=compute_Im(f,zcen);
+        //cdouble Vm=compute_Vm(f,-dzmax);
+        //cdouble Im=compute_Im(f,-dzmax);
         //cdouble Ve=compute_Ve(f,zcen);
         //cdouble Ie=compute_Ie(f,zcen);
-        //Time<<Im.real()<<" , "<<Im.imag()<<" , "<<Vm.real()<<" , "<<Vm.imag()<<endl;//" , "<<Ie.real()<<" , "<<Ie.imag()<<" , "<<Ve.real()<<" , "<<Ve.imag()<<endl;
+        //Time<<Im.real()<<" , "<<Im.imag()<<" , "<<Vm.real()<<" , "<<Vm.imag()<<endl;
+//" , "<<Ie.real()<<" , "<<Ie.imag()<<" , "<<Ve.real()<<" , "<<Ve.imag()<<endl;
         //Im , Vm , Ie , Ve 
 
         for (double z=-dzmax;z<=dzmax;z=z+1/(2*divisions))  
@@ -602,7 +603,7 @@ int stop=0;
     
       }
 
-      if((i==(600))) 
+      if((i==(2000))) 
       {
         //cout<<"End? (1/0):";
         //cin>>stop;
