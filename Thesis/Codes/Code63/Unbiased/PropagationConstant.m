@@ -47,7 +47,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
-Lmax=1200/2;
+Lmax=1400;
 for ind=(Lmax+1):1000
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
