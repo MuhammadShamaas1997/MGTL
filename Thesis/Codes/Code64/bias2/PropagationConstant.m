@@ -47,7 +47,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 
-Lmax=1400;
+Lmax=1024;
 for ind=(Lmax+1):2000
 Bx(ind,:)=0;By(ind,:)=0;Bz(ind,:)=0;
 Hx(ind,:)=0;Hy(ind,:)=0;Hz(ind,:)=0;
@@ -69,9 +69,9 @@ Ez=[zeros(L2-Lmax,121); Ez(1:Lmax,:)];
 %Ex(L2,121)=0;Ey(L2,121)=0;Ez(L2,121)=0;
 
 % hold on;
-% for stp=(L2-Lmax):100:L2
-%     plot(real(Hx(stp,:)));
-%     %pause(.1);
+% for stp=(L2-Lmax):L2
+%     plot(real(Hy(stp,:)));
+% %     pause(.1);
 % end
 
 %Sx=Ex(1:100,:).*conj(Hx(1:100,:));
@@ -90,7 +90,7 @@ figure;surf(abs(real(Sz(1:Lmax,:))));hold on;
 figure;
 hold on
 for dist=1:121
-plot3([0 real(Hx(L2,dist))*H0],[dist dist+1], [0 0]);
+%plot3([0 real(Hx(L2,dist))*H0],[dist dist+1], [0 0]);
 plot3([0 0], [dist dist+1],[0 real(Hy(L2,dist))*H0],'r');
 %axis([-1e-4 1e-4 0 122 -1e-4 1e-4])
 end
@@ -122,8 +122,8 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=10e5;
-fmax=1e11;
+fmin=1e8;
+fmax=1e10;
 
 muinf=1;
 gamma=(-0.33e-2)/(2*pi);
@@ -162,7 +162,7 @@ T=t0/4;
 Fs=1/T;
 L=L2;
 
-dobs=4;
+dobs=1;
 obs=2;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
@@ -185,7 +185,6 @@ loglog(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
 legend('Simulation','Theory');
-
 
 figure
 f=f';
