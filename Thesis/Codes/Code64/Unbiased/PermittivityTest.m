@@ -70,22 +70,23 @@ legend('Real (Simulation)','Real (Datasheet)','Imaginary (Simulation)','Imaginar
 % b0=1.0;
 % kwi2=(fi.*fi.*b0.*b0)./kwi;
 % mur=muinf+(sigma.*fn.*fn)./(kwi-kwi2);
-b0=1e-2;
-hold on;
+b0=0;
 fn=(5.8)*(1e-5);
-sigma=1e4;
+sigma=1.0562e4;
 muinf=1;gamma=-(.33e-2)/(2*pi);
 f=0:1e-7:(1/30);
 fi=f;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
 kwi2=(fi.*fi.*b0.*b0)./kwi;
-mur=(sigma.*fn.*fn.*b0.*fi)./(kwi.*kwi-fi.*fi.*b0.*b0);
-hold on;
-semilogx(f*f0,real(mur));
+mur=(sigma.*fn.*fn.*kwi)./(kwi.*kwi-fi.*fi.*b0.*b0);
 
 figure;
-subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');xlim([10e5 1e9]);
+subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');
+hold on;semilogx(fdata,muredata,'r');
+xlim([1e4 1e7]);
 subplot(2,1,2);semilogx(f*f0,imag(mur));xlim([10e5 1e9]);
+hold on;semilogx(fdata,-muimdata,'r');
+xlim([1e4 1e7]);
 
 f=1e3:1e3:1e9;
 nomf=((f)./(0.2e6));
