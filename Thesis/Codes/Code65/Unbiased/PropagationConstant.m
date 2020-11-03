@@ -122,7 +122,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
-fmin=1e8;
+fmin=10e5;
 fmax=1e10;
 
 muinf=1;
@@ -175,7 +175,7 @@ Gamma(1)=0;
 
 figure;
 subplot(2,1,1);
-loglog(f(1:L/2+1),(real(Gamma(1:L/2+1))));
+loglog(f(1:L/2+1),(runningmean(real(Gamma(1:L/2+1))',3))');
 ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 hold on;loglog(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 title('Propagation Constant \gamma');legend('Simulation','Theory');
