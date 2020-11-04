@@ -86,6 +86,11 @@ figure;surf(abs(real(Sz(1:Lmax,:))));hold on;
  xlabel('Distance (m)')
  ylabel('Time (s)')
  title('Evolution of Poynting Flux Density S_z')
+Sz=[zeros(L2-Lmax,121); Sz(1:Lmax,:)];
+FSzi=(fft((Sz(1:L,1)),L));
+FSzo=(fft((Sz(1:L,2)),L));
+GammaSz=(log(FSzo./FSzi))/(-(1/4)*(a0));
+loglog(f(1:L/2+1),(abs(GammaSz(1:L/2+1))));
 
 figure;
 hold on
@@ -157,13 +162,16 @@ title('Relative Permeability \mu_r');
 subplot(2,1,2);semilogx(fr2,imag(mur2)/mu0);ylabel('Imaginary \mu_r');xlim([fmin fmax]);
 xlabel('Frequency (Hz)')
 
+figure;
+ind=752:772;
+plot(Hx(131072-ind,20),Bx(ind,20))
 
 T=t0/4;
 Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=2;
+obs=4;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
@@ -185,6 +193,7 @@ loglog(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
 legend('Simulation','Theory');
+
 
 figure
 f=f';
