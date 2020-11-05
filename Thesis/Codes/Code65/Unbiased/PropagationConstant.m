@@ -123,7 +123,7 @@ B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 sigmaD0=(epsr*eps0*c0)/a0;
 fmin=10e5;
-fmax=1e10;
+fmax=1e9;
 
 muinf=1;
 gamma=(-0.33e-2)/(2*pi);
@@ -175,30 +175,41 @@ Gamma(1)=0;
 
 figure;
 subplot(2,1,1);
-loglog(f(1:L/2+1),(runningmean(real(Gamma(1:L/2+1))',3))');
+loglog(f(1:L/2+1),(runningmean(real(Gamma(1:L/2+1))',250))');
 ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 hold on;loglog(fr2,alphaor,'r');ylabel('\alpha (Np.m^-^1)');xlim([fmin fmax]);
 title('Propagation Constant \gamma');legend('Simulation','Theory');
 
 subplot(2,1,2)
-loglog(f(1:L/2+1),abs(imag(Gamma(1:L/2+1))));
+loglog(f(1:L/2+1),((runningmean(imag(Gamma(1:L/2+1))',250))'));
 ylabel('\beta (rad.m^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;loglog(fr2,betaor,'r');ylabel('\beta (rad.m^-^1)');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
 figure
+subplot(2,1,1);
 f=f';
-plot(f(1:L/2+1),abs(2*pi*f(1:L/2+1)./(imag(Gamma(1:L/2+1)))));
+vpi=(abs(2*pi*f(1:L/2+1)./((runningmean(imag(Gamma(1:L/2+1))',250))')));
+loglog(f(1:L/2+1),(runningmean(vpi',1))');
 %hold on; plot(f(1:L/2+1),(3e8),'r');
 ylabel('vp (m.s^-^1)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
-hold on;plot(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
+hold on;loglog(fr2,vpor,'r');title('vp');xlim([fmin fmax]);
 
+subplot(2,1,2)
+vpi(length(vpi)+1,1)=vpi(length(vpi)-1);
+betai=((runningmean(imag(Gamma(1:L/2+1))',250))');
+for index1=2:(length(vpi)-1)
+dbeta=betai(index1)-betai(index1-1);
+vgi(index1-1)=(f(index1)-f(index1-1))./dbeta;
+vgi(index1-1)=vgi(index1-1)*2*pi;
+end
+plot(f(1:L/2),(runningmean(vgi',1))');
 
-obs=2;
+obs=12;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft((Ey(1:L,obs)),NFFT);
-FHx=fft((Hy(1:L,obs)),NFFT);
+FEx=fft((Ex(1:L,obs)),NFFT);
+FHx=fft((Hx(1:L,obs)),NFFT);
 Z=FEx./FHx;
 Z=Z*377;
 
@@ -211,7 +222,7 @@ loglog(fr2,abs(etaor),'r');title('Intrinsic Impedance \eta');xlim([fmin fmax]);
 legend('Simulation','Theory');
 
 subplot(2,1,2)
-semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi))-180);
+semilogx(f(1:NFFT/2+1),abs(angle(Z(1:NFFT/2+1))*(180/pi)));
 ylabel('\Theta \eta (Degree)');xlabel('Frequency (Hz)');xlim([fmin fmax]);
 hold on;semilogx(fr2,abs(angle(etaor))*(180/pi),'r');xlim([fmin fmax]);ylim([-200 200]);
 legend('Simulation','Theory');
