@@ -74,7 +74,7 @@ b0=0;
 fn=(5.8)*(1e-5);
 sigma=1.0562e4;
 muinf=1;gamma=-(.33e-2)/(2*pi);
-f=0:1e-7:(1/30);
+f=0:1e-7:(1/3);
 fi=f;
 kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
 kwi2=(fi.*fi.*b0.*b0)./kwi;
@@ -106,3 +106,31 @@ mur2=mu0+((10000*mu0)./cf)-(1i.*nomf.*(10000*mu0))./cf;
 % f=1e3:1e3:1e9;
 % loglog(f,imag(mur2)/mu0,'r');xlim([1e3 100e5]);
 
+b0=0;
+fn=(5.8)*(1e-5);
+sigma=1.0562e4;
+muinf=1;gamma=-(.33e-2)/(2*pi);
+f=0:1e-7:(1/3);
+fi=f;
+kwi=(fn.*fn-fi.*fi-1i.*gamma.*fi);
+kwi2=(fi.*fi.*b0.*b0)./kwi;
+mur=(sigma.*fn.*fn.*kwi)./(kwi.*kwi-fi.*fi.*b0.*b0);
+
+
+alpha=0;
+fn=0.1666;
+sigma=1;%1.0562e4;
+muinf=1;gamma=(.33e-2)/(2*pi);
+f=0:1e-7:(1/3);
+fi=f;
+kwi=(fn-1i.*fi.*alpha);
+kwi2=fi+1i*gamma;
+mur=mur+(sigma.*kwi)./(kwi.*kwi-kwi2.*kwi2);
+
+figure;
+subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');
+%hold on;semilogx(fdata,muredata,'r');
+%xlim([1e4 1e7]);
+subplot(2,1,2);semilogx(f*f0,imag(mur));xlim([10e5 1e9]);
+%hold on;semilogx(fdata,-muimdata,'r');
+%xlim([1e4 1e7]);
