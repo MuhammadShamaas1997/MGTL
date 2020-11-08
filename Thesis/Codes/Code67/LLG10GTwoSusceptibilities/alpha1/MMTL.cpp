@@ -199,7 +199,7 @@ double sigma2(const vec &v)
     
     }
   double sigp=0.0;
-  if(in_middle){sigp=1.0;}
+  if(in_middle){sigp=0.1;}
   else{sigp=0.0;}
   return sigp;
 }
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
     //double xsize=6, ysize=6, zsize=6;
     
     k=2*pi*Np/(03.0);
-    double z=-15.0;
+    double z=-20.0;
     double x=0.0;
     double y=0.0;
       	xpcoord[numcoord]=x;
@@ -358,7 +358,7 @@ int main(int argc, char *argv[]) {
       	zpcoord[numcoord]=z;
       	xscoord[numcoord]=x;
       	yscoord[numcoord]=y;
-      	zscoord[numcoord]=z+30.0;
+      	zscoord[numcoord]=z+40.0;
       	numcoord++;
 
 
@@ -484,7 +484,7 @@ int main(int argc, char *argv[]) {
     set_materials_from_geometry(&transformer, g, center, use_anisotropic_averaging,DEFAULT_SUBPIXEL_TOL, DEFAULT_SUBPIXEL_MAXEVAL,ensure_periodicity, default_material,al,mtl);
 
     anisodisp_materialH anisodispmatH;
-    transformer.add_susceptibility(sigma2, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(0.1666), (0.33e-2)/(2*3.1459),1.0,GYROTROPIC_SATURATED));
+    transformer.add_susceptibility(sigma2, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,b0),(0.1666), (33e-2)/(2*3.1459),1.0,GYROTROPIC_SATURATED));
     transformer.add_susceptibility(sigma, H_stuff, lorentzian_susceptibility(5.8e-5, (0.33e-2)/(2*3.1459)));
 
     fields f(& transformer);

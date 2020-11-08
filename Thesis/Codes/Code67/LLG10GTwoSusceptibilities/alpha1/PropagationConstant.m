@@ -1,7 +1,7 @@
 clc;clear all;
 %hold on;
 %%
-f=fopen('FieldEvolutionIn.txt');
+f=fopen('FieldEvolutionIn100.txt');
 File=1;
 l=fgetl(f);
 in=1;

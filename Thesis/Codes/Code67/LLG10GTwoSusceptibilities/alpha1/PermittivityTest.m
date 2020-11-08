@@ -117,15 +117,15 @@ kwi2=(fi.*fi.*b0.*b0)./kwi;
 mur=(sigma.*fn.*fn.*kwi)./(kwi.*kwi-fi.*fi.*b0.*b0);
 
 
-alpha=0;
+alpha=1;
 fn=0.1666;
-sigma=1;%1.0562e4;
-muinf=1;gamma=(.33e-2)/(2*pi);
+sigma=.1;%1.0562e4;
+muinf=1;gamma=(33e-2)/(2*pi);
 f=0:1e-7:(1/3);
 fi=f;
 kwi=(fn-1i.*fi.*alpha);
 kwi2=fi+1i*gamma;
-mur=mur+(sigma.*kwi)./(kwi.*kwi-kwi2.*kwi2);
+mur=(sigma.*kwi)./(kwi.*kwi-kwi2.*kwi2);
 
 figure;
 subplot(2,1,1);semilogx(f*f0,real(mur));title('Formula');
