@@ -41,7 +41,7 @@ f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
 mu0=4*pi*(1e-7);% (H/m)
 eps0=8.854187817e-12;% (F/m)
-I0=1; %(A)
+I0=100; %(A)
 E0=I0/(a0*eps0*c0);%Electric Field
 D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
@@ -157,6 +157,11 @@ title('Relative Permeability \mu_r');
 subplot(2,1,2);semilogx(fr2,imag(mur2)/mu0);ylabel('Imaginary \mu_r');xlim([fmin fmax]);
 xlabel('Frequency (Hz)')
 
+plot(Hy(241:247,1)*H0,By(241:247,1)*B0)
+ylabel('Magnetic Flux Density H (Wb.m^-^2)')
+xlabel('Magnetic Field Intensity H (A.m^-^1)')
+title('Hysteresis Curve of MnZn Ferromagnet')
+grid on
 
 T=t0/4;
 Fs=1/T;
