@@ -35,7 +35,7 @@ while ischar(l)
 end
 
 epsr=1;
-a0=1e-2;%0.1mm
+a0=1e-3;%0.1mm
 c0=3e8;%2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -140,7 +140,7 @@ title('Load End');
 
 if (tind==1000)
 else
-    pause(.0001);cla(h2);cla(h4);
+    cla(h2);cla(h4);
 end
 end
 ylabel('Time Step n');
@@ -149,6 +149,35 @@ zlabel('Hy');
 legend('Hx','Hy');
 title('Imaginary Field');
 
+Lmax=1000;
+subplot(2,2,1)
+plot((1:Lmax)*t0,real(Hx(1:Lmax,2))*H0);hold on;
+plot((1:Lmax)*t0,real(Hy(1:Lmax,2)*H0),'r');
+xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Source End');
+legend('Hx','Hy');
+axis([0 Lmax*t0 -1000 1000]);
+subplot(2,2,2)
+hold on
+for tind=1:Lmax
+plot([real(Hx(tind,2)) real(Hx(tind+1,2))]*H0,[real(Hy(tind,2)) real(Hy(tind+1,2))]*H0)
+%axis([-0.1 0.1 -0.1 0.1]);
+end
+xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Source End');
+axis([-1000 1000 -1000 1000]);
+subplot(2,2,3)
+plot((1:Lmax)*t0,real(Hx(1:Lmax,10))*H0);hold on;
+plot((1:Lmax)*t0,real(Hy(1:Lmax,10)*H0),'r');
+xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Load End');
+axis([0 Lmax*t0 -200 200]);
+legend('Hx','Hy');
+subplot(2,2,4)
+hold on
+for tind=1:Lmax
+plot([real(Hx(tind,10)) real(Hx(tind+1,10))]*H0,[real(Hy(tind,10)) real(Hy(tind+1,10))]*H0)
+%axis([-0.1 0.1 -0.1 0.1]);
+end
+xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Load End');
+axis([-200 200 -200 200]);
 
 % hold on;
 % plot(0:(2/400):2,(real(Bx(170,:))*B0));
