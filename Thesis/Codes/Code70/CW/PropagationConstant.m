@@ -90,36 +90,57 @@ figure;surf(abs(real(Sz(1:Lmax,:))));hold on;
 figure;
 hold on
 
-for tind=900:1:1000
+for tind=1:1:500
 dist=2;
 h1=subplot(2,2,1);
 hold on
-plot([tind-899 tind+1-899],real(Hx(tind:(tind+1),dist))*H0);
-plot([tind-899 tind+1-899],real(Hy(tind:(tind+1),dist))*H0,'r');
-ylim([-50 50]);xlim([1 100]);grid on;
-h3=subplot(2,2,3);
+plot([tind tind+1],real(Hx(tind:(tind+1),dist))*H0);
+plot([tind tind+1],real(Hy(tind:(tind+1),dist))*H0,'r');
+ylim([-50 50]);xlim([1 500]);
+ylabel('Magnitude (A/m)');
+xlabel('Time step');
+legend('Hx','Hy');
+title('Source End');
+
+
+h2=subplot(2,2,2);
 hold on
 plot([0 real(Hx(tind,dist))*H0],[0 0]);
 plot([0 0],[0 real(Hy(tind,dist))*H0],'r');
 plot([0 real(Hx(tind,dist))*H0],[0 real(Hy(tind,dist))*H0],'k');
-axis([-50 50 -50 50])
-grid on;
+axis([-10 10 -10 10])
+ylabel('Hy (A/m)');
+xlabel('Hx (A/m)');
+legend('Hx','Hy','H');
+title('Source End');
+
+
 dist=5;
-h2=subplot(2,2,2);
+h3=subplot(2,2,3);
 hold on
-plot([tind-899 tind+1-899],real(Hx(tind:(tind+1),dist))*H0);
-plot([tind-899 tind+1-899],real(Hy(tind:(tind+1),dist))*H0,'r');
-ylim([-50 50]);xlim([1 100]);grid on;
+plot([tind tind+1],real(Hx(tind:(tind+1),dist))*H0);
+plot([tind tind+1],real(Hy(tind:(tind+1),dist))*H0,'r');
+ylim([-50 50]);xlim([1 500]);
+ylabel('Magnitude (A/m)');
+xlabel('Time step');
+legend('Hx','Hy');
+title('Load End');
+
+
 h4=subplot(2,2,4);
 hold on
 plot([0 real(Hx(tind,dist))*H0],[0 0]);
 plot([0 0],[0 real(Hy(tind,dist))*H0],'r');
 plot([0 real(Hx(tind,dist))*H0],[0 real(Hy(tind,dist))*H0],'k');
-axis([-50 50 -50 50])
-grid on
+axis([-10 10 -10 10])
+ylabel('Hy (A/m)');
+xlabel('Hx (A/m)');
+legend('Hx','Hy','H');
+title('Load End');
+
 if (tind==1000)
 else
-    pause(.1);cla(h3);cla(h4);
+    cla(h2);cla(h4);
 end
 end
 ylabel('Time Step n');
@@ -128,6 +149,35 @@ zlabel('Hy');
 legend('Hx','Hy');
 title('Imaginary Field');
 
+Lmax=1000;
+subplot(2,2,1)
+plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,2))*H0);hold on;
+plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,2)*H0),'r');
+xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Source End');
+legend('Hx','Hy');
+%axis([0 Lmax*t0 -1000 1000]);
+subplot(2,2,2)
+hold on
+for tind=1:Lmax
+plot([real(Hx(tind,2)) real(Hx(tind+1,2))]*H0,[real(Hy(tind,2)) real(Hy(tind+1,2))]*H0)
+%axis([-0.1 0.1 -0.1 0.1]);
+end
+xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Source End');
+%axis([-1000 1000 -1000 1000]);
+subplot(2,2,3)
+plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,10))*H0);hold on;
+plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,10)*H0),'r');
+xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Load End');
+%axis([0 Lmax*t0 -200 200]);
+legend('Hx','Hy');
+subplot(2,2,4)
+hold on
+for tind=1:Lmax
+plot([real(Hx(tind,10)) real(Hx(tind+1,10))]*H0,[real(Hy(tind,10)) real(Hy(tind+1,10))]*H0)
+%axis([-0.1 0.1 -0.1 0.1]);
+end
+xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Load End');
+%axis([-200 200 -200 200]);
 
 % hold on;
 % plot(0:(2/400):2,(real(Bx(170,:))*B0));
