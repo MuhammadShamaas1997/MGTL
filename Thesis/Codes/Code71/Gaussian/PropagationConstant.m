@@ -49,7 +49,7 @@ D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
 fmin=1e6;
-fmax=1e10;
+fmax=1e11;
 
 Lmax=1000;
 subplot(2,2,1)
@@ -247,7 +247,7 @@ Fs=1/T;
 L=L2;
 
 dobs=1;
-obs=2;
+obs=3;
 L=2^nextpow2(L);
 f=Fs/2*linspace(0,1,L/2+1);
 
@@ -289,7 +289,7 @@ vgi(index1-1)=vgi(index1-1)*2*pi;
 end
 plot(f(1:L/2),vgi);
 
-obs=12;
+obs=3;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
 FEx=fft((Ex(1:L,obs)),NFFT);

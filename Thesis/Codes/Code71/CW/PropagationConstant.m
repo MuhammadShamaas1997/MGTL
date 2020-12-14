@@ -53,29 +53,29 @@ fmax=1e10;
 
 Lmax=1000;
 subplot(2,2,1)
-plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,2))*H0);hold on;
-plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,2)*H0),'r');
+plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,4))*H0);hold on;
+plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,4)*H0),'r');
 xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Source End');
 legend('Hx','Hy');
 %axis([0 Lmax*t0 -1000 1000]);
 subplot(2,2,2)
 hold on
 for tind=1:Lmax
-plot([real(Hx(tind,2)) real(Hx(tind+1,2))]*H0,[real(Hy(tind,2)) real(Hy(tind+1,2))]*H0)
+plot([real(Hx(tind,4)) real(Hx(tind+1,4))]*H0,[real(Hy(tind,4)) real(Hy(tind+1,4))]*H0)
 %axis([-0.1 0.1 -0.1 0.1]);
 end
 xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Source End');
 %axis([-1000 1000 -1000 1000]);
 subplot(2,2,3)
-plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,3))*H0);hold on;
-plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,3)*H0),'r');
+plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,10))*H0);hold on;
+plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,10)*H0),'r');
 xlabel('Time(s)');ylabel('Magnitude (A/m)');title('Evolution of Fields at Load End');
 %axis([0 Lmax*t0 -200 200]);
 legend('Hx','Hy');
 subplot(2,2,4)
 hold on
 for tind=1:Lmax
-plot([real(Hx(tind,3)) real(Hx(tind+1,3))]*H0,[real(Hy(tind,3)) real(Hy(tind+1,3))]*H0)
+plot([real(Hx(tind,10)) real(Hx(tind+1,10))]*H0,[real(Hy(tind,10)) real(Hy(tind+1,10))]*H0)
 %axis([-0.1 0.1 -0.1 0.1]);
 end
 xlabel('Hx (A/m)');ylabel('Hy (A/m)');title('Evolution of Fields at Load End');
