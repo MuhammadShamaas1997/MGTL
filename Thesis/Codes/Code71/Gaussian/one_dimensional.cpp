@@ -121,6 +121,7 @@ int main(int argc, char **argv) {
   gv.center_origin();
   structure s(gv, one, pml(1.0), identity());
   s.add_susceptibility(two, H_stuff, gyrotropic_susceptibility(vec(0.0,0.0,1.0),1.0, 0.001,0.00001,GYROTROPIC_SATURATED));
+  //bias omega gamma alpha type
 
   fields f(&s);
   //f.use_real_fields();
