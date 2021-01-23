@@ -48,10 +48,10 @@ E0=I0/(a0*eps0*c0);%Electric Field
 D0=I0/(a0*c0);%Electric Displacement Field
 B0=I0/(a0*eps0*c0*c0);%Magnetic Field
 H0=I0/(a0);%Magnetizing Field
-fmin=1e6;
+fmin=1e9;
 fmax=1e11;
 
-Lmax=1000;
+Lmax=2000;
 subplot(2,2,1)
 plot(((1:Lmax)*t0)/48,real(Hx(1:Lmax,2))*H0);hold on;
 plot(((1:Lmax)*t0)/48,real(Hy(1:Lmax,2)*H0),'r');
@@ -253,7 +253,7 @@ f=Fs/2*linspace(0,1,L/2+1);
 
 FHxi=(fft((Hy(1:L,obs)),L));
 FHxo=(fft((Hy(1:L,obs+dobs)),L));
-Gamma=(log(FHxo./FHxi))/(-(dobs/4)*(a0));
+Gamma=(log(FHxo./FHxi))/(-(dobs/1)*(a0));
 Gamma(1)=0;
 
 
@@ -292,8 +292,8 @@ plot(f(1:L/2),vgi);
 obs=3;
 NFFT=2^nextpow2(L);
 f=Fs/2*linspace(0,1,NFFT/2+1);
-FEx=fft((Ex(1:L,obs)),NFFT);
-FHx=fft((Hx(1:L,obs)),NFFT);
+FEx=fft((Ey(1:L,obs)),NFFT);
+FHx=fft((Hy(1:L,obs)),NFFT);
 Z=FEx./FHx;
 Z=Z*377;
 
