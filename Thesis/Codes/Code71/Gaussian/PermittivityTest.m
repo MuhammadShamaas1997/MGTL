@@ -16,7 +16,7 @@ while ischar(l)
 end
 
 epsr=0.9999;
-a0=1e-3;%0.1mm
+a0=10e-7;%0.1mm
 c0=2.99792458e8;%Speed of Light (m/s)
 f0=c0/a0;%3000GHz
 t0=1/f0;%0.33e-12 (s)
@@ -118,10 +118,10 @@ mur=(sigma.*fn.*fn.*kwi)./(kwi.*kwi-fi.*fi.*b0.*b0);
 
 
 alpha=0.00001;
-fn=1.0;
+fn=0.001;
 sigma=.1;%1.0562e4;
-muinf=1;gamma=(.001)/(2*pi);
-f=0.99:1e-7:1.01;
+muinf=1;gamma=(.0001)/(2*pi);
+f=0:1e-7:0.002;
 fi=f;
 kwi=(fn-1i.*fi.*alpha);
 kwi2=fi+1i*gamma;
@@ -139,10 +139,10 @@ plot(f*f0,imag(mur),'r');
 
 
 alpha=0.00001;
-fn=1.0;
+fn=0.001;
 sigma=.1;%1.0562e4;
-muinf=1;gamma=(.001)/(2*pi);
-f=0.99:1e-7:1.01;
+muinf=1;gamma=(.0001)/(2*pi);
+f=0:1e-7:0.002;
 fi=f;
 kwi=(fn-1i.*fi.*alpha);
 kwi2=fi+1i*gamma;
